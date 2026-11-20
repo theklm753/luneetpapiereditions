@@ -29,35 +29,42 @@
 
     * { box-sizing: border-box; margin: 0; padding: 0; }
 
-    body {
-      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Inter, sans-serif;
-      background: var(--fond-cadre);
-      color: var(--text-main);
+    html, body {
+      width: 100%;
       min-height: 100vh;
-      padding: 16px;
-    }
-
-    /* Fenêtre principale façon maquette */
-    .app-shell {
-      max-width: 1360px;
-      margin: 0 auto;
+      margin: 0;
+      padding: 0;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Inter, sans-serif;
       background: var(--blanc-bleute);
-      border-radius: 14px;
-      box-shadow: 0 14px 36px rgba(11, 19, 43, 0.14);
-      overflow: hidden;
-      border: 1px solid #CBD5E1;
+      color: var(--text-main);
     }
 
-    /* Barre supérieure */
+    /* Plein écran sans cadre centré */
+    .app-shell {
+      width: 100%;
+      min-height: 100vh;
+      margin: 0;
+      background: var(--blanc-bleute);
+      border-radius: 0;
+      box-shadow: none;
+      overflow-x: hidden;
+      border: none;
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* Bandeau supérieur bleu plein écran */
     .top-header {
-      background: var(--bleu-nuit);
+      width: 100%;
+      background: linear-gradient(90deg, var(--bleu-cobalt) 0%, var(--bleu-roi) 52%, var(--bleu-azur) 100%);
       color: #FFFFFF;
-      padding: 12px 24px;
+      padding: 12px 28px;
       display: flex;
       align-items: center;
       justify-content: space-between;
       gap: 16px;
       flex-wrap: wrap;
+      box-shadow: 0 2px 10px rgba(0, 71, 171, 0.22);
     }
 
     .top-auth {
@@ -67,9 +74,9 @@
     }
 
     .auth-btn {
-      background: transparent;
+      background: rgba(255, 255, 255, 0.14);
       color: #FFFFFF;
-      border: 1px solid rgba(255, 255, 255, 0.35);
+      border: 1px solid rgba(255, 255, 255, 0.45);
       border-radius: 6px;
       padding: 6px 14px;
       font-size: 0.85rem;
@@ -81,15 +88,15 @@
     }
 
     .auth-btn:hover {
-      border-color: var(--bleu-azur-clair);
-      background: rgba(255, 255, 255, 0.06);
+      border-color: #FFFFFF;
+      background: rgba(255, 255, 255, 0.24);
     }
 
     .mail-icon {
       color: #FFFFFF;
       font-size: 1.05rem;
       cursor: pointer;
-      opacity: 0.9;
+      opacity: 0.95;
     }
 
     .brand-mark {
@@ -107,11 +114,13 @@
       font-weight: 500;
     }
 
-    /* Corps : Sidebar + Zone centrale */
+    /* Corps : Sidebar + Zone centrale pleine hauteur */
     .body-grid {
+      flex: 1;
+      width: 100%;
       display: grid;
-      grid-template-columns: 235px 1fr;
-      min-height: 690px;
+      grid-template-columns: 245px minmax(0, 1fr);
+      min-height: calc(100vh - 64px);
     }
 
     .sidebar {
@@ -165,7 +174,8 @@
     }
 
     .content-pane {
-      padding: 24px 28px 36px;
+      width: 100%;
+      padding: 24px 32px 40px;
       background: var(--blanc-bleute);
     }
 
@@ -434,6 +444,44 @@
       margin-bottom: 18px;
     }
 
+    /* Bandeau horizontal des étapes du workflow (style capture) */
+    .workflow-stepper {
+      display: grid;
+      grid-template-columns: repeat(7, minmax(0, 1fr));
+      gap: 10px;
+      margin-bottom: 18px;
+    }
+
+    .wf-step-card {
+      background: #EEF3FA;
+      color: var(--bleu-cobalt);
+      border: 1px solid #D5E2F5;
+      border-radius: 14px;
+      padding: 14px 10px;
+      min-height: 92px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      font-size: 0.82rem;
+      font-weight: 700;
+      line-height: 1.25;
+      cursor: pointer;
+      transition: transform 0.14s ease, box-shadow 0.14s ease, background 0.14s ease;
+    }
+
+    .wf-step-card:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 14px rgba(37, 137, 245, 0.16);
+    }
+
+    .wf-step-card.active-stage {
+      background: linear-gradient(180deg, #3B8AF7 0%, #2575EB 100%);
+      color: #FFFFFF;
+      border-color: #2575EB;
+      box-shadow: 0 6px 16px rgba(37, 117, 235, 0.28);
+    }
+
     .phase-card {
       background: #FFFFFF;
       border: 1px solid var(--border);
@@ -563,11 +611,17 @@
       font-family: inherit;
     }
 
+    @media (max-width: 1120px) {
+      .workflow-stepper { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+    }
+
     @media (max-width: 900px) {
       .body-grid { grid-template-columns: 1fr; }
       .sidebar { flex-direction: row; overflow-x: auto; border-right: none; border-bottom: 1px solid #C8D5E6; padding: 10px; }
       .nav-item { width: auto; white-space: nowrap; }
+      .content-pane { padding: 18px 16px 28px; }
       .kpi-row { grid-template-columns: 1fr; }
+      .workflow-stepper { grid-template-columns: repeat(2, minmax(0, 1fr)); }
       .form-grid { grid-template-columns: 1fr; }
       .search-box input { width: 170px; }
     }
@@ -576,7 +630,7 @@
 <body>
 
 <div class="app-shell">
-  <!-- Barre du haut sombre façon maquette -->
+  <!-- Bandeau horizontal du haut bleu plein écran -->
   <header class="top-header">
     <div class="top-auth">
       <button class="auth-btn" onclick="alert('Espace éditrice — Lune et Papier Éditions')">
@@ -590,8 +644,8 @@
       <svg width="38" height="38" viewBox="0 0 40 40" fill="none" aria-hidden="true">
         <path d="M25.5 7.5A13 13 0 1 0 32.5 29a11 11 0 0 1-7-21.5Z" fill="#F8FAFC"/>
         <path d="M29 8l1.2 3.3L33.5 12.5l-3.3 1.2L29 17l-1.2-3.3-3.3-1.2 3.3-1.2L29 8Z" fill="#F8FAFC"/>
-        <circle cx="34.5" cy="18.5" r="1.4" fill="#4B9BF5"/>
-        <circle cx="22.5" cy="6" r="1.1" fill="#7B42F6"/>
+        <circle cx="34.5" cy="18.5" r="1.4" fill="#93C5FD"/>
+        <circle cx="22.5" cy="6" r="1.1" fill="#E9D5FF"/>
       </svg>
     </div>
   </header>
@@ -680,9 +734,11 @@
           <select name="startPhase">
             <option value="0">Phase 0 — Amont &amp; Idée (avant texte)</option>
             <option value="1">Phase 1 — Écriture &amp; Édition</option>
-            <option value="2">Phase 2 — Storyboard &amp; Cadrage</option>
-            <option value="3">Phase 3 — Illustrations &amp; Maquette</option>
-            <option value="4">Phase 4 — Fabrication, BnF &amp; Dilicom</option>
+            <option value="2">Phase 2 — Cadrage Artistique, Storyboard</option>
+            <option value="3">Phase 2b — Contrats</option>
+            <option value="4">Phase 3 — Illustrations &amp; Maquettage</option>
+            <option value="5">Phase 4 — Fabrication, Dépôt Légal &amp; Dilicom / Electre</option>
+            <option value="6">Phase 5 — Lancement, Diffusion &amp; Commercialisation</option>
           </select>
         </div>
         <div class="field">
@@ -718,11 +774,12 @@
 
 <script>
 (function() {
-  const STORAGE_KEY = 'lune_papier_workflow_v1';
+  const STORAGE_KEY = 'lune_papier_workflow_v2';
 
   const PHASES_TEMPLATE = [
     {
       num: 0,
+      bannerLabel: 'Amont &<br>Idéation',
       title: 'Phase 0 — Amont & Idéation (avant écriture du texte)',
       steps: [
         'Émergence de l’idée, thème & intention jeunesse',
@@ -732,6 +789,7 @@
     },
     {
       num: 1,
+      bannerLabel: 'Écriture,<br>Édition &amp;<br>Préparation du<br>Texte',
       title: 'Phase 1 — Écriture, Édition & Préparation du Texte',
       steps: [
         'Rédaction / réception du manuscrit (V1) & lecture à voix haute',
@@ -742,16 +800,26 @@
     },
     {
       num: 2,
-      title: 'Phase 2 — Cadrage Artistique, Storyboard & Contrats',
+      bannerLabel: 'Cadrage<br>Artistique,<br>Storyboard',
+      title: 'Phase 2 — Cadrage Artistique & Storyboard',
       steps: [
         'Brief créatif & moodboard (palette & ambiance)',
         'Storyboard double-page par double-page (rythme & page-turn)',
-        'Devis & signature des contrats (illustration / partenariat auteur)',
         'Character design (personnages, expressions & postures)'
       ]
     },
     {
       num: 3,
+      bannerLabel: 'Contrats',
+      title: 'Phase 2b — Contrats',
+      steps: [
+        'Devis & signature du contrat d’illustration / cession de droits',
+        'Signature du contrat d’édition / partenariat auteur (50 % vente directe, durée, reddition)'
+      ]
+    },
+    {
+      num: 4,
+      bannerLabel: 'Création des<br>Illustrations &amp;<br>Maquettage',
       title: 'Phase 3 — Création des Illustrations & Maquettage',
       steps: [
         'Crayonnés des planches & de la couverture',
@@ -761,7 +829,8 @@
       ]
     },
     {
-      num: 4,
+      num: 5,
+      bannerLabel: 'Fabrication,<br>Dépôt Légal &amp;<br>Dilicom /<br>Electre',
       title: 'Phase 4 — Fabrication, Dépôt Légal & Dilicom / Electre',
       steps: [
         'Attribution ISBN (segment AFNIL), code-barres EAN-13 & ours légal (Loi 1949 / Loi Lang)',
@@ -771,7 +840,8 @@
       ]
     },
     {
-      num: 5,
+      num: 6,
+      bannerLabel: 'Lancement,<br>Diffusion &amp;<br>Commercialisa-<br>tion',
       title: 'Phase 5 — Lancement, Diffusion & Commercialisation',
       steps: [
         'Fiche produit boutique, fiche argumentaire libraire & Cover Reveal',
@@ -805,6 +875,7 @@
       nav: 'projects',
       search: '',
       selectedProjectId: null,
+      activeWorkflowPhase: 0,
       projects: [
         {
           id: 'p_lilou',
@@ -1005,6 +1076,7 @@
     if (!project) return renderProjectsDashboard();
 
     const pct = calcProgress(project);
+    const activeStage = typeof db.activeWorkflowPhase === 'number' ? db.activeWorkflowPhase : 0;
 
     return `
       <div class="workflow-top">
@@ -1027,9 +1099,25 @@
         </div>
       </div>
 
+      <!-- Bandeau horizontal des étapes du workflow -->
+      <div class="workflow-stepper" role="tablist" aria-label="Étapes du workflow">
+        ${PHASES_TEMPLATE.map(ph => {
+          const isActive = ph.num === activeStage;
+          return `
+            <button
+              type="button"
+              class="wf-step-card ${isActive ? 'active-stage' : ''}"
+              onclick="app.selectWorkflowPhase(${ph.num})"
+            >
+              <span>${ph.bannerLabel}</span>
+            </button>
+          `;
+        }).join('')}
+      </div>
+
       <div class="panel-card" style="padding:14px 18px; margin-bottom:16px;">
         <div style="display:flex; justify-content:space-between; font-size:0.84rem; margin-bottom:6px;">
-          <span><strong>Avancement global du workflow (Phase 0 amont → Lancement)</strong></span>
+          <span><strong>Avancement global du workflow (Amont &amp; Idéation → Lancement, Diffusion &amp; Commercialisation)</strong></span>
           <span>${project.steps.filter(s => s.state === 'Terminé').length} / ${project.steps.length} étapes terminées</span>
         </div>
         <div class="kpi-bar-track" style="height:8px;">
@@ -1040,8 +1128,9 @@
       ${PHASES_TEMPLATE.map(ph => {
         const steps = project.steps.filter(s => s.phaseNum === ph.num);
         const phDone = steps.filter(s => s.state === 'Terminé').length;
+        const isHighlighted = ph.num === activeStage;
         return `
-          <div class="phase-card">
+          <div class="phase-card" id="phase-block-${ph.num}" style="${isHighlighted ? 'border-color:#2575EB; box-shadow:0 4px 14px rgba(37,117,235,0.12);' : ''}">
             <div class="phase-header">
               <span class="phase-name">${esc(ph.title)}</span>
               <span style="font-size:0.8rem; font-weight:600; color:var(--bleu-cobalt);">${phDone}/${steps.length} validées</span>
@@ -1092,7 +1181,7 @@
       <div class="panel-card">
         <div class="panel-title">Accès rapide aux projets liés</div>
         <p style="font-size:0.9rem; color:var(--text-muted); margin-bottom:14px;">
-          Retrouvez l’ensemble de vos albums actifs et cliquez sur n’importe lequel pour piloter ses étapes éditoriales, artistiques, BnF et Dilicom/Electre.
+          Retrouvez l’ensemble de vos albums actifs et cliquez sur n’importe lequel pour piloter ses étapes éditoriales, artistiques, contrats, BnF et Dilicom/Electre.
         </p>
         <div style="display:flex; gap:10px; flex-wrap:wrap;">
           ${db.projects.map(p => `
@@ -1141,14 +1230,13 @@
       const fd = new FormData(e.target);
       const startPhase = parseInt(fd.get('startPhase') || '0', 10);
       const steps = buildSteps(0);
-      // Marque les phases antérieures à startPhase comme terminées si démarré plus loin
       steps.forEach(s => {
         if (s.phaseNum < startPhase) s.state = 'Terminé';
       });
       const firstActive = steps.find(s => s.state !== 'Terminé');
       if (firstActive) firstActive.state = 'En cours';
 
-      const phaseNames = ['Idée / Amont', 'Édition', 'Storyboard', 'Maquette', 'BnF / Dilicom', 'Lancement'];
+      const phaseNames = ['Idée / Amont', 'Édition', 'Storyboard', 'Contrats', 'Maquette', 'BnF / Dilicom', 'Lancement'];
       const newProj = {
         id: 'p_' + Date.now(),
         title: (fd.get('title') || '').trim(),
@@ -1162,6 +1250,7 @@
       };
       db.projects.unshift(newProj);
       db.selectedProjectId = newProj.id;
+      db.activeWorkflowPhase = startPhase;
       db.nav = 'workflow';
       save();
       e.target.reset();
@@ -1170,9 +1259,17 @@
     },
     openWorkflow(id) {
       db.selectedProjectId = id;
+      db.activeWorkflowPhase = 0;
       db.nav = 'workflow';
       save();
       render();
+    },
+    selectWorkflowPhase(phaseNum) {
+      db.activeWorkflowPhase = phaseNum;
+      save();
+      render();
+      const el = document.getElementById('phase-block-' + phaseNum);
+      if (el) el.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
     },
     backToProjects() {
       db.nav = 'projects';
