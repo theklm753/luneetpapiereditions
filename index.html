@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Lune & Papier OS — Pilotage Éditorial & Studio</title>
+  <style>
+    :root {
+      --bg-main: #F4F6F9;        /* Blanc Bleuté */
+      --bg-card: #FFFFFF;        /* Blanc pur */
+      --bleu-nuit: #0B132B;      /* Bleu Nuit */
+      --bleu-cobalt: #0047AB;    /* Bleu Cobalt */
+      --bleu-roi: #1D4ED8;       /* Bleu Roi */
+      --bleu-azur: #0088FF;      /* Bleu Azur */
+      --violet: #7F00FF;         /* Violet Vibrant */
+      --border: #DCE3EE;
+      --text-main: #0B132B;
+      --text-muted: #52607A;
+      --st-todo-bg: #EEF2F6;     --st-todo-txt: #475569;
+      --st-prog-bg: #E0F2FE;     --st-prog-txt: #0369A1;
+      --st-wait-bg: #FEF3C7;     --st-wait-txt: #B45309;
+      --st-done-bg: #DCFCE7;     --st-done-txt: #15803D;
+      --st-urg-bg: #FEE2E2;      --st-urg-txt: #B91C1C;
+      --radius: 12px;
+      --shadow: 0 2px 10px rgba(11, 19, 43, 0.05);
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Inter, sans-serif;
+      background: var(--bg-main);
+      color: var(--text-main);
+      line-height: 1.5;
+      display: flex;
+      min-height: 100vh;
+    }
+
+    /* Sidebar */
+    .sidebar {
+      width: 270px;
+      background: var(--bleu-nuit);
+      color: #F4F6F9;
+      display: flex;
+      flex-direction: column;
+      position: fixed;
+      top: 0; bottom: 0; left: 0;
+      z-index: 100;
+      transition: transform 0.25s ease;
+      overflow-y: auto;
+    }
+    .brand {
+      padding: 20px 18px 16px;
+      border-bottom: 1px solid rgba(255,255,255,0.1);
+    }
+    .brand-title {
+      font-family: Georgia, serif;
+      font-size: 1.15rem;
+      font-weight
