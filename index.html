@@ -552,12 +552,39 @@
     }
 
     .step-select {
-      padding: 4px 8px;
+      padding: 4px 10px;
       border-radius: 6px;
       border: 1px solid #CBD5E1;
       font-size: 0.78rem;
+      font-weight: 600;
       background: #FFFFFF;
       color: var(--text-main);
+      cursor: pointer;
+    }
+
+    /* 4 statuts : À faire (Gris), En cours (Jaune), Fait (Vert), En retard (Rouge) */
+    .status-a-faire {
+      background: #E5E7EB;
+      color: #374151;
+      border-color: #9CA3AF;
+    }
+
+    .status-en-cours {
+      background: #FEF08A;
+      color: #854D0E;
+      border-color: #EAB308;
+    }
+
+    .status-fait {
+      background: #DCFCE7;
+      color: #166534;
+      border-color: #22C55E;
+    }
+
+    .status-en-retard {
+      background: #FEE2E2;
+      color: #991B1B;
+      border-color: #EF4444;
     }
 
     .step-note {
@@ -774,7 +801,9 @@
 
 <script>
 (function() {
-  const STORAGE_KEY = 'lune_papier_workflow_v2';
+  const STORAGE_KEY = 'lune_papier_workflow_v3';
+
+  const STEP_STATUSES = ['À faire', 'En cours', 'Fait', 'En retard'];
 
   const PHASES_TEMPLATE = [
     {
@@ -851,6 +880,22 @@
     }
   ];
 
+  function normalizeStepState(state) {
+    if (STEP_STATUSES.includes(state)) return state;
+    if (state === 'Terminé') return 'Fait';
+    if (state === 'En attente de validation') return 'En cours';
+    if (state === 'Bloqué') return 'En retard';
+    return 'À faire';
+  }
+
+  function stepStatusClass(state) {
+    const norm = normalizeStepState(state);
+    if (norm === 'Fait') return 'status-fait';
+    if (norm === 'En cours') return 'status-en-cours';
+    if (norm === 'En retard') return 'status-en-retard';
+    return 'status-a-faire';
+  }
+
   function buildSteps(completedCount) {
     const all = [];
     PHASES_TEMPLATE.forEach(ph => {
@@ -862,7 +907,7 @@
           phaseNum: ph.num,
           phaseTitle: ph.title,
           label,
-          state: isDone ? 'Terminé' : (globalIdx === completedCount ? 'En cours' : 'À venir'),
+          state: isDone ? 'Fait' : (globalIdx === completedCount ? 'En cours' : 'À faire'),
           note: ''
         });
       });
@@ -929,7 +974,12 @@
     try {
       const raw = localStorage.getItem(STORAGE_KEY);
       if (!raw) return defaultData();
-      return { ...defaultData(), ...JSON.parse(raw) };
+      const parsed = { ...defaultData(), ...JSON.parse(raw) };
+      parsed.projects = (parsed.projects || []).map(p => ({
+        ...p,
+        steps: (p.steps || []).map(s => ({ ...s, state: normalizeStepState(s.state) }))
+      }));
+      return parsed;
     } catch {
       return defaultData();
     }
@@ -949,7 +999,7 @@
 
   function calcProgress(project) {
     if (!project.steps || !project.steps.length) return 0;
-    const done = project.steps.filter(s => s.state === 'Terminé').length;
+    const done = project.steps.filter(s => normalizeStepState(s.state) === 'Fait').length;
     return Math.round((done / project.steps.length) * 100);
   }
 
@@ -1077,6 +1127,9 @@
 
     const pct = calcProgress(project);
     const activeStage = typeof db.activeWorkflowPhase === 'number' ? db.activeWorkflowPhase : 0;
+    const currentPhase = PHASES_TEMPLATE.find(ph => ph.num === activeStage) || PHASES_TEMPLATE[0];
+    const phaseSteps = project.steps.filter(s => s.phaseNum === currentPhase.num);
+    const phDone = phaseSteps.filter(s => normalizeStepState(s.state) === 'Fait').length;
 
     return `
       <div class="workflow-top">
@@ -1102,7 +1155,7 @@
       <!-- Bandeau horizontal des étapes du workflow -->
       <div class="workflow-stepper" role="tablist" aria-label="Étapes du workflow">
         ${PHASES_TEMPLATE.map(ph => {
-          const isActive = ph.num === activeStage;
+          const isActive = ph.num === currentPhase.num;
           return `
             <button
               type="button"
@@ -1118,45 +1171,40 @@
       <div class="panel-card" style="padding:14px 18px; margin-bottom:16px;">
         <div style="display:flex; justify-content:space-between; font-size:0.84rem; margin-bottom:6px;">
           <span><strong>Avancement global du workflow (Amont &amp; Idéation → Lancement, Diffusion &amp; Commercialisation)</strong></span>
-          <span>${project.steps.filter(s => s.state === 'Terminé').length} / ${project.steps.length} étapes terminées</span>
+          <span>${project.steps.filter(s => normalizeStepState(s.state) === 'Fait').length} / ${project.steps.length} étapes terminées</span>
         </div>
         <div class="kpi-bar-track" style="height:8px;">
           <div class="kpi-bar-fill" style="width:${pct}%; background:linear-gradient(90deg, var(--violet), var(--bleu-roi));"></div>
         </div>
       </div>
 
-      ${PHASES_TEMPLATE.map(ph => {
-        const steps = project.steps.filter(s => s.phaseNum === ph.num);
-        const phDone = steps.filter(s => s.state === 'Terminé').length;
-        const isHighlighted = ph.num === activeStage;
-        return `
-          <div class="phase-card" id="phase-block-${ph.num}" style="${isHighlighted ? 'border-color:#2575EB; box-shadow:0 4px 14px rgba(37,117,235,0.12);' : ''}">
-            <div class="phase-header">
-              <span class="phase-name">${esc(ph.title)}</span>
-              <span style="font-size:0.8rem; font-weight:600; color:var(--bleu-cobalt);">${phDone}/${steps.length} validées</span>
+      <!-- Uniquement la to-do de la phase du workflow concernée -->
+      <div class="phase-card" id="phase-block-${currentPhase.num}" style="border-color:#2575EB; box-shadow:0 4px 14px rgba(37,117,235,0.12);">
+        <div class="phase-header">
+          <span class="phase-name">${esc(currentPhase.title)}</span>
+          <span style="font-size:0.8rem; font-weight:600; color:var(--bleu-cobalt);">${phDone}/${phaseSteps.length} validées</span>
+        </div>
+        ${phaseSteps.map(st => {
+          const stNorm = normalizeStepState(st.state);
+          const isDone = stNorm === 'Fait';
+          return `
+            <div class="step-item">
+              <div class="step-left">
+                <input type="checkbox" ${isDone ? 'checked' : ''} onchange="app.toggleStep('${project.id}', '${st.id}')" />
+                <span class="step-title ${isDone ? 'done' : ''}">${esc(st.label)}</span>
+              </div>
+              <div class="step-controls">
+                <select class="step-select ${stepStatusClass(stNorm)}" onchange="app.setStepState('${project.id}', '${st.id}', this.value)">
+                  ${STEP_STATUSES.map(opt =>
+                    `<option value="${opt}" ${stNorm === opt ? 'selected' : ''}>${opt}</option>`
+                  ).join('')}
+                </select>
+                <input class="step-note" type="text" placeholder="Note / date..." value="${esc(st.note)}" onchange="app.setStepNote('${project.id}', '${st.id}', this.value)" />
+              </div>
             </div>
-            ${steps.map(st => {
-              const isDone = st.state === 'Terminé';
-              return `
-                <div class="step-item">
-                  <div class="step-left">
-                    <input type="checkbox" ${isDone ? 'checked' : ''} onchange="app.toggleStep('${project.id}', '${st.id}')" />
-                    <span class="step-title ${isDone ? 'done' : ''}">${esc(st.label)}</span>
-                  </div>
-                  <div class="step-controls">
-                    <select class="step-select" onchange="app.setStepState('${project.id}', '${st.id}', this.value)">
-                      ${['À venir','En cours','En attente de validation','Terminé','Bloqué'].map(opt =>
-                        `<option value="${opt}" ${st.state === opt ? 'selected' : ''}>${opt}</option>`
-                      ).join('')}
-                    </select>
-                    <input class="step-note" type="text" placeholder="Note / date..." value="${esc(st.note)}" onchange="app.setStepNote('${project.id}', '${st.id}', this.value)" />
-                  </div>
-                </div>
-              `;
-            }).join('')}
-          </div>
-        `;
-      }).join('')}
+          `;
+        }).join('')}
+      </div>
     `;
   }
 
@@ -1231,9 +1279,9 @@
       const startPhase = parseInt(fd.get('startPhase') || '0', 10);
       const steps = buildSteps(0);
       steps.forEach(s => {
-        if (s.phaseNum < startPhase) s.state = 'Terminé';
+        if (s.phaseNum < startPhase) s.state = 'Fait';
       });
-      const firstActive = steps.find(s => s.state !== 'Terminé');
+      const firstActive = steps.find(s => s.state !== 'Fait');
       if (firstActive) firstActive.state = 'En cours';
 
       const phaseNames = ['Idée / Amont', 'Édition', 'Storyboard', 'Contrats', 'Maquette', 'BnF / Dilicom', 'Lancement'];
@@ -1284,14 +1332,14 @@
       const p = db.projects.find(x => x.id === projId);
       const s = p && p.steps.find(x => x.id === stepId);
       if (!s) return;
-      s.state = (s.state === 'Terminé') ? 'À venir' : 'Terminé';
+      s.state = (normalizeStepState(s.state) === 'Fait') ? 'À faire' : 'Fait';
       save();
       render();
     },
     setStepState(projId, stepId, stateVal) {
       const p = db.projects.find(x => x.id === projId);
       const s = p && p.steps.find(x => x.id === stepId);
-      if (s) { s.state = stateVal; save(); render(); }
+      if (s) { s.state = normalizeStepState(stateVal); save(); render(); }
     },
     setStepNote(projId, stepId, noteVal) {
       const p = db.projects.find(x => x.id === projId);
