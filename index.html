@@ -3,534 +3,1208 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Lune & Papier Éditions — Pilotage & Processus</title>
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,600;0,700;1,500&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <title>Lune et Papier Éditions — Suivi des Projets Albums</title>
   <style>
     :root {
-      --bg: #FAF7F2;
-      --surface: #FFFFFF;
-      --surface-soft: #F4EFE6;
-      --ink: #262E45;
-      --ink-soft: #5D657A;
-      --border: #E8E0D4;
-      --navy: #2B3553;
-      --gold: #C89B54;
-      --gold-soft: #FBF4E7;
-      --terracotta: #D47F63;
-      --sage: #6C9178;
-      --lavender: #8276A8;
-      --sky: #5A87A8;
-      --rose: #C77488;
-      --radius: 16px;
-      --shadow: 0 6px 24px rgba(38, 46, 69, 0.06);
+      /* Palette issue de la charte visuelle fournie */
+      --bleu-nuit: #0B132B;
+      --bleu-roi: #1D4ED8;
+      --bleu-cobalt: #0047AB;
+      --bleu-azur: #2589F5;
+      --bleu-azur-clair: #4B9BF5;
+      --violet: #7B42F6;
+      --blanc-bleute: #F4F7FB;
+      --fond-cadre: #ECEFF4;
+      --sidebar-bg: #DCE6F2;
+      --sidebar-active: #F7F5EE;
+      --card-bg: #FFFFFF;
+      --border: #E2E8F0;
+      --text-main: #0F172A;
+      --text-muted: #5A677D;
+      --vert-valide: #4E8D5E;
+      --ambre-attente: #D9822B;
+      --bleu-encours: #2B6CB0;
+      --gris-planifie: #64748B;
     }
 
     * { box-sizing: border-box; margin: 0; padding: 0; }
 
     body {
-      font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif;
-      background: var(--bg);
-      color: var(--ink);
-      line-height: 1.5;
-      padding-bottom: 64px;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Inter, sans-serif;
+      background: var(--fond-cadre);
+      color: var(--text-main);
+      min-height: 100vh;
+      padding: 16px;
     }
 
-    h1, h2, h3, .serif {
-      font-family: 'Playfair Display', Georgia, serif;
-    }
-
-    /* Header */
-    header {
-      background: var(--navy);
-      color: #FFFDF9;
-      padding: 20px 24px;
-      position: sticky;
-      top: 0;
-      z-index: 50;
-      box-shadow: 0 4px 20px rgba(24, 30, 48, 0.14);
-    }
-
-    .header-inner {
-      max-width: 1220px;
+    /* Fenêtre principale façon maquette */
+    .app-shell {
+      max-width: 1360px;
       margin: 0 auto;
+      background: var(--blanc-bleute);
+      border-radius: 14px;
+      box-shadow: 0 14px 36px rgba(11, 19, 43, 0.14);
+      overflow: hidden;
+      border: 1px solid #CBD5E1;
+    }
+
+    /* Barre supérieure */
+    .top-header {
+      background: var(--bleu-nuit);
+      color: #FFFFFF;
+      padding: 12px 24px;
       display: flex;
-      flex-wrap: wrap;
       align-items: center;
       justify-content: space-between;
+      gap: 16px;
+      flex-wrap: wrap;
+    }
+
+    .top-auth {
+      display: flex;
+      align-items: center;
       gap: 14px;
     }
 
-    .brand {
-      display: flex;
+    .auth-btn {
+      background: transparent;
+      color: #FFFFFF;
+      border: 1px solid rgba(255, 255, 255, 0.35);
+      border-radius: 6px;
+      padding: 6px 14px;
+      font-size: 0.85rem;
+      font-weight: 500;
+      cursor: pointer;
+      display: inline-flex;
       align-items: center;
-      gap: 12px;
-    }
-
-    .brand-icon {
-      width: 42px;
-      height: 42px;
-      border-radius: 12px;
-      background: rgba(200, 155, 84, 0.2);
-      border: 1px solid rgba(200, 155, 84, 0.5);
-      display: grid;
-      place-items: center;
-      font-size: 20px;
-    }
-
-    .brand h1 {
-      font-size: 1.35rem;
-      letter-spacing: 0.2px;
-    }
-
-    .brand p {
-      font-size: 0.78rem;
-      color: #CBD3E6;
-    }
-
-    .header-actions {
-      display: flex;
-      flex-wrap: wrap;
       gap: 8px;
     }
 
-    .btn {
-      border: 1px solid transparent;
-      border-radius: 10px;
-      padding: 8px 14px;
-      font-family: inherit;
-      font-size: 0.83rem;
+    .auth-btn:hover {
+      border-color: var(--bleu-azur-clair);
+      background: rgba(255, 255, 255, 0.06);
+    }
+
+    .mail-icon {
+      color: #FFFFFF;
+      font-size: 1.05rem;
+      cursor: pointer;
+      opacity: 0.9;
+    }
+
+    .brand-mark {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      cursor: pointer;
+    }
+
+    .brand-name {
+      font-family: Georgia, "Times New Roman", serif;
+      font-size: 1.15rem;
+      line-height: 1.15;
+      color: #FFFFFF;
+      font-weight: 500;
+    }
+
+    /* Corps : Sidebar + Zone centrale */
+    .body-grid {
+      display: grid;
+      grid-template-columns: 235px 1fr;
+      min-height: 690px;
+    }
+
+    .sidebar {
+      background: var(--sidebar-bg);
+      padding: 18px 10px 24px;
+      border-right: 1px solid #C8D5E6;
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+
+    .nav-item {
+      width: 100%;
+      border: none;
+      background: transparent;
+      color: var(--text-main);
+      padding: 10px 14px;
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      gap: 11px;
+      font-size: 0.92rem;
+      font-weight: 500;
+      text-align: left;
+      cursor: pointer;
+      transition: background 0.15s, color 0.15s;
+    }
+
+    .nav-item svg {
+      width: 18px;
+      height: 18px;
+      flex-shrink: 0;
+      stroke: #334155;
+      fill: none;
+      stroke-width: 1.7;
+    }
+
+    .nav-item:hover {
+      background: rgba(255, 255, 255, 0.45);
+    }
+
+    .nav-item.active {
+      background: var(--sidebar-active);
+      color: var(--bleu-nuit);
+      font-weight: 600;
+      box-shadow: 0 1px 3px rgba(11, 19, 43, 0.06);
+    }
+
+    .nav-item.active svg {
+      stroke: var(--bleu-roi);
+    }
+
+    .content-pane {
+      padding: 24px 28px 36px;
+      background: var(--blanc-bleute);
+    }
+
+    /* En-tête de section : Titre serif + Recherche + Bouton + Nouveau Projet */
+    .section-head {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+      margin-bottom: 20px;
+      flex-wrap: wrap;
+    }
+
+    .serif-title {
+      font-family: Georgia, "Times New Roman", serif;
+      font-size: 2.05rem;
+      font-weight: 500;
+      color: var(--bleu-nuit);
+      letter-spacing: -0.01em;
+    }
+
+    .head-controls {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+
+    .search-box {
+      position: relative;
+      display: flex;
+      align-items: center;
+    }
+
+    .search-box input {
+      background: #FFFFFF;
+      border: 1px solid #CBD5E1;
+      border-radius: 8px;
+      padding: 8px 12px 8px 34px;
+      font-size: 0.88rem;
+      color: var(--text-main);
+      width: 225px;
+      outline: none;
+    }
+
+    .search-box input:focus {
+      border-color: var(--bleu-roi);
+    }
+
+    .search-icon {
+      position: absolute;
+      left: 11px;
+      color: #64748B;
+      font-size: 0.9rem;
+      pointer-events: none;
+    }
+
+    .btn-new {
+      background: linear-gradient(180deg, #2B7AE8 0%, var(--bleu-cobalt) 100%);
+      color: #FFFFFF;
+      border: none;
+      border-radius: 8px;
+      padding: 9px 16px;
+      font-size: 0.88rem;
       font-weight: 600;
       cursor: pointer;
       display: inline-flex;
       align-items: center;
       gap: 6px;
-      transition: all 0.18s ease;
+      box-shadow: 0 2px 6px rgba(0, 71, 171, 0.25);
     }
 
-    .btn-ghost {
-      background: rgba(255, 255, 255, 0.1);
-      color: #FFFDF9;
-      border-color: rgba(255, 255, 255, 0.16);
+    .btn-new:hover {
+      background: linear-gradient(180deg, var(--bleu-roi) 0%, #09327A 100%);
     }
-    .btn-ghost:hover { background: rgba(255, 255, 255, 0.2); }
-    .btn-ghost.active { background: var(--gold); color: #1E2436; border-color: var(--gold); }
 
-    .btn-primary {
-      background: var(--navy);
-      color: #FFF;
-    }
-    .btn-primary:hover { background: #1E2740; transform: translateY(-1px); }
-
-    .btn-soft {
-      background: var(--surface-soft);
-      color: var(--ink);
-      border-color: var(--border);
-    }
-    .btn-soft:hover { background: #EAE2D5; }
-
-    .btn-danger {
-      background: #FDECEC;
-      color: #B43C3C;
-      border-color: #F6D0D0;
-    }
-    .btn-danger:hover { background: #FAD7D7; }
-
-    /* Navigation Tabs */
-    .nav-bar {
-      max-width: 1220px;
-      margin: 22px auto 0;
-      padding: 0 20px;
-      display: flex;
-      gap: 8px;
-      overflow-x: auto;
-      scrollbar-width: none;
-    }
-    .nav-bar::-webkit-scrollbar { display: none; }
-
-    .tab-btn {
-      background: var(--surface);
-      border: 1px solid var(--border);
-      color: var(--ink-soft);
-      padding: 11px 18px;
-      border-radius: 12px;
-      font-family: inherit;
+    .btn-secondary {
+      background: #FFFFFF;
+      color: var(--bleu-nuit);
+      border: 1px solid #CBD5E1;
+      border-radius: 8px;
+      padding: 8px 13px;
+      font-size: 0.85rem;
       font-weight: 600;
-      font-size: 0.9rem;
       cursor: pointer;
-      white-space: nowrap;
-      transition: all 0.2s ease;
-      display: inline-flex;
-      align-items: center;
-      gap: 8px;
     }
 
-    .tab-btn:hover { border-color: var(--gold); color: var(--ink); }
-    .tab-btn.active {
-      background: var(--navy);
-      color: #FFF;
-      border-color: var(--navy);
-      box-shadow: 0 4px 12px rgba(43, 53, 83, 0.2);
+    .btn-secondary:hover {
+      border-color: var(--bleu-roi);
+      color: var(--bleu-roi);
     }
 
-    /* Main Container */
-    main {
-      max-width: 1220px;
-      margin: 20px auto 0;
-      padding: 0 20px;
-    }
-
-    .view { display: none; animation: fadeIn 0.22s ease; }
-    .view.active { display: block; }
-
-    @keyframes fadeIn {
-      from { opacity: 0; transform: translateY(4px); }
-      to { opacity: 1; transform: translateY(0); }
-    }
-
-    /* Cards & Grids */
-    .card {
-      background: var(--surface);
-      border: 1px solid var(--border);
-      border-radius: var(--radius);
-      padding: 20px;
-      box-shadow: var(--shadow);
-    }
-
-    .top-grid {
+    /* 3 Cartes KPI avec bordure gauche épaisse et points en haut à droite */
+    .kpi-row {
       display: grid;
-      grid-template-columns: 1.4fr 1fr;
-      gap: 18px;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 16px;
       margin-bottom: 22px;
     }
 
-    @media (max-width: 860px) {
-      .top-grid { grid-template-columns: 1fr; }
-    }
-
-    /* Progress Bar */
-    .progress-track {
-      width: 100%;
-      height: 10px;
-      background: var(--surface-soft);
-      border-radius: 99px;
-      overflow: hidden;
-      margin-top: 8px;
-    }
-    .progress-fill {
-      height: 100%;
-      background: linear-gradient(90deg, var(--gold), var(--terracotta));
-      border-radius: 99px;
-      transition: width 0.35s ease;
-    }
-
-    /* Timer Box */
-    .timer-card {
-      background: linear-gradient(135deg, #2B3553 0%, #3A476E 100%);
-      color: #FFFDF9;
-      border: none;
-      display: flex;
-      flex-direction: column;
-      justify-content: space-between;
-    }
-
-    .timer-display {
-      font-size: 2.3rem;
-      font-weight: 700;
-      font-variant-numeric: tabular-nums;
-      letter-spacing: 1px;
-      margin: 8px 0;
-    }
-
-    .timer-presets, .timer-controls {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 6px;
-    }
-
-    /* Badges */
-    .badge {
-      display: inline-flex;
-      align-items: center;
-      gap: 5px;
-      padding: 4px 10px;
-      border-radius: 99px;
-      font-size: 0.74rem;
-      font-weight: 700;
-      letter-spacing: 0.2px;
-    }
-
-    .badge-site { background: #E9F0F8; color: #2B5A84; }
-    .badge-tt { background: #E8F3EC; color: #2E6B47; }
-    .badge-sanct { background: #FFF0E8; color: #B85233; border: 1px solid #F6CBB8; }
-
-    .pole-dg { background: #ECEAF6; color: #4C3F82; }
-    .pole-daf { background: #FBF1DF; color: #8C5E14; }
-    .pole-edito { background: #F8E8EE; color: #913853; }
-    .pole-studio { background: #FDECE6; color: #A6482B; }
-    .pole-prod { background: #E7F2ED; color: #2E6B4E; }
-    .pole-com { background: #E6F0F7; color: #295E85; }
-
-    /* Weekly Schedule Grid */
-    .days-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(340px, 1fr));
-      gap: 18px;
-    }
-
-    @media (max-width: 420px) {
-      .days-grid { grid-template-columns: 1fr; }
-    }
-
-    .day-card {
-      background: var(--surface);
+    .kpi-box {
+      background: var(--card-bg);
+      border-radius: 10px;
+      padding: 14px 18px;
       border: 1px solid var(--border);
-      border-radius: var(--radius);
-      overflow: hidden;
-      box-shadow: var(--shadow);
-      display: flex;
-      flex-direction: column;
+      border-left-width: 5px;
+      box-shadow: 0 2px 6px rgba(11, 19, 43, 0.04);
     }
 
-    .day-card.is-today {
-      border: 2px solid var(--gold);
-      box-shadow: 0 8px 28px rgba(200, 155, 84, 0.18);
-    }
+    .kpi-box.k-amber { border-left-color: var(--ambre-attente); }
+    .kpi-box.k-violet { border-left-color: var(--violet); }
+    .kpi-box.k-blue { border-left-color: var(--bleu-roi); }
 
-    .day-header {
-      padding: 15px 18px;
-      background: var(--surface-soft);
-      border-bottom: 1px solid var(--border);
+    .kpi-top {
       display: flex;
+      align-items: center;
       justify-content: space-between;
+      font-size: 0.88rem;
+      color: var(--text-muted);
+      font-weight: 500;
+    }
+
+    .dots {
+      display: inline-flex;
+      gap: 4px;
       align-items: center;
-      gap: 10px;
     }
 
-    .day-card.is-today .day-header {
-      background: var(--gold-soft);
+    .dot {
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: #CBD5E1;
     }
 
-    .day-title {
-      display: flex;
-      align-items: center;
-      gap: 8px;
+    .kpi-box.k-amber .dot:first-child { background: var(--ambre-attente); }
+    .kpi-box.k-violet .dot:first-child { background: var(--violet); }
+    .kpi-box.k-violet .dot:nth-child(2) { background: var(--bleu-azur); }
+    .kpi-box.k-blue .dot:first-child { background: var(--bleu-nuit); }
+    .kpi-box.k-blue .dot:nth-child(2) { background: var(--bleu-roi); }
+
+    .kpi-number {
+      font-size: 2rem;
+      font-weight: 700;
+      color: var(--bleu-nuit);
+      margin: 4px 0 8px;
+      line-height: 1.1;
     }
 
-    .today-pill {
-      background: var(--gold);
-      color: #1F2537;
-      font-size: 0.68rem;
-      font-weight: 800;
-      text-transform: uppercase;
-      padding: 2px 8px;
+    .kpi-bar-track {
+      height: 5px;
+      background: #E2E8F0;
+      border-radius: 99px;
+      overflow: hidden;
+      width: 100%;
+    }
+
+    .kpi-bar-fill {
+      height: 100%;
       border-radius: 99px;
     }
 
-    .day-body {
-      padding: 16px 18px;
-      display: flex;
-      flex-direction: column;
-      gap: 14px;
-      flex: 1;
-    }
-
-    .slot-block {
+    /* Carte tableau Suivi des projets */
+    .panel-card {
+      background: var(--card-bg);
       border: 1px solid var(--border);
       border-radius: 12px;
-      padding: 12px 14px;
-      background: #FFFEFC;
+      padding: 18px 20px;
+      box-shadow: 0 2px 8px rgba(11, 19, 43, 0.04);
+      margin-bottom: 18px;
     }
 
-    .slot-block.sanctuarise {
-      background: linear-gradient(180deg, #FFF9F5 0%, #FFFFFF 100%);
-      border-color: #F2CEBF;
-    }
-
-    .slot-meta {
+    .panel-title {
+      font-size: 1.05rem;
+      font-weight: 600;
+      color: var(--bleu-nuit);
+      margin-bottom: 14px;
       display: flex;
-      flex-wrap: wrap;
-      justify-content: space-between;
       align-items: center;
-      gap: 6px;
-      margin-bottom: 8px;
-    }
-
-    .slot-time {
-      font-size: 0.8rem;
-      font-weight: 700;
-      color: var(--navy);
-    }
-
-    .task-list {
-      list-style: none;
-      display: flex;
-      flex-direction: column;
-      gap: 8px;
-    }
-
-    .task-item {
-      display: flex;
-      align-items: flex-start;
+      justify-content: space-between;
       gap: 10px;
-      font-size: 0.88rem;
+      flex-wrap: wrap;
     }
 
-    .task-item input[type="checkbox"] {
-      margin-top: 3px;
-      width: 17px;
-      height: 17px;
-      accent-color: var(--navy);
+    .table-wrap {
+      overflow-x: auto;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.9rem;
+    }
+
+    th {
+      text-align: left;
+      font-size: 0.73rem;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+      color: var(--text-muted);
+      font-weight: 700;
+      padding: 10px 12px;
+      border-bottom: 1px solid var(--border);
+    }
+
+    td {
+      padding: 13px 12px;
+      border-bottom: 1px solid #EEF2F7;
+      vertical-align: middle;
+    }
+
+    tbody tr.project-row {
       cursor: pointer;
+      transition: background 0.14s;
+    }
+
+    tbody tr.project-row:hover {
+      background: #F0F6FF;
+    }
+
+    .prog-cell {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      min-width: 135px;
+    }
+
+    .mini-track {
+      width: 72px;
+      height: 5px;
+      background: #E2E8F0;
+      border-radius: 99px;
+      overflow: hidden;
       flex-shrink: 0;
     }
 
-    .task-item.done span {
-      text-decoration: line-through;
-      color: var(--ink-soft);
-      opacity: 0.72;
-    }
-
-    /* Rules banner */
-    .rules-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-      gap: 14px;
-      margin-top: 22px;
-    }
-
-    .rule-box {
-      background: var(--surface);
-      border: 1px dashed #D7C8B2;
-      border-radius: 14px;
-      padding: 15px;
-      font-size: 0.85rem;
-    }
-
-    .rule-box strong {
-      display: block;
-      color: var(--navy);
-      margin-bottom: 4px;
-    }
-
-    /* Filters & Forms */
-    .filters-bar {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 8px;
-      margin-bottom: 16px;
-      align-items: center;
-    }
-
-    .chip {
-      padding: 7px 13px;
+    .mini-fill {
+      height: 100%;
+      background: var(--bleu-roi);
       border-radius: 99px;
-      border: 1px solid var(--border);
-      background: var(--surface);
-      font-size: 0.8rem;
+    }
+
+    .pill {
+      display: inline-block;
+      padding: 4px 12px;
+      border-radius: 999px;
+      font-size: 0.78rem;
       font-weight: 600;
-      color: var(--ink-soft);
-      cursor: pointer;
-      transition: 0.15s;
-    }
-    .chip:hover { border-color: var(--navy); color: var(--ink); }
-    .chip.active { background: var(--navy); color: #FFF; border-color: var(--navy); }
-
-    .form-inline {
-      display: grid;
-      grid-template-columns: 2fr 1.2fr 1fr auto;
-      gap: 10px;
-      margin-bottom: 20px;
+      color: #FFFFFF;
+      white-space: nowrap;
     }
 
-    @media (max-width: 780px) {
-      .form-inline { grid-template-columns: 1fr; }
-    }
+    .pill-encours { background: var(--bleu-encours); }
+    .pill-attente { background: var(--ambre-attente); }
+    .pill-valide  { background: var(--vert-valide); }
+    .pill-planifie { background: var(--gris-planifie); }
+    .pill-amont { background: var(--violet); }
 
-    input[type="text"], input[type="date"], select, textarea {
-      width: 100%;
-      padding: 10px 13px;
-      border: 1px solid var(--border);
-      border-radius: 10px;
-      font-family: inherit;
-      font-size: 0.88rem;
-      background: #FFF;
-      color: var(--ink);
-    }
-
-    input:focus, select:focus, textarea:focus {
-      outline: none;
-      border-color: var(--gold);
-      box-shadow: 0 0 0 3px rgba(200, 155, 84, 0.16);
-    }
-
-    /* Directions Tasks List */
-    .dir-task-row {
+    /* Vue Workflow détaillée d'un projet */
+    .workflow-top {
       display: flex;
       align-items: center;
       justify-content: space-between;
       gap: 12px;
-      padding: 12px 14px;
-      border: 1px solid var(--border);
-      border-radius: 12px;
-      background: var(--surface);
-      margin-bottom: 9px;
-    }
-
-    .dir-task-left {
-      display: flex;
-      align-items: flex-start;
-      gap: 11px;
-      flex: 1;
-    }
-
-    .dir-task-meta {
-      display: flex;
       flex-wrap: wrap;
-      gap: 6px;
-      margin-top: 4px;
-    }
-
-    .icon-btn {
-      background: transparent;
-      border: none;
-      cursor: pointer;
-      color: var(--ink-soft);
-      font-size: 1rem;
-      padding: 4px 6px;
-      border-radius: 6px;
-    }
-    .icon-btn:hover { background: #FDECEC; color: #B43C3C; }
-
-    /* Books Pipeline */
-    .book-card {
-      background: var(--surface);
-      border: 1px solid var(--border);
-      border-radius: var(--radius);
-      padding: 20px;
       margin-bottom: 18px;
-      box-shadow: var(--shadow);
     }
 
-    .book-header {
+    .phase-card {
+      background: #FFFFFF;
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 16px 18px;
+      margin-bottom: 14px;
+    }
+
+    .phase-header {
       display: flex;
-      flex-wrap: wrap;
-      justify-content: space-between;
       align-items: center;
+      justify-content: space-between;
       gap: 10px;
       margin-bottom: 12px;
+      padding-bottom: 8px;
+      border-bottom: 1px solid #EEF2F7;
     }
 
-    .milestones-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(185px, 1fr));
-      gap: 8px;
-      margin-top: 14px;
+    .phase-name {
+      font-weight: 700;
+      font-size: 0.98rem;
+      color: var(--bleu-nuit);
     }
 
-    .milestone-pill {
+    .step-item {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      padding: 9px 10px;
+      border-radius: 8px;
+      background: var(--blanc-bleute);
+      margin-bottom: 7px;
+      flex-wrap: wrap;
+    }
+
+    .step-left {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      flex: 1;
+      min-width: 220px;
+    }
+
+    .step-left input[type="checkbox"] {
+      width: 17px;
+      height: 17px;
+      accent-color: var(--bleu-roi);
+      cursor: pointer;
+    }
+
+    .step-title {
+      font-size: 0.88rem;
+      font-weight: 500;
+      color: var(--bleu-nuit);
+    }
+
+    .step-title.done {
+      text-decoration: line-through;
+      color: var(--text-muted);
+    }
+
+    .step-controls {
       display: flex;
       align-items: center;
       gap: 8px;
-      padding: 9
+      flex-wrap: wrap;
+    }
+
+    .step-select {
+      padding: 4px 8px;
+      border-radius: 6px;
+      border: 1px solid #CBD5E1;
+      font-size: 0.78rem;
+      background: #FFFFFF;
+      color: var(--text-main);
+    }
+
+    .step-note {
+      padding: 4px 8px;
+      border-radius: 6px;
+      border: 1px solid #CBD5E1;
+      font-size: 0.78rem;
+      width: 185px;
+      background: #FFFFFF;
+    }
+
+    /* Modale création projet */
+    .modal-backdrop {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(11, 19, 43, 0.52);
+      z-index: 200;
+      align-items: center;
+      justify-content: center;
+      padding: 16px;
+    }
+
+    .modal-backdrop.open { display: flex; }
+
+    .modal-box {
+      background: #FFFFFF;
+      border-radius: 12px;
+      width: 100%;
+      max-width: 560px;
+      padding: 22px 24px;
+      box-shadow: 0 20px 50px rgba(11, 19, 43, 0.3);
+      border: 1px solid var(--border);
+    }
+
+    .form-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 12px;
+      margin: 14px 0 18px;
+    }
+
+    .field { display: flex; flex-direction: column; gap: 4px; }
+    .field.full { grid-column: 1 / -1; }
+    .field label { font-size: 0.8rem; font-weight: 600; color: var(--text-muted); }
+    .field input, .field select, .field textarea {
+      padding: 8px 10px;
+      border: 1px solid #CBD5E1;
+      border-radius: 7px;
+      font-size: 0.88rem;
+      font-family: inherit;
+    }
+
+    @media (max-width: 900px) {
+      .body-grid { grid-template-columns: 1fr; }
+      .sidebar { flex-direction: row; overflow-x: auto; border-right: none; border-bottom: 1px solid #C8D5E6; padding: 10px; }
+      .nav-item { width: auto; white-space: nowrap; }
+      .kpi-row { grid-template-columns: 1fr; }
+      .form-grid { grid-template-columns: 1fr; }
+      .search-box input { width: 170px; }
+    }
+  </style>
+</head>
+<body>
+
+<div class="app-shell">
+  <!-- Barre du haut sombre façon maquette -->
+  <header class="top-header">
+    <div class="top-auth">
+      <button class="auth-btn" onclick="alert('Espace éditrice — Lune et Papier Éditions')">
+        <span>👤</span><span>Se connecter</span>
+      </button>
+      <span class="mail-icon" title="Notes & retours auteurs" onclick="app.setNav('manuscripts')">✉️</span>
+    </div>
+
+    <div class="brand-mark" onclick="app.setNav('projects')">
+      <span class="brand-name">Lune et Papier<br>Éditions</span>
+      <svg width="38" height="38" viewBox="0 0 40 40" fill="none" aria-hidden="true">
+        <path d="M25.5 7.5A13 13 0 1 0 32.5 29a11 11 0 0 1-7-21.5Z" fill="#F8FAFC"/>
+        <path d="M29 8l1.2 3.3L33.5 12.5l-3.3 1.2L29 17l-1.2-3.3-3.3-1.2 3.3-1.2L29 8Z" fill="#F8FAFC"/>
+        <circle cx="34.5" cy="18.5" r="1.4" fill="#4B9BF5"/>
+        <circle cx="22.5" cy="6" r="1.1" fill="#7B42F6"/>
+      </svg>
+    </div>
+  </header>
+
+  <div class="body-grid">
+    <!-- Menu latéral gauche -->
+    <aside class="sidebar" id="sidebar">
+      <button class="nav-item" data-nav="dashboard" onclick="app.setNav('dashboard')">
+        <svg viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>
+        <span>Tableau de bord</span>
+      </button>
+
+      <button class="nav-item active" data-nav="projects" onclick="app.setNav('projects')">
+        <svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6"/><path d="M8 13h8"/><path d="M8 17h5"/></svg>
+        <span>Projets en cours</span>
+      </button>
+
+      <button class="nav-item" data-nav="editorial" onclick="app.setNav('editorial')">
+        <svg viewBox="0 0 24 24"><rect x="4" y="4" width="16" height="16" rx="2"/><path d="M8 8h8"/><path d="M8 12h8"/></svg>
+        <span>Projets éditoriaux</span>
+      </button>
+
+      <button class="nav-item" data-nav="manuscripts" onclick="app.setNav('manuscripts')">
+        <svg viewBox="0 0 24 24"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+        <span>Manuscrits &amp; Auteurs</span>
+      </button>
+
+      <button class="nav-item" data-nav="production" onclick="app.setNav('production')">
+        <svg viewBox="0 0 24 24"><path d="M21 8l-9-5-9 5 9 5 9-5z"/><path d="M3 8v8l9 5 9-5V8"/><path d="M12 13v8"/></svg>
+        <span>Production &amp; Impression</span>
+      </button>
+
+      <button class="nav-item" data-nav="catalogue" onclick="app.setNav('catalogue')">
+        <svg viewBox="0 0 24 24"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg>
+        <span>Catalogue</span>
+      </button>
+
+      <button class="nav-item" data-nav="distribution" onclick="app.setNav('distribution')">
+        <svg viewBox="0 0 24 24"><polyline points="22 7 13.5 15.5 8.5 10.5 2 17"/><polyline points="16 7 22 7 22 13"/></svg>
+        <span>Ventes &amp; Distribution</span>
+      </button>
+
+      <button class="nav-item" data-nav="accounting" onclick="app.setNav('accounting')">
+        <svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M9 15h6"/><path d="M9 11h6"/></svg>
+        <span>Comptabilité</span>
+      </button>
+
+      <button class="nav-item" data-nav="settings" onclick="app.setNav('settings')">
+        <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 1 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 1 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 1 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 1 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
+        <span>Paramètres</span>
+      </button>
+    </aside>
+
+    <!-- Contenu dynamique -->
+    <main class="content-pane" id="main-content"></main>
+  </div>
+</div>
+
+<!-- Modale Création d'un projet -->
+<div class="modal-backdrop" id="modal-new-project">
+  <div class="modal-box">
+    <div style="display:flex; justify-content:space-between; align-items:center;">
+      <h2 class="serif-title" style="font-size:1.45rem;">Nouveau projet d'album</h2>
+      <button class="btn-secondary" onclick="app.closeModal()">✕</button>
+    </div>
+    <form onsubmit="app.createProject(event)">
+      <div class="form-grid">
+        <div class="field full">
+          <label>Titre du projet (ou idée avant écriture)</label>
+          <input name="title" required placeholder="Ex. Les aventures de Lilou le lapin de Pâques" />
+        </div>
+        <div class="field">
+          <label>Auteur / Auteure</label>
+          <input name="author" required placeholder="Ex. Anne-Sophie Guerout" />
+        </div>
+        <div class="field">
+          <label>Type de projet</label>
+          <select name="type">
+            <option value="Album maison">Album maison</option>
+            <option value="Auteur partenaire">Auteur partenaire</option>
+            <option value="Commande illustration">Commande illustration</option>
+          </select>
+        </div>
+        <div class="field">
+          <label>Phase de départ</label>
+          <select name="startPhase">
+            <option value="0">Phase 0 — Amont &amp; Idée (avant texte)</option>
+            <option value="1">Phase 1 — Écriture &amp; Édition</option>
+            <option value="2">Phase 2 — Storyboard &amp; Cadrage</option>
+            <option value="3">Phase 3 — Illustrations &amp; Maquette</option>
+            <option value="4">Phase 4 — Fabrication, BnF &amp; Dilicom</option>
+          </select>
+        </div>
+        <div class="field">
+          <label>Date limite / Sortie visée</label>
+          <input name="deadline" placeholder="Ex. 15 Mars 2027" />
+        </div>
+        <div class="field">
+          <label>Technique graphique</label>
+          <select name="technique">
+            <option value="Aquarelle">Aquarelle</option>
+            <option value="Numérique">Numérique</option>
+            <option value="Peinture">Peinture</option>
+            <option value="Crayon aquarellable">Crayon aquarellable</option>
+          </select>
+        </div>
+        <div class="field">
+          <label>Statut initial</label>
+          <select name="status">
+            <option value="En cours">En cours</option>
+            <option value="En attente">En attente</option>
+            <option value="Planifié">Planifié</option>
+            <option value="Idée / Amont">Idée / Amont</option>
+          </select>
+        </div>
+      </div>
+      <div style="display:flex; justify-content:flex-end; gap:10px;">
+        <button type="button" class="btn-secondary" onclick="app.closeModal()">Annuler</button>
+        <button type="submit" class="btn-new">Créer le workflow</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<script>
+(function() {
+  const STORAGE_KEY = 'lune_papier_workflow_v1';
+
+  const PHASES_TEMPLATE = [
+    {
+      num: 0,
+      title: 'Phase 0 — Amont & Idéation (avant écriture du texte)',
+      steps: [
+        'Émergence de l’idée, thème & intention jeunesse',
+        'Alignement ligne éditoriale (vocabulaire riche, lecture à voix haute, potentiel visuel)',
+        'Recherche de texte / échange concept auteur ou ébauche personnelle'
+      ]
+    },
+    {
+      num: 1,
+      title: 'Phase 1 — Écriture, Édition & Préparation du Texte',
+      steps: [
+        'Rédaction / réception du manuscrit (V1) & lecture à voix haute',
+        'Note éditoriale (structure, rythme, personnages, vocabulaire)',
+        'Réécriture & validation du texte (V2 / V3)',
+        'Préparation de copie, relecture ortho-typographique & verrouillage du texte'
+      ]
+    },
+    {
+      num: 2,
+      title: 'Phase 2 — Cadrage Artistique, Storyboard & Contrats',
+      steps: [
+        'Brief créatif & moodboard (palette & ambiance)',
+        'Storyboard double-page par double-page (rythme & page-turn)',
+        'Devis & signature des contrats (illustration / partenariat auteur)',
+        'Character design (personnages, expressions & postures)'
+      ]
+    },
+    {
+      num: 3,
+      title: 'Phase 3 — Création des Illustrations & Maquettage',
+      steps: [
+        'Crayonnés des planches & de la couverture',
+        'Mise en couleur (aquarelle, numérique, peinture ou crayon aquarellable)',
+        'Maquette intérieure, typographie & couverture complète (1re, dos, 4e)',
+        'Pré-presse & export des fichiers HD (300 DPI, CMJN, fonds perdus)'
+      ]
+    },
+    {
+      num: 4,
+      title: 'Phase 4 — Fabrication, Dépôt Légal & Dilicom / Electre',
+      steps: [
+        'Attribution ISBN (segment AFNIL), code-barres EAN-13 & ours légal (Loi 1949 / Loi Lang)',
+        'Paramétrage imprimeur / BoD & validation du BAT physique',
+        'Dépôt légal BnF (déclaration & envoi exemplaire)',
+        'Fiche Electre & vérification disponibilité commande sur Dilicom'
+      ]
+    },
+    {
+      num: 5,
+      title: 'Phase 5 — Lancement, Diffusion & Commercialisation',
+      steps: [
+        'Fiche produit boutique, fiche argumentaire libraire & Cover Reveal',
+        'Précommandes & envoi des Services de Presse (SP)',
+        'Ventes directes, salons, librairies indépendantes & Cultura/Fnac'
+      ]
+    }
+  ];
+
+  function buildSteps(completedCount) {
+    const all = [];
+    PHASES_TEMPLATE.forEach(ph => {
+      ph.steps.forEach((label, idx) => {
+        const globalIdx = all.length;
+        const isDone = globalIdx < completedCount;
+        all.push({
+          id: 'st_' + ph.num + '_' + idx + '_' + Math.random().toString(36).slice(2, 6),
+          phaseNum: ph.num,
+          phaseTitle: ph.title,
+          label,
+          state: isDone ? 'Terminé' : (globalIdx === completedCount ? 'En cours' : 'À venir'),
+          note: ''
+        });
+      });
+    });
+    return all;
+  }
+
+  function defaultData() {
+    return {
+      nav: 'projects',
+      search: '',
+      selectedProjectId: null,
+      projects: [
+        {
+          id: 'p_lilou',
+          title: 'Les aventures de Lilou le lapin de Pâques',
+          author: 'Anne-Sophie Guerout',
+          type: 'Album maison',
+          phaseLabel: 'Maquette',
+          deadline: '15 Mars 2027',
+          technique: 'Aquarelle',
+          status: 'En cours',
+          steps: buildSteps(14)
+        },
+        {
+          id: 'p_murphy',
+          title: 'Murphy & Aglaé : Soif de héros',
+          author: 'Paméla Ivanes',
+          type: 'Auteur partenaire',
+          phaseLabel: 'Storyboard',
+          deadline: '20 Avr 2027',
+          technique: 'Numérique',
+          status: 'En attente',
+          steps: buildSteps(9)
+        },
+        {
+          id: 'p_noel',
+          title: 'Une maison pour Noël',
+          author: 'Anne-Sophie Guerout',
+          type: 'Album maison',
+          phaseLabel: 'Correction',
+          deadline: '15 Oct 2027',
+          technique: 'Aquarelle',
+          status: 'BAT Validé',
+          steps: buildSteps(19)
+        },
+        {
+          id: 'p_foret',
+          title: 'Le secret des feuilles d’automne',
+          author: 'À définir',
+          type: 'Album maison',
+          phaseLabel: 'Idée / Amont',
+          deadline: '01 Sept 2027',
+          technique: 'Aquarelle',
+          status: 'Planifié',
+          steps: buildSteps(1)
+        }
+      ]
+    };
+  }
+
+  function loadData() {
+    try {
+      const raw = localStorage.getItem(STORAGE_KEY);
+      if (!raw) return defaultData();
+      return { ...defaultData(), ...JSON.parse(raw) };
+    } catch {
+      return defaultData();
+    }
+  }
+
+  let db = loadData();
+
+  function save() {
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(db));
+  }
+
+  function esc(str) {
+    return String(str == null ? '' : str)
+      .replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
+      .replace(/"/g, '&quot;');
+  }
+
+  function calcProgress(project) {
+    if (!project.steps || !project.steps.length) return 0;
+    const done = project.steps.filter(s => s.state === 'Terminé').length;
+    return Math.round((done / project.steps.length) * 100);
+  }
+
+  function statusPill(status) {
+    const map = {
+      'En cours': 'pill-encours',
+      'En attente': 'pill-attente',
+      'BAT Validé': 'pill-valide',
+      'Terminé': 'pill-valide',
+      'Planifié': 'pill-planifie',
+      'Idée / Amont': 'pill-amont'
+    };
+    const cls = map[status] || 'pill-encours';
+    return `<span class="pill ${cls}">${esc(status)}</span>`;
+  }
+
+  function renderProjectsDashboard() {
+    const q = (db.search || '').toLowerCase().trim();
+    const filtered = db.projects.filter(p =>
+      !q ||
+      p.title.toLowerCase().includes(q) ||
+      p.author.toLowerCase().includes(q) ||
+      p.phaseLabel.toLowerCase().includes(q) ||
+      p.status.toLowerCase().includes(q)
+    );
+
+    const activeCount = db.projects.length;
+    const editionCount = db.projects.filter(p => calcProgress(p) < 60).length;
+    const fabCount = db.projects.filter(p => calcProgress(p) >= 60).length;
+
+    return `
+      <div class="section-head">
+        <h1 class="serif-title">Projets en cours</h1>
+        <div class="head-controls">
+          <div class="search-box">
+            <span class="search-icon">🔍</span>
+            <input type="text" placeholder="Rechercher un projet..." value="${esc(db.search)}" oninput="app.onSearch(this.value)" />
+          </div>
+          <button class="btn-new" onclick="app.openModal()">+ Nouveau Projet</button>
+        </div>
+      </div>
+
+      <div class="kpi-row">
+        <div class="kpi-box k-amber">
+          <div class="kpi-top">
+            <span>Projets actifs</span>
+            <span class="dots"><span class="dot"></span><span class="dot"></span></span>
+          </div>
+          <div class="kpi-number">${activeCount}</div>
+          <div class="kpi-bar-track">
+            <div class="kpi-bar-fill" style="width:68%; background:var(--ambre-attente);"></div>
+          </div>
+        </div>
+
+        <div class="kpi-box k-violet">
+          <div class="kpi-top">
+            <span>En phase d’édition</span>
+            <span class="dots"><span class="dot"></span><span class="dot"></span><span class="dot"></span></span>
+          </div>
+          <div class="kpi-number">${editionCount}</div>
+          <div class="kpi-bar-track">
+            <div class="kpi-bar-fill" style="width:52%; background:var(--violet);"></div>
+          </div>
+        </div>
+
+        <div class="kpi-box k-blue">
+          <div class="kpi-top">
+            <span>En fabrication &amp; suite</span>
+            <span class="dots"><span class="dot"></span><span class="dot"></span><span class="dot"></span></span>
+          </div>
+          <div class="kpi-number">${fabCount}</div>
+          <div class="kpi-bar-track">
+            <div class="kpi-bar-fill" style="width:45%; background:var(--bleu-roi);"></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="panel-card">
+        <div class="panel-title">
+          <span>Suivi des projets</span>
+          <span style="font-size:0.8rem; color:var(--text-muted); font-weight:400;">Cliquez sur un projet pour ouvrir son workflow complet (de la Phase 0 amont à Dilicom/Electre)</span>
+        </div>
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th>TITRE</th>
+                <th>AUTEUR</th>
+                <th>PHASE</th>
+                <th>DATE LIMITE</th>
+                <th>PROGRESSION</th>
+                <th>STATUT</th>
+              </tr>
+            </thead>
+            <tbody>
+              ${filtered.map(p => {
+                const pct = calcProgress(p);
+                return `
+                  <tr class="project-row" onclick="app.openWorkflow('${p.id}')">
+                    <td><strong>${esc(p.title)}</strong></td>
+                    <td>${esc(p.author)}</td>
+                    <td>${esc(p.phaseLabel)}</td>
+                    <td>${esc(p.deadline || '—')}</td>
+                    <td>
+                      <div class="prog-cell">
+                        <div class="mini-track"><div class="mini-fill" style="width:${pct}%;"></div></div>
+                        <span>${pct}%</span>
+                      </div>
+                    </td>
+                    <td>${statusPill(p.status)}</td>
+                  </tr>
+                `;
+              }).join('')}
+              ${!filtered.length ? `<tr><td colspan="6" style="text-align:center; color:var(--text-muted); padding:24px;">Aucun projet ne correspond à votre recherche.</td></tr>` : ''}
+            </tbody>
+          </table>
+        </div>
+      </div>
+    `;
+  }
+
+  function renderWorkflowView() {
+    const project = db.projects.find(p => p.id === db.selectedProjectId) || db.projects[0];
+    if (!project) return renderProjectsDashboard();
+
+    const pct = calcProgress(project);
+
+    return `
+      <div class="workflow-top">
+        <div style="display:flex; align-items:center; gap:12px; flex-wrap:wrap;">
+          <button class="btn-secondary" onclick="app.backToProjects()">← Retour aux projets</button>
+          <div>
+            <h1 class="serif-title" style="font-size:1.65rem;">${esc(project.title)}</h1>
+            <div style="font-size:0.84rem; color:var(--text-muted);">
+              ${esc(project.author)} • ${esc(project.type)} • Technique : ${esc(project.technique)} • Échéance : ${esc(project.deadline || 'À définir')}
+            </div>
+          </div>
+        </div>
+        <div style="display:flex; align-items:center; gap:10px; flex-wrap:wrap;">
+          <select class="step-select" style="padding:7px 10px; font-weight:600;" onchange="app.changeProjectStatus('${project.id}', this.value)">
+            ${['Idée / Amont','Planifié','En cours','En attente','BAT Validé','Terminé'].map(st =>
+              `<option value="${st}" ${project.status === st ? 'selected' : ''}>Statut : ${st}</option>`
+            ).join('')}
+          </select>
+          <span class="pill pill-encours" style="background:var(--bleu-roi); font-size:0.86rem;">${pct}% complété</span>
+        </div>
+      </div>
+
+      <div class="panel-card" style="padding:14px 18px; margin-bottom:16px;">
+        <div style="display:flex; justify-content:space-between; font-size:0.84rem; margin-bottom:6px;">
+          <span><strong>Avancement global du workflow (Phase 0 amont → Lancement)</strong></span>
+          <span>${project.steps.filter(s => s.state === 'Terminé').length} / ${project.steps.length} étapes terminées</span>
+        </div>
+        <div class="kpi-bar-track" style="height:8px;">
+          <div class="kpi-bar-fill" style="width:${pct}%; background:linear-gradient(90deg, var(--violet), var(--bleu-roi));"></div>
+        </div>
+      </div>
+
+      ${PHASES_TEMPLATE.map(ph => {
+        const steps = project.steps.filter(s => s.phaseNum === ph.num);
+        const phDone = steps.filter(s => s.state === 'Terminé').length;
+        return `
+          <div class="phase-card">
+            <div class="phase-header">
+              <span class="phase-name">${esc(ph.title)}</span>
+              <span style="font-size:0.8rem; font-weight:600; color:var(--bleu-cobalt);">${phDone}/${steps.length} validées</span>
+            </div>
+            ${steps.map(st => {
+              const isDone = st.state === 'Terminé';
+              return `
+                <div class="step-item">
+                  <div class="step-left">
+                    <input type="checkbox" ${isDone ? 'checked' : ''} onchange="app.toggleStep('${project.id}', '${st.id}')" />
+                    <span class="step-title ${isDone ? 'done' : ''}">${esc(st.label)}</span>
+                  </div>
+                  <div class="step-controls">
+                    <select class="step-select" onchange="app.setStepState('${project.id}', '${st.id}', this.value)">
+                      ${['À venir','En cours','En attente de validation','Terminé','Bloqué'].map(opt =>
+                        `<option value="${opt}" ${st.state === opt ? 'selected' : ''}>${opt}</option>`
+                      ).join('')}
+                    </select>
+                    <input class="step-note" type="text" placeholder="Note / date..." value="${esc(st.note)}" onchange="app.setStepNote('${project.id}', '${st.id}', this.value)" />
+                  </div>
+                </div>
+              `;
+            }).join('')}
+          </div>
+        `;
+      }).join('')}
+    `;
+  }
+
+  function renderSecondarySection() {
+    const labels = {
+      dashboard: 'Tableau de bord',
+      editorial: 'Projets éditoriaux',
+      manuscripts: 'Manuscrits & Auteurs',
+      production: 'Production & Impression (BnF / Dilicom / Electre)',
+      catalogue: 'Catalogue Lune & Papier',
+      distribution: 'Ventes & Distribution',
+      accounting: 'Comptabilité (BIC / BNC)',
+      settings: 'Paramètres'
+    };
+    const title = labels[db.nav] || 'Espace Éditorial';
+
+    return `
+      <div class="section-head">
+        <h1 class="serif-title">${esc(title)}</h1>
+        <button class="btn-secondary" onclick="app.setNav('projects')">← Voir Projets en cours</button>
+      </div>
+      <div class="panel-card">
+        <div class="panel-title">Accès rapide aux projets liés</div>
+        <p style="font-size:0.9rem; color:var(--text-muted); margin-bottom:14px;">
+          Retrouvez l’ensemble de vos albums actifs et cliquez sur n’importe lequel pour piloter ses étapes éditoriales, artistiques, BnF et Dilicom/Electre.
+        </p>
+        <div style="display:flex; gap:10px; flex-wrap:wrap;">
+          ${db.projects.map(p => `
+            <button class="btn-secondary" onclick="app.openWorkflow('${p.id}')">
+              ${esc(p.title)} (${calcProgress(p)}%)
+            </button>
+          `).join('')}
+        </div>
+      </div>
+    `;
+  }
+
+  function render() {
+    document.querySelectorAll('.nav-item').forEach(btn => {
+      btn.classList.toggle('active', btn.dataset.nav === db.nav);
+    });
+    const main = document.getElementById('main-content');
+    if (db.nav === 'workflow') {
+      main.innerHTML = renderWorkflowView();
+    } else if (db.nav === 'projects') {
+      main.innerHTML = renderProjectsDashboard();
+    } else {
+      main.innerHTML = renderSecondarySection();
+    }
+  }
+
+  window.app = {
+    setNav(nav) {
+      db.nav = nav;
+      save();
+      render();
+    },
+    onSearch(val) {
+      db.search = val;
+      save();
+      render();
+    },
+    openModal() {
+      document.getElementById('modal-new-project').classList.add('open');
+    },
+    closeModal() {
+      document.getElementById('modal-new-project').classList.remove('open');
+    },
+    createProject(e) {
+      e.preventDefault();
+      const fd = new FormData(e.target);
+      const startPhase = parseInt(fd.get('startPhase') || '0', 10);
+      const steps = buildSteps(0);
+      // Marque les phases antérieures à startPhase comme terminées si démarré plus loin
+      steps.forEach(s => {
+        if (s.phaseNum < startPhase) s.state = 'Terminé';
+      });
+      const firstActive = steps.find(s => s.state !== 'Terminé');
+      if (firstActive) firstActive.state = 'En cours';
+
+      const phaseNames = ['Idée / Amont', 'Édition', 'Storyboard', 'Maquette', 'BnF / Dilicom', 'Lancement'];
+      const newProj = {
+        id: 'p_' + Date.now(),
+        title: (fd.get('title') || '').trim(),
+        author: (fd.get('author') || '').trim() || 'À définir',
+        type: fd.get('type'),
+        phaseLabel: phaseNames[startPhase] || 'Idée / Amont',
+        deadline: (fd.get('deadline') || '').trim(),
+        technique: fd.get('technique'),
+        status: fd.get('status'),
+        steps
+      };
+      db.projects.unshift(newProj);
+      db.selectedProjectId = newProj.id;
+      db.nav = 'workflow';
+      save();
+      e.target.reset();
+      this.closeModal();
+      render();
+    },
+    openWorkflow(id) {
+      db.selectedProjectId = id;
+      db.nav = 'workflow';
+      save();
+      render();
+    },
+    backToProjects() {
+      db.nav = 'projects';
+      save();
+      render();
+    },
+    changeProjectStatus(id, status) {
+      const p = db.projects.find(x => x.id === id);
+      if (p) { p.status = status; save(); render(); }
+    },
+    toggleStep(projId, stepId) {
+      const p = db.projects.find(x => x.id === projId);
+      const s = p && p.steps.find(x => x.id === stepId);
+      if (!s) return;
+      s.state = (s.state === 'Terminé') ? 'À venir' : 'Terminé';
+      save();
+      render();
+    },
+    setStepState(projId, stepId, stateVal) {
+      const p = db.projects.find(x => x.id === projId);
+      const s = p && p.steps.find(x => x.id === stepId);
+      if (s) { s.state = stateVal; save(); render(); }
+    },
+    setStepNote(projId, stepId, noteVal) {
+      const p = db.projects.find(x => x.id === projId);
+      const s = p && p.steps.find(x => x.id === stepId);
+      if (s) { s.note = noteVal; save(); }
+    }
+  };
+
+  render();
+})();
+</script>
+</body>
+</html>
