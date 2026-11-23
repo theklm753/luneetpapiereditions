@@ -3,2550 +3,1296 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Lune et Papier Éditions — Suivi des Projets Albums</title>
-  <script src="https://cdn.tailwindcss.com"></script>
+  <title>Studio Gestion Instagram — Calendrier, Posts & Médiathèque</title>
   <style>
-    @import url('https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600&family=Inter:wght@400;500;600;700&display=swap');
-
     :root {
-      /* Palette issue de la charte visuelle fournie */
-      --bleu-nuit: #0B132B;
-      --bleu-roi: #1D4ED8;
-      --bleu-cobalt: #0047AB;
-      --bleu-azur: #2589F5;
-      --bleu-azur-clair: #4B9BF5;
-      --violet: #7B42F6;
-      --violet-vibrant: #7F00FF;
-      --blanc-bleute: #F4F7FB;
-      --fond-cadre: #ECEFF4;
-      --sidebar-bg: #DCE6F2;
-      --sidebar-active: #F7F5EE;
-      --card-bg: #FFFFFF;
-      --border: #E2E8F0;
-      --text-main: #0F172A;
-      --text-muted: #5A677D;
-      --vert-valide: #4E8D5E;
-      --ambre-attente: #D9822B;
-      --bleu-encours: #2B6CB0;
-      --gris-planifie: #64748B;
+      --bg: #f6f7fb;
+      --surface: #ffffff;
+      --surface-alt: #f0f2f8;
+      --text: #181a20;
+      --muted: #656b7b;
+      --primary: #5b4ce6;
+      --primary-hover: #4839d4;
+      --primary-soft: #eeecfd;
+      --accent-ig: linear-gradient(45deg, #f09433 0%, #e6683c 25%, #dc2743 50%, #cc2366 75%, #bc1888 100%);
+      --border: #e3e6ef;
+      --success: #168a54;
+      --success-bg: #e7f7ef;
+      --warn: #b4690e;
+      --warn-bg: #fff5e5;
+      --info: #1d5fd6;
+      --info-bg: #e8f0fe;
+      --radius: 12px;
+      --shadow: 0 4px 18px rgba(24, 26, 32, 0.05);
     }
 
-    * { box-sizing: border-box; margin: 0; padding: 0; }
+    * {
+      box-sizing: border-box;
+    }
 
-    html, body {
-      width: 100%;
-      min-height: 100vh;
+    body {
       margin: 0;
-      padding: 0;
-      font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-      background: var(--blanc-bleute);
-      color: var(--text-main);
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Inter, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.45;
     }
 
-    .font-editorial {
-      font-family: 'Fraunces', Georgia, serif;
+    header {
+      background: var(--surface);
+      border-bottom: 1px solid var(--border);
+      position: sticky;
+      top: 0;
+      z-index: 20;
     }
 
-    /* Plein écran sans cadre centré */
-    .app-shell {
-      width: 100%;
-      min-height: 100vh;
-      margin: 0;
-      background: var(--blanc-bleute);
-      border-radius: 0;
-      box-shadow: none;
-      overflow-x: hidden;
-      border: none;
+    .header-inner {
+      max-width: 1380px;
+      margin: 0 auto;
+      padding: 14px 24px;
       display: flex;
-      flex-direction: column;
-    }
-
-    /* Bandeau supérieur bleu plein écran */
-    .top-header {
-      width: 100%;
-      background: linear-gradient(90deg, var(--bleu-cobalt) 0%, var(--bleu-roi) 52%, var(--bleu-azur) 100%);
-      color: #FFFFFF;
-      padding: 12px 28px;
-      display: flex;
+      flex-wrap: wrap;
       align-items: center;
       justify-content: space-between;
       gap: 16px;
-      flex-wrap: wrap;
-      box-shadow: 0 2px 10px rgba(0, 71, 171, 0.22);
     }
 
-    .top-auth {
+    .brand {
       display: flex;
       align-items: center;
-      gap: 14px;
+      gap: 12px;
     }
 
-    .auth-btn {
-      background: rgba(255, 255, 255, 0.14);
-      color: #FFFFFF;
-      border: 1px solid rgba(255, 255, 255, 0.45);
-      border-radius: 6px;
-      padding: 6px 14px;
-      font-size: 0.85rem;
-      font-weight: 500;
-      cursor: pointer;
-      display: inline-flex;
-      align-items: center;
+    .brand-badge {
+      width: 38px;
+      height: 38px;
+      border-radius: 11px;
+      background: var(--accent-ig);
+      display: grid;
+      place-items: center;
+      color: #fff;
+      font-weight: 700;
+      font-size: 18px;
+    }
+
+    .brand h1 {
+      margin: 0;
+      font-size: 18px;
+      font-weight: 700;
+    }
+
+    .brand p {
+      margin: 0;
+      font-size: 12px;
+      color: var(--muted);
+    }
+
+    nav.tabs {
+      display: flex;
       gap: 8px;
-    }
-
-    .auth-btn:hover {
-      border-color: #FFFFFF;
-      background: rgba(255, 255, 255, 0.24);
-    }
-
-    .mail-icon {
-      color: #FFFFFF;
-      font-size: 1.05rem;
-      cursor: pointer;
-      opacity: 0.95;
-    }
-
-    .brand-mark {
-      display: flex;
-      align-items: center;
-      gap: 12px;
-      cursor: pointer;
-    }
-
-    .brand-name {
-      font-family: Georgia, "Times New Roman", serif;
-      font-size: 1.15rem;
-      line-height: 1.15;
-      color: #FFFFFF;
-      font-weight: 500;
-    }
-
-    /* Corps : Sidebar + Zone centrale pleine hauteur */
-    .body-grid {
-      flex: 1;
-      width: 100%;
-      display: grid;
-      grid-template-columns: 245px minmax(0, 1fr);
-      min-height: calc(100vh - 64px);
-    }
-
-    .sidebar {
-      background: var(--sidebar-bg);
-      padding: 18px 10px 24px;
-      border-right: 1px solid #C8D5E6;
-      display: flex;
-      flex-direction: column;
-      gap: 4px;
-    }
-
-    .nav-item {
-      width: 100%;
-      border: none;
-      background: transparent;
-      color: var(--text-main);
-      padding: 10px 14px;
-      border-radius: 8px;
-      display: flex;
-      align-items: center;
-      gap: 11px;
-      font-size: 0.92rem;
-      font-weight: 500;
-      text-align: left;
-      cursor: pointer;
-      transition: background 0.15s, color 0.15s;
-    }
-
-    .nav-item svg {
-      width: 18px;
-      height: 18px;
-      flex-shrink: 0;
-      stroke: #334155;
-      fill: none;
-      stroke-width: 1.7;
-    }
-
-    .nav-item:hover {
-      background: rgba(255, 255, 255, 0.45);
-    }
-
-    .nav-item.active {
-      background: var(--sidebar-active);
-      color: var(--bleu-nuit);
-      font-weight: 600;
-      box-shadow: 0 1px 3px rgba(11, 19, 43, 0.06);
-    }
-
-    .nav-item.active svg {
-      stroke: var(--bleu-roi);
-    }
-
-    .content-pane {
-      width: 100%;
-      padding: 24px 32px 40px;
-      background: var(--blanc-bleute);
-    }
-
-    /* En-tête de section : Titre serif + Recherche + Bouton + Nouveau Projet */
-    .section-head {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 16px;
-      margin-bottom: 20px;
       flex-wrap: wrap;
     }
 
-    .serif-title {
-      font-family: Georgia, "Times New Roman", serif;
-      font-size: 2.05rem;
-      font-weight: 500;
-      color: var(--bleu-nuit);
-      letter-spacing: -0.01em;
+    .tab-btn {
+      border: 1px solid var(--border);
+      background: var(--surface);
+      color: var(--text);
+      padding: 9px 15px;
+      border-radius: 999px;
+      font-size: 13px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.15s ease;
     }
 
-    .head-controls {
+    .tab-btn:hover {
+      background: var(--surface-alt);
+    }
+
+    .tab-btn.active {
+      background: var(--primary);
+      border-color: var(--primary);
+      color: #fff;
+    }
+
+    .header-actions {
       display: flex;
-      align-items: center;
-      gap: 12px;
+      gap: 8px;
       flex-wrap: wrap;
     }
 
-    .search-box {
-      position: relative;
-      display: flex;
-      align-items: center;
+    main {
+      max-width: 1380px;
+      margin: 0 auto;
+      padding: 24px;
     }
 
-    .search-box input {
-      background: #FFFFFF;
-      border: 1px solid #CBD5E1;
-      border-radius: 8px;
-      padding: 8px 12px 8px 34px;
-      font-size: 0.88rem;
-      color: var(--text-main);
-      width: 225px;
-      outline: none;
+    .section {
+      display: none;
     }
 
-    .search-box input:focus {
-      border-color: var(--bleu-roi);
+    .section.active {
+      display: block;
     }
 
-    .search-icon {
-      position: absolute;
-      left: 11px;
-      color: #64748B;
-      font-size: 0.9rem;
-      pointer-events: none;
-    }
-
-    .btn-new {
-      background: linear-gradient(180deg, #2B7AE8 0%, var(--bleu-cobalt) 100%);
-      color: #FFFFFF;
-      border: none;
-      border-radius: 8px;
-      padding: 9px 16px;
-      font-size: 0.88rem;
-      font-weight: 600;
-      cursor: pointer;
-      display: inline-flex;
-      align-items: center;
-      gap: 6px;
-      box-shadow: 0 2px 6px rgba(0, 71, 171, 0.25);
-    }
-
-    .btn-new:hover {
-      background: linear-gradient(180deg, var(--bleu-roi) 0%, #09327A 100%);
-    }
-
-    .btn-secondary {
-      background: #FFFFFF;
-      color: var(--bleu-nuit);
-      border: 1px solid #CBD5E1;
-      border-radius: 8px;
-      padding: 8px 13px;
-      font-size: 0.85rem;
-      font-weight: 600;
-      cursor: pointer;
-    }
-
-    .btn-secondary:hover {
-      border-color: var(--bleu-roi);
-      color: var(--bleu-roi);
-    }
-
-    /* 3 Cartes KPI avec bordure gauche épaisse et points en haut à droite */
-    .kpi-row {
+    .kpis {
       display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      gap: 16px;
+      grid-template-columns: repeat(auto-fit, minmax(190px, 1fr));
+      gap: 14px;
       margin-bottom: 22px;
     }
 
-    .kpi-box {
-      background: var(--card-bg);
-      border-radius: 10px;
-      padding: 14px 18px;
+    .kpi {
+      background: var(--surface);
       border: 1px solid var(--border);
-      border-left-width: 5px;
-      box-shadow: 0 2px 6px rgba(11, 19, 43, 0.04);
+      border-radius: var(--radius);
+      padding: 16px;
+      box-shadow: var(--shadow);
     }
 
-    .kpi-box.k-amber { border-left-color: var(--ambre-attente); }
-    .kpi-box.k-violet { border-left-color: var(--violet); }
-    .kpi-box.k-blue { border-left-color: var(--bleu-roi); }
-
-    .kpi-top {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      font-size: 0.88rem;
-      color: var(--text-muted);
-      font-weight: 500;
-    }
-
-    .dots {
-      display: inline-flex;
-      gap: 4px;
-      align-items: center;
-    }
-
-    .dot {
-      width: 6px;
-      height: 6px;
-      border-radius: 50%;
-      background: #CBD5E1;
-    }
-
-    .kpi-box.k-amber .dot:first-child { background: var(--ambre-attente); }
-    .kpi-box.k-violet .dot:first-child { background: var(--violet); }
-    .kpi-box.k-violet .dot:nth-child(2) { background: var(--bleu-azur); }
-    .kpi-box.k-blue .dot:first-child { background: var(--bleu-nuit); }
-    .kpi-box.k-blue .dot:nth-child(2) { background: var(--bleu-roi); }
-
-    .kpi-number {
-      font-size: 2rem;
-      font-weight: 700;
-      color: var(--bleu-nuit);
-      margin: 4px 0 8px;
-      line-height: 1.1;
-    }
-
-    .kpi-bar-track {
-      height: 5px;
-      background: #E2E8F0;
-      border-radius: 99px;
-      overflow: hidden;
-      width: 100%;
-    }
-
-    .kpi-bar-fill {
-      height: 100%;
-      border-radius: 99px;
-    }
-
-    /* Carte tableau Suivi des projets */
-    .panel-card {
-      background: var(--card-bg);
-      border: 1px solid var(--border);
-      border-radius: 12px;
-      padding: 18px 20px;
-      box-shadow: 0 2px 8px rgba(11, 19, 43, 0.04);
-      margin-bottom: 18px;
-    }
-
-    .panel-title {
-      font-size: 1.05rem;
+    .kpi .label {
+      font-size: 12px;
+      color: var(--muted);
       font-weight: 600;
-      color: var(--bleu-nuit);
-      margin-bottom: 14px;
+    }
+
+    .kpi .value {
+      font-size: 24px;
+      font-weight: 700;
+      margin-top: 4px;
+    }
+
+    .toolbar {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 14px 16px;
       display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 10px;
       flex-wrap: wrap;
-    }
-
-    .table-wrap {
-      overflow-x: auto;
-    }
-
-    table {
-      width: 100%;
-      border-collapse: collapse;
-      font-size: 0.9rem;
-    }
-
-    th {
-      text-align: left;
-      font-size: 0.73rem;
-      text-transform: uppercase;
-      letter-spacing: 0.04em;
-      color: var(--text-muted);
-      font-weight: 700;
-      padding: 10px 12px;
-      border-bottom: 1px solid var(--border);
-    }
-
-    td {
-      padding: 13px 12px;
-      border-bottom: 1px solid #EEF2F7;
-      vertical-align: middle;
-    }
-
-    tbody tr.project-row {
-      cursor: pointer;
-      transition: background 0.14s;
-    }
-
-    tbody tr.project-row:hover {
-      background: #F0F6FF;
-    }
-
-    .prog-cell {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      min-width: 135px;
-    }
-
-    .mini-track {
-      width: 72px;
-      height: 5px;
-      background: #E2E8F0;
-      border-radius: 99px;
-      overflow: hidden;
-      flex-shrink: 0;
-    }
-
-    .mini-fill {
-      height: 100%;
-      background: var(--bleu-roi);
-      border-radius: 99px;
-    }
-
-    .pill {
-      display: inline-block;
-      padding: 4px 12px;
-      border-radius: 999px;
-      font-size: 0.78rem;
-      font-weight: 600;
-      color: #FFFFFF;
-      white-space: nowrap;
-    }
-
-    .pill-encours { background: var(--bleu-encours); }
-    .pill-attente { background: var(--ambre-attente); }
-    .pill-valide  { background: var(--vert-valide); }
-    .pill-planifie { background: var(--gris-planifie); }
-    .pill-amont { background: var(--violet); }
-
-    /* Vue Workflow détaillée d'un projet */
-    .workflow-top {
-      display: flex;
       align-items: center;
       justify-content: space-between;
       gap: 12px;
+      margin-bottom: 18px;
+      box-shadow: var(--shadow);
+    }
+
+    .filters {
+      display: flex;
       flex-wrap: wrap;
-      margin-bottom: 18px;
-    }
-
-    /* Bandeau horizontal des étapes du workflow (style capture) */
-    .workflow-stepper {
-      display: grid;
-      grid-template-columns: repeat(7, minmax(0, 1fr));
       gap: 10px;
-      margin-bottom: 18px;
+      align-items: center;
     }
 
-    .wf-step-card {
-      background: #EEF3FA;
-      color: var(--bleu-cobalt);
-      border: 1px solid #D5E2F5;
-      border-radius: 14px;
-      padding: 14px 10px;
-      min-height: 92px;
+    select, input[type="text"], input[type="date"], input[type="time"], textarea {
+      font-family: inherit;
+      font-size: 13px;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 8px 11px;
+      background: #fff;
+      color: var(--text);
+    }
+
+    textarea {
+      width: 100%;
+      min-height: 130px;
+      resize: vertical;
+    }
+
+    select:focus, input:focus, textarea:focus {
+      outline: 2px solid var(--primary-soft);
+      border-color: var(--primary);
+    }
+
+    button {
+      font-family: inherit;
+      font-size: 13px;
+      font-weight: 600;
+      border-radius: 8px;
+      border: 1px solid var(--border);
+      background: var(--surface);
+      color: var(--text);
+      padding: 8px 13px;
+      cursor: pointer;
+      transition: all 0.15s ease;
+    }
+
+    button:hover {
+      background: var(--surface-alt);
+    }
+
+    button.primary {
+      background: var(--primary);
+      border-color: var(--primary);
+      color: #fff;
+    }
+
+    button.primary:hover {
+      background: var(--primary-hover);
+    }
+
+    button.danger {
+      color: #b42318;
+      border-color: #fecdca;
+      background: #fef3f2;
+    }
+
+    button.sm {
+      padding: 5px 9px;
+      font-size: 12px;
+    }
+
+    .posts-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(310px, 1fr));
+      gap: 16px;
+    }
+
+    .post-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      overflow: hidden;
+      box-shadow: var(--shadow);
+      display: flex;
+      flex-direction: column;
+    }
+
+    .post-thumb {
+      height: 185px;
+      background: var(--surface-alt);
       display: flex;
       align-items: center;
       justify-content: center;
-      text-align: center;
-      font-size: 0.82rem;
-      font-weight: 700;
-      line-height: 1.25;
-      cursor: pointer;
-      transition: transform 0.14s ease, box-shadow 0.14s ease, background 0.14s ease;
+      color: var(--muted);
+      font-size: 13px;
+      position: relative;
+      overflow: hidden;
     }
 
-    .wf-step-card:hover {
-      transform: translateY(-2px);
-      box-shadow: 0 6px 14px rgba(37, 137, 245, 0.16);
+    .post-thumb img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
     }
 
-    .wf-step-card.active-stage {
-      background: linear-gradient(180deg, #3B8AF7 0%, #2575EB 100%);
-      color: #FFFFFF;
-      border-color: #2575EB;
-      box-shadow: 0 6px 16px rgba(37, 117, 235, 0.28);
+    .format-pill {
+      position: absolute;
+      top: 10px;
+      left: 10px;
+      background: rgba(24, 26, 32, 0.78);
+      color: #fff;
+      font-size: 11px;
+      font-weight: 600;
+      padding: 3px 9px;
+      border-radius: 999px;
     }
 
-    .phase-card {
-      background: #FFFFFF;
-      border: 1px solid var(--border);
-      border-radius: 10px;
-      padding: 16px 18px;
-      margin-bottom: 14px;
-    }
-
-    .phase-header {
+    .post-body {
+      padding: 15px;
       display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 10px;
-      margin-bottom: 12px;
-      padding-bottom: 8px;
-      border-bottom: 1px solid #EEF2F7;
-    }
-
-    .phase-name {
-      font-weight: 700;
-      font-size: 0.98rem;
-      color: var(--bleu-nuit);
-    }
-
-    .step-item {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 12px;
-      padding: 9px 10px;
-      border-radius: 8px;
-      background: var(--blanc-bleute);
-      margin-bottom: 7px;
-      flex-wrap: wrap;
-    }
-
-    .step-left {
-      display: flex;
-      align-items: center;
+      flex-direction: column;
       gap: 10px;
       flex: 1;
-      min-width: 220px;
     }
 
-    .step-left input[type="checkbox"] {
-      width: 17px;
-      height: 17px;
-      accent-color: var(--bleu-roi);
-      cursor: pointer;
-    }
-
-    .step-title {
-      font-size: 0.88rem;
-      font-weight: 500;
-      color: var(--bleu-nuit);
-    }
-
-    .step-title.done {
-      text-decoration: line-through;
-      color: var(--text-muted);
-    }
-
-    .step-controls {
+    .post-meta-top {
       display: flex;
       align-items: center;
+      justify-content: space-between;
       gap: 8px;
+      font-size: 12px;
+      color: var(--muted);
+    }
+
+    .status-badge {
+      padding: 3px 9px;
+      border-radius: 999px;
+      font-size: 11px;
+      font-weight: 700;
+    }
+
+    .st-idée { background: var(--surface-alt); color: #475467; }
+    .st-préparation { background: var(--warn-bg); color: var(--warn); }
+    .st-validé { background: var(--info-bg); color: var(--info); }
+    .st-programmé { background: var(--primary-soft); color: var(--primary); }
+    .st-publié { background: var(--success-bg); color: var(--success); }
+
+    .post-title {
+      margin: 0;
+      font-size: 15px;
+      font-weight: 700;
+    }
+
+    .post-caption-preview {
+      font-size: 13px;
+      color: var(--muted);
+      white-space: pre-line;
+      display: -webkit-box;
+      -webkit-line-clamp: 3;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+    }
+
+    .tag-row {
+      display: flex;
       flex-wrap: wrap;
+      gap: 6px;
     }
 
-    .step-select {
-      padding: 4px 10px;
+    .mini-tag {
+      font-size: 11px;
+      background: var(--surface-alt);
+      padding: 2px 8px;
       border-radius: 6px;
-      border: 1px solid #CBD5E1;
-      font-size: 0.78rem;
-      font-weight: 600;
-      background: #FFFFFF;
-      color: var(--text-main);
-      cursor: pointer;
+      color: var(--text);
     }
 
-    /* 4 statuts : À faire (Gris), En cours (Jaune), Fait (Vert), En retard (Rouge) */
-    .status-a-faire {
-      background: #E5E7EB;
-      color: #374151;
-      border-color: #9CA3AF;
+    .post-actions {
+      margin-top: auto;
+      padding-top: 10px;
+      border-top: 1px solid var(--border);
+      display: flex;
+      justify-content: space-between;
+      gap: 8px;
     }
 
-    .status-en-cours {
-      background: #FEF08A;
-      color: #854D0E;
-      border-color: #EAB308;
+    /* Studio Préparation */
+    .studio-layout {
+      display: grid;
+      grid-template-columns: 1.25fr 0.95fr;
+      gap: 20px;
+      align-items: start;
     }
 
-    .status-fait {
-      background: #DCFCE7;
-      color: #166534;
-      border-color: #22C55E;
+    @media (max-width: 980px) {
+      .studio-layout {
+        grid-template-columns: 1fr;
+      }
     }
 
-    .status-en-retard {
-      background: #FEE2E2;
-      color: #991B1B;
-      border-color: #EF4444;
-    }
-
-    .step-note {
-      padding: 4px 8px;
-      border-radius: 6px;
-      border: 1px solid #CBD5E1;
-      font-size: 0.78rem;
-      width: 185px;
-      background: #FFFFFF;
-    }
-
-    /* Styles spécifiques de la Phase 1 éditoriale */
-    .edito-tab-btn.active {
-      background-color: #ffffff;
-      color: var(--bleu-roi);
-      border-color: var(--bleu-roi);
-      box-shadow: 0 2px 8px rgba(29, 78, 216, 0.1);
-    }
-
-    .btn-edito-primary {
-      background: linear-gradient(135deg, var(--bleu-roi) 0%, var(--bleu-cobalt) 100%);
-      color: #ffffff;
-      transition: transform 0.15s ease, box-shadow 0.15s ease, filter 0.15s ease;
-    }
-    .btn-edito-primary:hover {
-      filter: brightness(1.07);
-      transform: translateY(-1px);
-      box-shadow: 0 6px 16px rgba(0, 71, 171, 0.24);
-    }
-
-    .btn-edito-violet {
-      background: linear-gradient(135deg, #8F2BFF 0%, var(--violet-vibrant) 100%);
-      color: #ffffff;
-      transition: transform 0.15s ease, box-shadow 0.15s ease;
-    }
-    .btn-edito-violet:hover {
-      transform: translateY(-1px);
-      box-shadow: 0 6px 16px rgba(127, 0, 255, 0.25);
-    }
-
-    .manuscript-editor {
-      line-height: 1.85;
-      font-size: 0.98rem;
-      font-family: 'Fraunces', Georgia, serif;
-    }
-
-    .toast-banner {
-      position: fixed;
-      bottom: 20px;
-      right: 20px;
-      z-index: 300;
-      background: var(--bleu-nuit);
-      color: #ffffff;
-      border-left: 4px solid var(--bleu-azur);
-      padding: 12px 18px;
-      border-radius: 12px;
-      box-shadow: 0 10px 25px rgba(11, 19, 43, 0.25);
-      opacity: 0;
-      transform: translateY(10px);
-      pointer-events: none;
-      transition: opacity 0.2s ease, transform 0.2s ease;
-      font-size: 0.875rem;
-      font-weight: 500;
-    }
-    .toast-banner.show {
-      opacity: 1;
-      transform: translateY(0);
-    }
-
-    /* Modale création projet */
-    .modal-backdrop {
-      display: none;
-      position: fixed;
-      inset: 0;
-      background: rgba(11, 19, 43, 0.52);
-      z-index: 200;
-      align-items: center;
-      justify-content: center;
-      padding: 16px;
-    }
-
-    .modal-backdrop.open { display: flex; }
-
-    .modal-box {
-      background: #FFFFFF;
-      border-radius: 12px;
-      width: 100%;
-      max-width: 560px;
-      padding: 22px 24px;
-      box-shadow: 0 20px 50px rgba(11, 19, 43, 0.3);
+    .panel {
+      background: var(--surface);
       border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 20px;
+      box-shadow: var(--shadow);
+      margin-bottom: 18px;
+    }
+
+    .panel h2, .panel h3 {
+      margin-top: 0;
+      font-size: 16px;
     }
 
     .form-grid {
       display: grid;
-      grid-template-columns: repeat(2, 1fr);
+      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
       gap: 12px;
-      margin: 14px 0 18px;
+      margin-bottom: 12px;
     }
 
-    .field { display: flex; flex-direction: column; gap: 4px; }
-    .field.full { grid-column: 1 / -1; }
-    .field label { font-size: 0.8rem; font-weight: 600; color: var(--text-muted); }
-    .field input, .field select, .field textarea {
-      padding: 8px 10px;
-      border: 1px solid #CBD5E1;
-      border-radius: 7px;
-      font-size: 0.88rem;
-      font-family: inherit;
+    .field label {
+      display: block;
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--muted);
+      margin-bottom: 5px;
     }
 
-    @media (max-width: 1120px) {
-      .workflow-stepper { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+    .field input, .field select {
+      width: 100%;
     }
 
-    @media (max-width: 900px) {
-      .body-grid { grid-template-columns: 1fr; }
-      .sidebar { flex-direction: row; overflow-x: auto; border-right: none; border-bottom: 1px solid #C8D5E6; padding: 10px; }
-      .nav-item { width: auto; white-space: nowrap; }
-      .content-pane { padding: 18px 16px 28px; }
-      .kpi-row { grid-template-columns: 1fr; }
-      .workflow-stepper { grid-template-columns: repeat(2, minmax(0, 1fr)); }
-      .form-grid { grid-template-columns: 1fr; }
-      .search-box input { width: 170px; }
+    .helper-bar {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+      font-size: 12px;
+      color: var(--muted);
+      margin-top: 6px;
+    }
+
+    .snippet-chips {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+      margin-top: 10px;
+    }
+
+    /* Aperçu Instagram & Grille */
+    .ig-card {
+      max-width: 380px;
+      margin: 0 auto 22px;
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      overflow: hidden;
+      background: #fff;
+    }
+
+    .ig-header {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 10px 12px;
+      font-size: 13px;
+      font-weight: 700;
+    }
+
+    .ig-avatar {
+      width: 30px;
+      height: 30px;
+      border-radius: 50%;
+      background: var(--accent-ig);
+    }
+
+    .ig-media {
+      aspect-ratio: 4 / 5;
+      background: var(--surface-alt);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--muted);
+      overflow: hidden;
+    }
+
+    .ig-media img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+
+    .ig-caption {
+      padding: 12px;
+      font-size: 13px;
+      white-space: pre-line;
+    }
+
+    .feed-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 4px;
+      max-width: 380px;
+      margin: 0 auto;
+    }
+
+    .feed-cell {
+      aspect-ratio: 4 / 5;
+      background: var(--surface-alt);
+      position: relative;
+      overflow: hidden;
+      font-size: 11px;
+      color: var(--muted);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      padding: 4px;
+    }
+
+    .feed-cell img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+
+    .feed-cell.draft-ring {
+      outline: 3px solid var(--primary);
+      outline-offset: -3px;
+    }
+
+    /* Médiathèque */
+    .media-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(230px, 1fr));
+      gap: 16px;
+    }
+
+    .media-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      overflow: hidden;
+      box-shadow: var(--shadow);
+    }
+
+    .media-preview {
+      height: 170px;
+      background: var(--surface-alt);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
+    }
+
+    .media-preview img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+
+    .media-info {
+      padding: 12px;
+      font-size: 12px;
+    }
+
+    .media-name {
+      font-weight: 700;
+      font-size: 13px;
+      margin-bottom: 4px;
+      word-break: break-word;
+    }
+
+    .toast {
+      position: fixed;
+      bottom: 20px;
+      right: 20px;
+      background: var(--text);
+      color: #fff;
+      padding: 11px 16px;
+      border-radius: 10px;
+      font-size: 13px;
+      font-weight: 600;
+      opacity: 0;
+      transform: translateY(10px);
+      transition: all 0.2s ease;
+      pointer-events: none;
+      z-index: 50;
+    }
+
+    .toast.show {
+      opacity: 1;
+      transform: translateY(0);
     }
   </style>
 </head>
 <body>
+  <header>
+    <div class="header-inner">
+      <div class="brand">
+        <div class="brand-badge">IG</div>
+        <div>
+          <h1>Studio éditorial Instagram</h1>
+          <p>Calendrier • Préparation de posts • Médiathèque</p>
+        </div>
+      </div>
 
-<div id="toast" class="toast-banner" role="status" aria-live="polite"></div>
+      <nav class="tabs" role="tablist">
+        <button class="tab-btn active" data-tab="calendrier">Calendrier éditorial</button>
+        <button class="tab-btn" data-tab="preparation">Préparation & Feed</button>
+        <button class="tab-btn" data-tab="mediatheque">Médiathèque</button>
+      </nav>
 
-<div class="app-shell">
-  <!-- Bandeau horizontal du haut bleu plein écran -->
-  <header class="top-header">
-    <div class="top-auth">
-      <button class="auth-btn" onclick="alert('Espace éditrice — Lune et Papier Éditions')">
-        <span>👤</span><span>Se connecter</span>
-      </button>
-      <span class="mail-icon" title="Notes & retours auteurs" onclick="app.setNav('manuscripts')">✉️</span>
-    </div>
-
-    <div class="brand-mark" onclick="app.setNav('projects')">
-      <span class="brand-name">Lune et Papier<br>Éditions</span>
-      <svg width="38" height="38" viewBox="0 0 40 40" fill="none" aria-hidden="true">
-        <path d="M25.5 7.5A13 13 0 1 0 32.5 29a11 11 0 0 1-7-21.5Z" fill="#F8FAFC"/>
-        <path d="M29 8l1.2 3.3L33.5 12.5l-3.3 1.2L29 17l-1.2-3.3-3.3-1.2 3.3-1.2L29 8Z" fill="#F8FAFC"/>
-        <circle cx="34.5" cy="18.5" r="1.4" fill="#93C5FD"/>
-        <circle cx="22.5" cy="6" r="1.1" fill="#E9D5FF"/>
-      </svg>
+      <div class="header-actions">
+        <button class="primary" id="btnNewPost">+ Nouveau post</button>
+        <button id="btnExportJson">Exporter JSON</button>
+        <button id="btnImportJson">Importer JSON</button>
+        <input type="file" id="importFileInput" accept=".json" hidden />
+      </div>
     </div>
   </header>
 
-  <div class="body-grid">
-    <!-- Menu latéral gauche -->
-    <aside class="sidebar" id="sidebar">
-      <button class="nav-item" data-nav="dashboard" onclick="app.setNav('dashboard')">
-        <svg viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>
-        <span>Tableau de bord</span>
-      </button>
+  <main>
+    <!-- ONGLET 1 : CALENDRIER ÉDITORIAL -->
+    <section id="tab-calendrier" class="section active">
+      <div class="kpis" id="kpiContainer"></div>
 
-      <button class="nav-item active" data-nav="projects" onclick="app.setNav('projects')">
-        <svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6"/><path d="M8 13h8"/><path d="M8 17h5"/></svg>
-        <span>Projets en cours</span>
-      </button>
-
-      <button class="nav-item" data-nav="editorial" onclick="app.setNav('editorial')">
-        <svg viewBox="0 0 24 24"><rect x="4" y="4" width="16" height="16" rx="2"/><path d="M8 8h8"/><path d="M8 12h8"/></svg>
-        <span>Projets éditoriaux</span>
-      </button>
-
-      <button class="nav-item" data-nav="manuscripts" onclick="app.setNav('manuscripts')">
-        <svg viewBox="0 0 24 24"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
-        <span>Manuscrits &amp; Auteurs</span>
-      </button>
-
-      <button class="nav-item" data-nav="production" onclick="app.setNav('production')">
-        <svg viewBox="0 0 24 24"><path d="M21 8l-9-5-9 5 9 5 9-5z"/><path d="M3 8v8l9 5 9-5V8"/><path d="M12 13v8"/></svg>
-        <span>Production &amp; Impression</span>
-      </button>
-
-      <button class="nav-item" data-nav="catalogue" onclick="app.setNav('catalogue')">
-        <svg viewBox="0 0 24 24"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg>
-        <span>Catalogue</span>
-      </button>
-
-      <button class="nav-item" data-nav="distribution" onclick="app.setNav('distribution')">
-        <svg viewBox="0 0 24 24"><polyline points="22 7 13.5 15.5 8.5 10.5 2 17"/><polyline points="16 7 22 7 22 13"/></svg>
-        <span>Ventes &amp; Distribution</span>
-      </button>
-
-      <button class="nav-item" data-nav="accounting" onclick="app.setNav('accounting')">
-        <svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M9 15h6"/><path d="M9 11h6"/></svg>
-        <span>Comptabilité</span>
-      </button>
-
-      <button class="nav-item" data-nav="settings" onclick="app.setNav('settings')">
-        <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 1 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 1 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 1 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 1 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
-        <span>Paramètres</span>
-      </button>
-    </aside>
-
-    <!-- Contenu dynamique -->
-    <main class="content-pane" id="main-content"></main>
-  </div>
-</div>
-
-<!-- Modale Création d'un projet -->
-<div class="modal-backdrop" id="modal-new-project">
-  <div class="modal-box">
-    <div style="display:flex; justify-content:space-between; align-items:center;">
-      <h2 class="serif-title" style="font-size:1.45rem;">Nouveau projet d'album</h2>
-      <button class="btn-secondary" onclick="app.closeModal()">✕</button>
-    </div>
-    <form onsubmit="app.createProject(event)">
-      <div class="form-grid">
-        <div class="field full">
-          <label>Titre du projet (ou idée avant écriture)</label>
-          <input name="title" required placeholder="Ex. Les aventures de Lilou le lapin de Pâques" />
-        </div>
-        <div class="field">
-          <label>Auteur / Auteure</label>
-          <input name="author" required placeholder="Ex. Anne-Sophie Guerout" />
-        </div>
-        <div class="field">
-          <label>Type de projet</label>
-          <select name="type">
-            <option value="Album maison">Album maison</option>
-            <option value="Auteur partenaire">Auteur partenaire</option>
-            <option value="Commande illustration">Commande illustration</option>
+      <div class="toolbar">
+        <div class="filters">
+          <select id="filterStatut">
+            <option value="">Tous les statuts</option>
+            <option value="Idée">Idée</option>
+            <option value="Préparation">Préparation</option>
+            <option value="Validé">Validé</option>
+            <option value="Programmé">Programmé</option>
+            <option value="Publié">Publié</option>
           </select>
-        </div>
-        <div class="field">
-          <label>Phase de départ</label>
-          <select name="startPhase">
-            <option value="0">Phase 0 — Amont &amp; Idée (avant texte)</option>
-            <option value="1">Phase 1 — Écriture &amp; Édition</option>
-            <option value="2">Phase 2 — Cadrage Artistique, Storyboard</option>
-            <option value="3">Phase 2b — Contrats</option>
-            <option value="4">Phase 3 — Illustrations &amp; Maquettage</option>
-            <option value="5">Phase 4 — Fabrication, Dépôt Légal &amp; Dilicom / Electre</option>
-            <option value="6">Phase 5 — Lancement, Diffusion &amp; Commercialisation</option>
+
+          <select id="filterFormat">
+            <option value="">Tous les formats</option>
+            <option value="Post">Post</option>
+            <option value="Carrousel">Carrousel</option>
+            <option value="Reel">Reel</option>
+            <option value="Story">Story</option>
           </select>
-        </div>
-        <div class="field">
-          <label>Date limite / Sortie visée</label>
-          <input name="deadline" placeholder="Ex. 15 Mars 2027" />
-        </div>
-        <div class="field">
-          <label>Technique graphique</label>
-          <select name="technique">
-            <option value="Aquarelle">Aquarelle</option>
-            <option value="Numérique">Numérique</option>
-            <option value="Peinture">Peinture</option>
-            <option value="Crayon aquarellable">Crayon aquarellable</option>
+
+          <select id="filterPilier">
+            <option value="">Tous les piliers</option>
+            <option value="Pédagogie">Pédagogie</option>
+            <option value="Coulisses">Coulisses</option>
+            <option value="Offre / Produit">Offre / Produit</option>
+            <option value="Preuve sociale">Preuve sociale</option>
           </select>
+
+          <input type="text" id="filterSearch" placeholder="Rechercher un titre ou légende..." />
         </div>
-        <div class="field">
-          <label>Statut initial</label>
-          <select name="status">
-            <option value="En cours">En cours</option>
-            <option value="En attente">En attente</option>
-            <option value="Planifié">Planifié</option>
-            <option value="Idée / Amont">Idée / Amont</option>
-          </select>
+
+        <button id="btnResetFilters" class="sm">Réinitialiser</button>
+      </div>
+
+      <div class="posts-grid" id="postsGrid"></div>
+    </section>
+
+    <!-- ONGLET 2 : PRÉPARATION DE POST & SIMULATEUR DE GRILLE -->
+    <section id="tab-preparation" class="section">
+      <div class="studio-layout">
+        <div>
+          <div class="panel">
+            <h2 id="editorHeading">Préparer une publication</h2>
+
+            <div class="form-grid">
+              <div class="field">
+                <label for="postTitle">Titre interne</label>
+                <input type="text" id="postTitle" placeholder="Ex. 3 erreurs à éviter sur Reels" />
+              </div>
+
+              <div class="field">
+                <label for="postDate">Date prévue</label>
+                <input type="date" id="postDate" />
+              </div>
+
+              <div class="field">
+                <label for="postTime">Heure prévue</label>
+                <input type="time" id="postTime" value="18:00" />
+              </div>
+            </div>
+
+            <div class="form-grid">
+              <div class="field">
+                <label for="postFormat">Format</label>
+                <select id="postFormat">
+                  <option value="Post">Post</option>
+                  <option value="Carrousel">Carrousel</option>
+                  <option value="Reel">Reel</option>
+                  <option value="Story">Story</option>
+                </select>
+              </div>
+
+              <div class="field">
+                <label for="postPilier">Pilier éditorial</label>
+                <select id="postPilier">
+                  <option value="Pédagogie">Pédagogie</option>
+                  <option value="Coulisses">Coulisses</option>
+                  <option value="Offre / Produit">Offre / Produit</option>
+                  <option value="Preuve sociale">Preuve sociale</option>
+                </select>
+              </div>
+
+              <div class="field">
+                <label for="postStatut">Statut</label>
+                <select id="postStatut">
+                  <option value="Idée">Idée</option>
+                  <option value="Préparation">Préparation</option>
+                  <option value="Validé">Validé</option>
+                  <option value="Programmé">Programmé</option>
+                  <option value="Publié">Publié</option>
+                </select>
+              </div>
+            </div>
+
+            <div class="form-grid">
+              <div class="field">
+                <label for="postMediaSelect">Visuel depuis la médiathèque</label>
+                <select id="postMediaSelect"></select>
+              </div>
+
+              <div class="field">
+                <label for="postCta">Objectif / CTA principal</label>
+                <input type="text" id="postCta" placeholder="Ex. Enregistre ce post pour plus tard" />
+              </div>
+            </div>
+
+            <div class="field">
+              <label for="postCaption">Légende Instagram</label>
+              <textarea id="postCaption" placeholder="Écrivez votre accroche, le corps de texte, votre appel à l'action et vos hashtags..."></textarea>
+              <div class="helper-bar">
+                <span id="charCounter">0 / 2 200 caractères</span>
+                <span id="foldWarning">Accroche visible avant « … plus » : ~125 premiers caractères</span>
+              </div>
+            </div>
+
+            <div class="snippet-chips">
+              <button type="button" class="sm" data-insert="\n\n👉 Enregistre ce post pour le relire et partage-le en Story !">+ CTA Enregistrement</button>
+              <button type="button" class="sm" data-insert="\n\n💬 Et toi, quel est ton avis en commentaire ?">+ Question engagement</button>
+              <button type="button" class="sm" data-insert="\n\n#instagram #creationdecontenu #strategie #communitymanagement #marketingdigital">+ Pack hashtags</button>
+            </div>
+
+            <div style="margin-top: 18px; display: flex; gap: 10px; flex-wrap: wrap;">
+              <button class="primary" id="btnSavePost">Enregistrer la publication</button>
+              <button id="btnCopyCaption">Copier la légende</button>
+              <button class="danger" id="btnDeleteCurrentPost" style="display: none;">Supprimer</button>
+            </div>
+          </div>
+        </div>
+
+        <div>
+          <div class="panel">
+            <h3>Aperçu du post</h3>
+            <div class="ig-card">
+              <div class="ig-header">
+                <div class="ig-avatar"></div>
+                <span>@votre_compte</span>
+              </div>
+              <div class="ig-media" id="previewMediaBox">Aucun visuel sélectionné</div>
+              <div class="ig-caption" id="previewCaptionBox">Votre légende apparaîtra ici en temps réel.</div>
+            </div>
+
+            <h3>Simulateur de grille (Feed)</h3>
+            <p style="font-size: 12px; color: var(--muted); margin-top: -6px;">
+              Aperçu des publications triées chronologiquement (le post en cours d'édition est encadré en violet).
+            </p>
+            <div class="feed-grid" id="feedPreviewGrid"></div>
+          </div>
         </div>
       </div>
-      <div style="display:flex; justify-content:flex-end; gap:10px;">
-        <button type="button" class="btn-secondary" onclick="app.closeModal()">Annuler</button>
-        <button type="submit" class="btn-new">Créer le workflow</button>
+    </section>
+
+    <!-- ONGLET 3 : MÉDIATHÈQUE -->
+    <section id="tab-mediatheque" class="section">
+      <div class="panel">
+        <h2>Ajouter un visuel à la médiathèque</h2>
+        <div class="form-grid">
+          <div class="field">
+            <label for="mediaFileInput">Importer une image locale</label>
+            <input type="file" id="mediaFileInput" accept="image/*" />
+          </div>
+          <div class="field">
+            <label for="mediaUrlInput">Ou coller l'URL d'une image</label>
+            <input type="text" id="mediaUrlInput" placeholder="https://..." />
+          </div>
+          <div class="field">
+            <label for="mediaNameInput">Nom du visuel</label>
+            <input type="text" id="mediaNameInput" placeholder="Ex. visuel-carrousel-01.png" />
+          </div>
+          <div class="field">
+            <label for="mediaTagsInput">Tags (séparés par des virgules)</label>
+            <input type="text" id="mediaTagsInput" placeholder="lancement, carrousel, violet" />
+          </div>
+        </div>
+        <button class="primary" id="btnAddMedia">Ajouter à la médiathèque</button>
       </div>
-    </form>
-  </div>
-</div>
 
-<script>
-(function() {
-  const STORAGE_KEY = 'lune_papier_workflow_v4';
+      <div class="media-grid" id="mediaGrid"></div>
+    </section>
+  </main>
 
-  const STEP_STATUSES = ['À faire', 'En cours', 'Fait', 'En retard'];
+  <div class="toast" id="toast"></div>
 
-  const PHASES_TEMPLATE = [
-    {
-      num: 0,
-      bannerLabel: 'Amont &<br>Idéation',
-      title: 'Phase 0 — Amont & Idéation (avant écriture du texte)',
-      steps: [
-        'Émergence de l’idée, thème & intention jeunesse',
-        'Alignement ligne éditoriale (vocabulaire riche, lecture à voix haute, potentiel visuel)',
-        'Recherche de texte / échange concept auteur ou ébauche personnelle'
-      ]
-    },
-    {
-      num: 1,
-      bannerLabel: 'Écriture,<br>Édition &amp;<br>Préparation du<br>Texte',
-      title: 'Phase 1 — Écriture, Édition & Préparation du Texte',
-      steps: [
-        'Rédaction / réception du manuscrit (V1) & lecture à voix haute',
-        'Note éditoriale (structure, rythme, personnages, vocabulaire)',
-        'Réécriture & validation du texte (V2 / V3)',
-        'Préparation de copie, relecture ortho-typographique & verrouillage du texte'
-      ]
-    },
-    {
-      num: 2,
-      bannerLabel: 'Cadrage<br>Artistique,<br>Storyboard',
-      title: 'Phase 2 — Cadrage Artistique & Storyboard',
-      steps: [
-        'Brief créatif & moodboard (palette & ambiance)',
-        'Storyboard double-page par double-page (rythme & page-turn)',
-        'Character design (personnages, expressions & postures)'
-      ]
-    },
-    {
-      num: 3,
-      bannerLabel: 'Contrats',
-      title: 'Phase 2b — Contrats',
-      steps: [
-        'Devis & signature du contrat d’illustration / cession de droits',
-        'Signature du contrat d’édition / partenariat auteur (50 % vente directe, durée, reddition)'
-      ]
-    },
-    {
-      num: 4,
-      bannerLabel: 'Création des<br>Illustrations &amp;<br>Maquettage',
-      title: 'Phase 3 — Création des Illustrations & Maquettage',
-      steps: [
-        'Crayonnés des planches & de la couverture',
-        'Mise en couleur (aquarelle, numérique, peinture ou crayon aquarellable)',
-        'Maquette intérieure, typographie & couverture complète (1re, dos, 4e)',
-        'Pré-presse & export des fichiers HD (300 DPI, CMJN, fonds perdus)'
-      ]
-    },
-    {
-      num: 5,
-      bannerLabel: 'Fabrication,<br>Dépôt Légal &amp;<br>Dilicom /<br>Electre',
-      title: 'Phase 4 — Fabrication, Dépôt Légal & Dilicom / Electre',
-      steps: [
-        'Attribution ISBN (segment AFNIL), code-barres EAN-13 & ours légal (Loi 1949 / Loi Lang)',
-        'Paramétrage imprimeur / BoD & validation du BAT physique',
-        'Dépôt légal BnF (déclaration & envoi exemplaire)',
-        'Fiche Electre & vérification disponibilité commande sur Dilicom'
-      ]
-    },
-    {
-      num: 6,
-      bannerLabel: 'Lancement,<br>Diffusion &amp;<br>Commercialisa-<br>tion',
-      title: 'Phase 5 — Lancement, Diffusion & Commercialisation',
-      steps: [
-        'Fiche produit boutique, fiche argumentaire libraire & Cover Reveal',
-        'Précommandes & envoi des Services de Presse (SP)',
-        'Ventes directes, salons, librairies indépendantes & Cultura/Fnac'
-      ]
-    }
-  ];
+  <script>
+    const STORAGE_KEY = "ig_studio_data_v1";
 
-  const WORKFLOW_STATES = [
-    'En lecture',
-    'Note envoyée',
-    'En attente retour auteur',
-    'Réécriture reçue',
-    'Validé'
-  ];
-
-  const COPY_CHECKLIST_ITEMS = [
-    {
-      id: 'vocab',
-      label: 'Richesse du vocabulaire & précision des mots (refus de la simplification à outrance)',
-      detail: 'Les verbes d’action, adjectifs et images poétiques nourrissent la curiosité des jeunes lecteurs.'
-    },
-    {
-      id: 'rhythm',
-      label: 'Rythme & musicalité à la lecture à voix haute (parent / enfant)',
-      detail: 'Les phrases respirent, les dialogues sonnent naturel et les chutes de page créent de l’élan.'
-    },
-    {
-      id: 'repetitions',
-      label: 'Tri des répétitions involontaires vs répétitions poétiques voulues',
-      detail: 'Les mots parasites ou tics de langage sont remplacés par des formulations plus justes.'
-    },
-    {
-      id: 'punctuation',
-      label: 'Ponctuation, majuscules & espaces ortho-typographiques français',
-      detail: 'Virgules, points d’exclamation/interrogation, tirets de dialogue et guillemets harmonisés.'
-    },
-    {
-      id: 'consistency',
-      label: 'Cohérence interne : prénoms, âges, objets, chronologie & décors',
-      detail: 'Aucune contradiction entre le début, le milieu et le dénouement de l’histoire.'
-    },
-    {
-      id: 'visual_beats',
-      label: 'Potentiel de découpage visuel scène par scène / double-page',
-      detail: 'Chaque temps fort offre un ancrage clair pour le futur storyboard et la mise en scène.'
-    }
-  ];
-
-  const GATE_CRITERIA = [
-    {
-      id: 'readAloudDone',
-      title: 'Lecture à voix haute effectuée & rythme validé',
-      description: 'Le texte a été lu à haute voix pour vérifier sa fluidité orale, ses coupes et sa musicalité.'
-    },
-    {
-      id: 'editorialNoteDone',
-      title: 'Note éditoriale rédigée & partagée (méthode sandwich bienveillant)',
-      description: 'Points forts, axes de structure/rythme/personnages/potentiel visuel et projection sont posés.'
-    },
-    {
-      id: 'versionValidated',
-      title: 'Version narrative (V2 / V3) validée avec l’auteur',
-      description: 'L’arc narratif, le rôle des personnages et la fin sont stabilisés d’un commun accord.'
-    },
-    {
-      id: 'copyPrepDone',
-      title: 'Préparation de copie & contrôle ortho-typographique achevés',
-      description: 'Vocabulaire, ponctuation, cohérence des décors et découpage potentiel ont été vérifiés.'
-    }
-  ];
-
-  function normalizeStepState(state) {
-    if (STEP_STATUSES.includes(state)) return state;
-    if (state === 'Terminé') return 'Fait';
-    if (state === 'En attente de validation') return 'En cours';
-    if (state === 'Bloqué') return 'En retard';
-    return 'À faire';
-  }
-
-  function stepStatusClass(state) {
-    const norm = normalizeStepState(state);
-    if (norm === 'Fait') return 'status-fait';
-    if (norm === 'En cours') return 'status-en-cours';
-    if (norm === 'En retard') return 'status-en-retard';
-    return 'status-a-faire';
-  }
-
-  function buildSteps(completedCount) {
-    const all = [];
-    PHASES_TEMPLATE.forEach(ph => {
-      ph.steps.forEach((label, idx) => {
-        const globalIdx = all.length;
-        const isDone = globalIdx < completedCount;
-        all.push({
-          id: 'st_' + ph.num + '_' + idx + '_' + Math.random().toString(36).slice(2, 6),
-          phaseNum: ph.num,
-          phaseTitle: ph.title,
-          label,
-          state: isDone ? 'Fait' : (globalIdx === completedCount ? 'En cours' : 'À faire'),
-          note: ''
-        });
-      });
-    });
-    return all;
-  }
-
-  function buildEditorialDataForProject(proj) {
-    const isLilou = proj.id === 'p_lilou';
-    const isMurphy = proj.id === 'p_murphy';
-    return {
-      ageGroup: '4–8 ans',
-      origin: proj.type || 'Album maison',
-      targetSeason: proj.deadline || 'Printemps',
-      workflowStatus: isLilou ? 'Réécriture reçue' : (isMurphy ? 'Note envoyée' : 'En lecture'),
-      activeVersion: isLilou ? 'V2' : 'V1',
-      versions: {
-        V1: isLilou
-          ? `Au cœur du verger baigné d'une lumière opale, Lilou le petit lapin blanc s'étira longuement. Aujourd'hui n'était pas un matin ordinaire : le grand panier d'osier tressé attendait près de la haie d'aubépine.\n\nLilou bondit par-dessus les flaques de rosée et frappa trois petits coups contre l'écorce du vieux pommier. « Hé ho, Barnabé ! Tu dors encore ? » demanda Lilou d'une voix claire.\n\nBarnabé le hérisson fit rouler son museau piquant hors des feuilles sèches. Ensemble, ils partirent explorer le sentier secret où les œufs nacrés se cachaient sous les fougères, les mousses et les racines tortueuses.`
-          : `Projet : ${proj.title}\nAuteur : ${proj.author}\n\nPremier jet du texte en cours d'écriture et d'édition pour Lune et Papier Éditions.`,
-        V2: isLilou
-          ? `Au cœur du verger baigné d'une lumière opale, Lilou le jeune lapin blanc s'étira longuement. Ce matin-là, l'air sentait la sève fraîche et les bourgeons naissants : le grand panier d'osier tressé attendait près de la haie d'aubépine.\n\nLilou bondit par-dessus les flaques de rosée et frappa trois coups légers contre l'écorce rugueuse du vieux pommier. « Allons, Barnabé ! Le soleil a déjà doré les collines ! » s'exclama Lilou.\n\nBarnabé le hérisson défit sa boule piquante et huma l'air vif. Ensemble, ils s'engagèrent sur le sentier secret où les œufs nacrés se dissimulaient sous les fougères, les coussins de mousse et les racines noueuses.`
-          : '',
-        V3: ''
-      },
-      note: {
-        strengths: isLilou
-          ? 'Une atmosphère printanière très sensible, un duo Lilou / Barnabé attachant et une belle musicalité dès les premières lignes.'
-          : 'Un univers attachant et un beau potentiel d’album jeunesse à voix haute.',
-        axes: isLilou
-          ? '• Structure & rythme : resserrer l’entrée en matière pour arriver plus vite au premier rebondissement.\n• Personnages : nuancer la malice de Barnabé face à l’enthousiasme de Lilou.\n• Potentiel visuel : ménager des respirations pour la double-page du verger et du sentier secret.'
-          : '• Structure & rythme : vérifier l’élan narratif et les chutes de page.\n• Personnages : affiner les dialogues et intentions.\n• Potentiel visuel : repérer les doubles-pages clés.',
-        projection: isLilou
-          ? 'La V2 gagne déjà en relief et en précision de vocabulaire. Une dernière passe d’affinage sur les transitions permettra de verrouiller le texte pour le storyboard.'
-          : 'Poursuivre l’affinage du texte et préparer la note éditoriale détaillée.'
-      },
-      exchanges: [
+    const defaultData = {
+      posts: [
         {
-          id: 'ex_' + proj.id + '_1',
-          date: '12/11/2026',
-          channel: 'Lecture à voix haute',
-          summary: 'Test oral du manuscrit : vérification de la musicalité et du rythme de lecture.'
+          id: "p1",
+          title: "Checklist calendrier éditorial mensuel",
+          date: "2026-11-25",
+          time: "18:00",
+          format: "Carrousel",
+          pilier: "Pédagogie",
+          statut: "Validé",
+          mediaId: "m1",
+          cta: "Enregistre le carrousel pour ta prochaine planification",
+          caption: "Tu publies au feeling et tu manques de régularité ?\n\nVoici les 4 étapes simples pour bâtir ton calendrier éditorial en 45 minutes.\n\n👉 Enregistre ce post pour le relire et partage-le en Story !\n\n#instagram #creationdecontenu #strategie #communitymanagement"
         },
         {
-          id: 'ex_' + proj.id + '_2',
-          date: '15/11/2026',
-          channel: 'Note éditoriale',
-          summary: 'Partage de la note structurée (structure, rythme, potentiel visuel).'
+          id: "p2",
+          title: "Coulisses préparation du lancement",
+          date: "2026-11-27",
+          time: "12:15",
+          format: "Reel",
+          pilier: "Coulisses",
+          statut: "Préparation",
+          mediaId: "m2",
+          cta: "Active le rappel en commentaire",
+          caption: "Ce qui se passe vraiment en coulisses avant la sortie d'un nouveau format.\n\n💬 Et toi, quel est ton avis en commentaire ?"
         },
         {
-          id: 'ex_' + proj.id + '_3',
-          date: '19/11/2026',
-          channel: 'Mail / Manuscrit',
-          summary: 'Suivi de la version en cours et des ajustements éditoriaux.'
+          id: "p3",
+          title: "Retour d'expérience client",
+          date: "2026-11-29",
+          time: "09:30",
+          format: "Post",
+          pilier: "Preuve sociale",
+          statut: "Idée",
+          mediaId: "m3",
+          cta: "Découvre l'étude de cas complète",
+          caption: "Comment structurer ses visuels et sa légende a permis de gagner du temps chaque semaine."
         }
       ],
-      copyNotes: 'Vérifier la ponctuation, les accords et la cohérence des décors avant le verrouillage pour le storyboard.',
-      copyChecklist: {
-        vocab: true,
-        rhythm: true,
-        repetitions: false,
-        punctuation: false,
-        consistency: true,
-        visual_beats: true
-      },
-      gates: {
-        readAloudDone: true,
-        editorialNoteDone: true,
-        versionValidated: false,
-        copyPrepDone: false
-      },
-      lockedForStoryboard: false,
-      lockedAt: null,
-      studioHandoverNote: 'Texte soigné à la lecture à voix haute ; prévoir des décors riches et une mise en scène fluide.'
+      media: [
+        {
+          id: "m1",
+          name: "carrousel-strategie-4-5.svg",
+          tags: ["carrousel", "pédagogie", "4:5"],
+          ratioNote: "Ratio conseillé 4:5",
+          src: "data:image/svg+xml;utf8," + encodeURIComponent(`<svg xmlns="http://www.w3.org/2000/svg" width="800" height="1000"><rect width="800" height="1000" fill="#5b4ce6"/><text x="50%" y="46%" dominant-baseline="middle" text-anchor="middle" fill="#ffffff" font-family="sans-serif" font-size="42" font-weight="bold">CARROUSEL</text><text x="50%" y="54%" dominant-baseline="middle" text-anchor="middle" fill="#e0dcff" font-family="sans-serif" font-size="26">Calendrier Éditorial</text></svg>`)
+        },
+        {
+          id: "m2",
+          name: "reel-coulisses-studio.svg",
+          tags: ["reel", "coulisses"],
+          ratioNote: "Format vertical 9:16",
+          src: "data:image/svg+xml;utf8," + encodeURIComponent(`<svg xmlns="http://www.w3.org/2000/svg" width="800" height="1000"><rect width="800" height="1000" fill="#1e293b"/><text x="50%" y="46%" dominant-baseline="middle" text-anchor="middle" fill="#38bdf8" font-family="sans-serif" font-size="42" font-weight="bold">REEL COULISSES</text><text x="50%" y="54%" dominant-baseline="middle" text-anchor="middle" fill="#cbd5e1" font-family="sans-serif" font-size="26">Préparation & Script</text></svg>`)
+        },
+        {
+          id: "m3",
+          name: "temoignage-client.svg",
+          tags: ["preuve sociale", "post"],
+          ratioNote: "Ratio conseillé 4:5",
+          src: "data:image/svg+xml;utf8," + encodeURIComponent(`<svg xmlns="http://www.w3.org/2000/svg" width="800" height="1000"><rect width="800" height="1000" fill="#0f766e"/><text x="50%" y="46%" dominant-baseline="middle" text-anchor="middle" fill="#ffffff" font-family="sans-serif" font-size="42" font-weight="bold">PREUVE SOCIALE</text><text x="50%" y="54%" dominant-baseline="middle" text-anchor="middle" fill="#ccfbf1" font-family="sans-serif" font-size="26">Résultats & Retours</text></svg>`)
+        }
+      ]
     };
-  }
 
-  function defaultData() {
-    const baseProjects = [
-      {
-        id: 'p_lilou',
-        title: 'Les aventures de Lilou le lapin de Pâques',
-        author: 'Anne-Sophie Guerout',
-        type: 'Album maison',
-        phaseLabel: 'Maquette',
-        deadline: '15 Mars 2027',
-        technique: 'Aquarelle',
-        status: 'En cours',
-        steps: buildSteps(14)
-      },
-      {
-        id: 'p_murphy',
-        title: 'Murphy & Aglaé : Soif de héros',
-        author: 'Paméla Ivanes',
-        type: 'Auteur partenaire',
-        phaseLabel: 'Storyboard',
-        deadline: '20 Avr 2027',
-        technique: 'Numérique',
-        status: 'En attente',
-        steps: buildSteps(9)
-      },
-      {
-        id: 'p_noel',
-        title: 'Une maison pour Noël',
-        author: 'Anne-Sophie Guerout',
-        type: 'Album maison',
-        phaseLabel: 'Correction',
-        deadline: '15 Oct 2027',
-        technique: 'Aquarelle',
-        status: 'BAT Validé',
-        steps: buildSteps(19)
-      },
-      {
-        id: 'p_foret',
-        title: 'Le secret des feuilles d’automne',
-        author: 'À définir',
-        type: 'Album maison',
-        phaseLabel: 'Idée / Amont',
-        deadline: '01 Sept 2027',
-        technique: 'Aquarelle',
-        status: 'Planifié',
-        steps: buildSteps(1)
-      }
-    ].map(p => ({ ...p, editorial: buildEditorialDataForProject(p) }));
+    let state = loadState();
+    let editingPostId = state.posts[0]?.id || null;
 
-    return {
-      nav: 'projects',
-      search: '',
-      selectedProjectId: null,
-      activeWorkflowPhase: 0,
-      editoTab: 'atelier',
-      voiceReadingActive: false,
-      voiceReadingIndex: 0,
-      projects: baseProjects
-    };
-  }
-
-  let voiceTimer = null;
-
-  function loadData() {
-    try {
-      const raw = localStorage.getItem(STORAGE_KEY);
-      if (!raw) return defaultData();
-      const parsed = { ...defaultData(), ...JSON.parse(raw) };
-      parsed.voiceReadingActive = false;
-      parsed.voiceReadingIndex = 0;
-      parsed.projects = (parsed.projects || []).map(p => ({
-        ...p,
-        steps: (p.steps || []).map(s => ({ ...s, state: normalizeStepState(s.state) })),
-        editorial: p.editorial ? { ...buildEditorialDataForProject(p), ...p.editorial } : buildEditorialDataForProject(p)
-      }));
-      return parsed;
-    } catch {
-      return defaultData();
-    }
-  }
-
-  let db = loadData();
-
-  function save() {
-    localStorage.setItem(STORAGE_KEY, JSON.stringify({
-      nav: db.nav,
-      search: db.search,
-      selectedProjectId: db.selectedProjectId,
-      activeWorkflowPhase: db.activeWorkflowPhase,
-      editoTab: db.editoTab,
-      projects: db.projects
-    }));
-  }
-
-  function showToast(message) {
-    const el = document.getElementById('toast');
-    if (!el) return;
-    el.textContent = message;
-    el.classList.add('show');
-    clearTimeout(el._hideTimer);
-    el._hideTimer = setTimeout(() => {
-      el.classList.remove('show');
-    }, 2600);
-  }
-
-  function esc(str) {
-    return String(str == null ? '' : str)
-      .replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
-      .replace(/"/g, '&quot;');
-  }
-
-  function calcProgress(project) {
-    if (!project.steps || !project.steps.length) return 0;
-    const done = project.steps.filter(s => normalizeStepState(s.state) === 'Fait').length;
-    return Math.round((done / project.steps.length) * 100);
-  }
-
-  function statusPill(status) {
-    const map = {
-      'En cours': 'pill-encours',
-      'En attente': 'pill-attente',
-      'BAT Validé': 'pill-valide',
-      'Terminé': 'pill-valide',
-      'Planifié': 'pill-planifie',
-      'Idée / Amont': 'pill-amont'
-    };
-    const cls = map[status] || 'pill-encours';
-    return `<span class="pill ${cls}">${esc(status)}</span>`;
-  }
-
-  function getCurrentWorkflowProject() {
-    return db.projects.find(p => p.id === db.selectedProjectId) || db.projects[0];
-  }
-
-  function getActiveManuscriptText(ed) {
-    const v = ed.activeVersion || 'V1';
-    return (ed.versions && ed.versions[v]) || '';
-  }
-
-  function computeEditoProgress(ed) {
-    const gateKeys = GATE_CRITERIA.map(g => g.id);
-    const gatesDone = gateKeys.filter(k => Boolean(ed.gates && ed.gates[k])).length;
-
-    const copyKeys = COPY_CHECKLIST_ITEMS.map(c => c.id);
-    const copyDone = copyKeys.filter(k => Boolean(ed.copyChecklist && ed.copyChecklist[k])).length;
-
-    const hasNote = Boolean(
-      ed.note &&
-      (ed.note.strengths.trim() || ed.note.axes.trim() || ed.note.projection.trim())
-    );
-    const hasV2OrV3 = Boolean(
-      (ed.versions && ed.versions.V2 && ed.versions.V2.trim()) ||
-      (ed.versions && ed.versions.V3 && ed.versions.V3.trim())
-    );
-
-    const gatePct = (gatesDone / gateKeys.length) * 55;
-    const copyPct = (copyDone / copyKeys.length) * 25;
-    const notePct = hasNote ? 10 : 0;
-    const verPct = hasV2OrV3 ? 10 : 0;
-
-    if (ed.lockedForStoryboard) return 100;
-    return Math.min(99, Math.round(gatePct + copyPct + notePct + verPct));
-  }
-
-  function analyzeText(text) {
-    const trimmed = (text || '').trim();
-    if (!trimmed) {
-      return {
-        words: 0,
-        sentences: 0,
-        readingSecondsLabel: '0 s',
-        repeatedWords: [],
-        sentencesList: []
-      };
-    }
-
-    const wordsArr = trimmed.match(/[A-Za-zÀ-ÖØ-öø-ÿ’'-]+/g) || [];
-    const words = wordsArr.length;
-    const totalSeconds = Math.max(10, Math.round((words / 115) * 60));
-    const mins = Math.floor(totalSeconds / 60);
-    const secs = totalSeconds % 60;
-    const readingSecondsLabel = mins > 0 ? `${mins} min ${secs > 0 ? secs + ' s' : ''}`.trim() : `${secs} s`;
-
-    const sentencesList = trimmed
-      .split(/(?<=[.!?…»])\s+/)
-      .map(s => s.trim())
-      .filter(Boolean);
-
-    const stopWords = new Set([
-      'avec', 'dans', 'pour', 'mais', 'comme', 'alors', 'ainsi', 'encore', 'vers',
-      'entre', 'après', 'avant', 'sous', 'sur', 'tout', 'toute', 'tous', 'toutes',
-      'plus', 'moins', 'très', 'bien', 'petit', 'petite', 'était', 'étaient',
-      'avaient', 'avait', 'leurs', 'leur', 'celui', 'celle', 'ceux', 'celles'
-    ]);
-
-    const freq = {};
-    wordsArr.forEach(raw => {
-      const clean = raw.toLowerCase().replace(/^[^a-zà-öø-ÿ]+|[^a-zà-öø-ÿ]+$/g, '');
-      if (clean.length >= 5 && !stopWords.has(clean)) {
-        freq[clean] = (freq[clean] || 0) + 1;
-      }
-    });
-
-    const repeatedWords = Object.entries(freq)
-      .filter(([, count]) => count >= 2)
-      .sort((a, b) => b[1] - a[1])
-      .slice(0, 8)
-      .map(([word, count]) => ({ word, count }));
-
-    return {
-      words,
-      sentences: sentencesList.length,
-      readingSecondsLabel,
-      repeatedWords,
-      sentencesList
-    };
-  }
-
-  function renderEditoAtelierTab(project, ed) {
-    const text = getActiveManuscriptText(ed);
-    const stats = analyzeText(text);
-    const activeVer = ed.activeVersion || 'V1';
-
-    const repeatedChips = stats.repeatedWords.length
-      ? stats.repeatedWords
-          .map(
-            item =>
-              `<button type="button" onclick="app.highlightWordInNote('${esc(item.word)}')" class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg text-xs font-medium bg-[#F4F7FB] hover:bg-[#2589F5]/15 text-[#0B132B] border border-[#E2E8F0] cursor-pointer" title="Ajouter à la note éditoriale">
-                <span>« ${esc(item.word)} »</span>
-                <span class="px-1.5 py-0.5 rounded-full bg-[#7F00FF]/15 text-[#7F00FF] font-bold">${item.count}×</span>
-              </button>`
-          )
-          .join('')
-      : `<span class="text-xs text-[#5A677D]">Aucune répétition fréquente détectée sur les mots ≥ 5 lettres.</span>`;
-
-    const readingPreviewHtml = db.voiceReadingActive
-      ? stats.sentencesList
-          .map((sentence, idx) => {
-            const isCurrent = idx === db.voiceReadingIndex;
-            return `<span class="inline px-1.5 py-0.5 rounded-md transition-colors ${
-              isCurrent
-                ? 'bg-[#7F00FF]/20 text-[#0B132B] font-semibold ring-2 ring-[#7F00FF]/40'
-                : 'text-slate-700'
-            }">${esc(sentence)} </span>`;
-          })
-          .join('')
-      : '';
-
-    return `
-      <div class="grid grid-cols-1 xl:grid-cols-12 gap-6">
-        <div class="xl:col-span-7 space-y-5">
-          <div class="bg-white rounded-2xl border border-[#E2E8F0] p-5 shadow-xs">
-            <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 pb-4 border-b border-[#E2E8F0]">
-              <div>
-                <span class="text-xs font-bold uppercase tracking-wider text-[#1D4ED8]">Lecture à voix haute</span>
-                <h2 class="font-editorial text-lg font-semibold text-[#0B132B]">Manuscrit en cours (${esc(activeVer)})</h2>
-              </div>
-
-              <div class="flex items-center gap-2 flex-wrap">
-                <button
-                  type="button"
-                  onclick="app.toggleVoiceReadingSim()"
-                  class="rounded-xl px-3.5 py-2 text-xs font-semibold inline-flex items-center gap-1.5 cursor-pointer ${
-                    db.voiceReadingActive
-                      ? 'bg-[#7F00FF] text-white'
-                      : 'bg-[#F4F7FB] hover:bg-[#2589F5]/15 text-[#0B132B] border border-[#E2E8F0]'
-                  }"
-                >
-                  <span>${db.voiceReadingActive ? '⏹ Arrêter le guide oral' : '🎙️ Simuler lecture à voix haute'}</span>
-                </button>
-                <button
-                  type="button"
-                  onclick="app.markReadAloudValidated()"
-                  class="rounded-xl px-3.5 py-2 text-xs font-semibold bg-[#0047AB]/10 hover:bg-[#0047AB]/20 text-[#0047AB] cursor-pointer"
-                >
-                  ✓ Valider l'oral
-                </button>
-              </div>
-            </div>
-
-            <div class="grid grid-cols-3 gap-3 my-4">
-              <div class="rounded-xl bg-[#F4F7FB] border border-[#E2E8F0] p-3">
-                <div class="text-[11px] uppercase tracking-wider text-[#5A677D] font-semibold">Volume</div>
-                <div class="text-lg font-bold text-[#0B132B] mt-0.5">${stats.words} <span class="text-xs font-normal text-[#5A677D]">mots</span></div>
-              </div>
-              <div class="rounded-xl bg-[#F4F7FB] border border-[#E2E8F0] p-3">
-                <div class="text-[11px] uppercase tracking-wider text-[#5A677D] font-semibold">Durée à voix haute</div>
-                <div class="text-lg font-bold text-[#1D4ED8] mt-0.5">${stats.readingSecondsLabel}</div>
-              </div>
-              <div class="rounded-xl bg-[#F4F7FB] border border-[#E2E8F0] p-3">
-                <div class="text-[11px] uppercase tracking-wider text-[#5A677D] font-semibold">Phrases repérées</div>
-                <div class="text-lg font-bold text-[#7F00FF] mt-0.5">${stats.sentences}</div>
-              </div>
-            </div>
-
-            ${
-              db.voiceReadingActive
-                ? `
-              <div class="mb-4 rounded-xl border-2 border-[#7F00FF]/40 bg-[#7F00FF]/5 p-4">
-                <div class="flex items-center justify-between gap-2 mb-2">
-                  <span class="text-xs font-bold uppercase tracking-wider text-[#7F00FF]">
-                    Guide de lecture à voix haute — Phrase ${Math.min(db.voiceReadingIndex + 1, Math.max(1, stats.sentencesList.length))} / ${Math.max(1, stats.sentencesList.length)}
-                  </span>
-                  <div class="flex items-center gap-1.5">
-                    <button type="button" onclick="app.stepVoicePhrase(-1)" class="px-2.5 py-1 rounded-lg bg-white border border-[#E2E8F0] text-xs font-semibold cursor-pointer">← Préc.</button>
-                    <button type="button" onclick="app.stepVoicePhrase(1)" class="px-2.5 py-1 rounded-lg bg-white border border-[#E2E8F0] text-xs font-semibold cursor-pointer">Suiv. →</button>
-                  </div>
-                </div>
-                <div class="manuscript-editor text-sm sm:text-base">${readingPreviewHtml || '<span class="text-slate-500">Aucun texte à lire.</span>'}</div>
-              </div>
-            `
-                : ''
-            }
-
-            <label for="manuscript-textarea" class="block text-xs font-semibold text-[#5A677D] mb-1.5">
-              Texte de la version ${esc(activeVer)} (modifiable en direct)
-            </label>
-            <textarea
-              id="manuscript-textarea"
-              rows="10"
-              oninput="app.updateManuscriptText(this.value)"
-              placeholder="Rédigez ou collez ici le texte du manuscrit pour tester sa fluidité à voix haute..."
-              class="manuscript-editor w-full rounded-xl border border-[#E2E8F0] bg-[#F4F7FB]/50 focus:bg-white p-4 text-[#0B132B] focus:outline-none focus:ring-2 focus:ring-[#1D4ED8]"
-            >${esc(text)}</textarea>
-
-            <div class="mt-4 pt-4 border-t border-[#E2E8F0]">
-              <div class="flex items-center justify-between gap-2 mb-2">
-                <span class="text-xs font-bold uppercase tracking-wider text-[#5A677D]">
-                  Mots répétés à surveiller (cliquer pour noter dans la note)
-                </span>
-              </div>
-              <div class="flex flex-wrap gap-2">${repeatedChips}</div>
-            </div>
-          </div>
-        </div>
-
-        <div class="xl:col-span-5">
-          <div class="bg-white rounded-2xl border border-[#E2E8F0] p-5 shadow-xs space-y-4">
-            <div class="flex items-start justify-between gap-3 pb-3.5 border-b border-[#E2E8F0]">
-              <div>
-                <span class="text-xs font-bold uppercase tracking-wider text-[#7F00FF]">Sandwich bienveillant</span>
-                <h2 class="font-editorial text-lg font-semibold text-[#0B132B]">Note éditoriale</h2>
-                <p class="text-xs text-[#5A677D] mt-0.5">Structurée pour un accompagnement clair et constructif de l’auteur.</p>
-              </div>
-              <button
-                type="button"
-                onclick="app.copyEditorialNote()"
-                class="btn-edito-primary rounded-xl px-3.5 py-2 text-xs font-semibold shrink-0 cursor-pointer"
-              >
-                📋 Copier la note
-              </button>
-            </div>
-
-            <div class="rounded-xl border border-emerald-200 bg-emerald-50/40 p-3.5">
-              <label for="note-strengths" class="block text-xs font-bold uppercase tracking-wider text-emerald-800 mb-1.5">
-                1. Points forts &amp; ce qui fonctionne déjà
-              </label>
-              <textarea
-                id="note-strengths"
-                rows="3"
-                oninput="app.updateNoteField('strengths', this.value)"
-                placeholder="Ce qui touche à la lecture, la justesse d’une scène, l’univers..."
-                class="w-full rounded-lg border border-emerald-200 bg-white p-2.5 text-sm text-[#0B132B] focus:outline-none focus:ring-2 focus:ring-emerald-500"
-              >${esc(ed.note.strengths)}</textarea>
-            </div>
-
-            <div class="rounded-xl border border-[#2589F5]/30 bg-[#F4F7FB]/70 p-3.5">
-              <label for="note-axes" class="block text-xs font-bold uppercase tracking-wider text-[#0047AB] mb-1.5">
-                2. Axes de travail (Structure, Rythme, Personnages, Potentiel visuel)
-              </label>
-              <textarea
-                id="note-axes"
-                rows="5"
-                oninput="app.updateNoteField('axes', this.value)"
-                placeholder="• Structure & rythme : ...&#10;• Personnages : ...&#10;• Potentiel visuel : ..."
-                class="w-full rounded-lg border border-[#E2E8F0] bg-white p-2.5 text-sm text-[#0B132B] focus:outline-none focus:ring-2 focus:ring-[#1D4ED8]"
-              >${esc(ed.note.axes)}</textarea>
-            </div>
-
-            <div class="rounded-xl border border-[#7F00FF]/30 bg-[#7F00FF]/5 p-3.5">
-              <label for="note-projection" class="block text-xs font-bold uppercase tracking-wider text-[#7F00FF] mb-1.5">
-                3. Projection &amp; prochaine étape
-              </label>
-              <textarea
-                id="note-projection"
-                rows="3"
-                oninput="app.updateNoteField('projection', this.value)"
-                placeholder="Ce que la prochaine version va révéler et le cap fixé ensemble..."
-                class="w-full rounded-lg border border-[#7F00FF]/25 bg-white p-2.5 text-sm text-[#0B132B] focus:outline-none focus:ring-2 focus:ring-[#7F00FF]"
-              >${esc(ed.note.projection)}</textarea>
-            </div>
-          </div>
-        </div>
-      </div>
-    `;
-  }
-
-  function renderEditoVersionsTab(project, ed) {
-    const activeVer = ed.activeVersion || 'V1';
-
-    return `
-      <div class="grid grid-cols-1 xl:grid-cols-12 gap-6">
-        <div class="xl:col-span-7 space-y-5">
-          <div class="bg-white rounded-2xl border border-[#E2E8F0] p-5 shadow-xs">
-            <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 pb-4 border-b border-[#E2E8F0]">
-              <div>
-                <span class="text-xs font-bold uppercase tracking-wider text-[#1D4ED8]">Suivi des jets</span>
-                <h2 class="font-editorial text-lg font-semibold text-[#0B132B]">Versions V1 / V2 / V3</h2>
-              </div>
-
-              <div class="flex flex-col sm:flex-row sm:items-center gap-2">
-                <label for="workflow-status-select" class="text-xs font-semibold text-[#5A677D]">Statut auteur :</label>
-                <select
-                  id="workflow-status-select"
-                  onchange="app.updateWorkflowStatus(this.value)"
-                  class="rounded-xl border border-[#E2E8F0] bg-[#F4F7FB] px-3 py-2 text-xs font-semibold text-[#0B132B] focus:outline-none focus:ring-2 focus:ring-[#1D4ED8]"
-                >
-                  ${WORKFLOW_STATES.map(
-                    st =>
-                      `<option value="${esc(st)}" ${
-                        ed.workflowStatus === st ? 'selected' : ''
-                      }>${esc(st)}</option>`
-                  ).join('')}
-                </select>
-              </div>
-            </div>
-
-            <div class="flex items-center gap-2 my-4 flex-wrap">
-              ${['V1', 'V2', 'V3'].map(ver => {
-                const isSelected = activeVer === ver;
-                const len = ((ed.versions && ed.versions[ver]) || '').trim().length;
-                return `
-                  <button
-                    type="button"
-                    onclick="app.switchVersion('${ver}')"
-                    class="rounded-xl px-4 py-2 text-xs font-bold border transition cursor-pointer inline-flex items-center gap-2 ${
-                      isSelected
-                        ? 'bg-[#1D4ED8] text-white border-[#1D4ED8] shadow-xs'
-                        : 'bg-[#F4F7FB] text-[#0B132B] border-[#E2E8F0] hover:bg-white'
-                    }"
-                  >
-                    <span>Version ${ver}</span>
-                    <span class="px-1.5 py-0.5 rounded-full text-[10px] ${
-                      isSelected ? 'bg-white/20 text-white' : 'bg-white text-[#5A677D]'
-                    }">${len > 0 ? len + ' car.' : 'Vide'}</span>
-                  </button>
-                `;
-              }).join('')}
-
-              <button
-                type="button"
-                onclick="app.duplicateVersionToNext()"
-                class="ml-auto rounded-xl px-3.5 py-2 text-xs font-semibold bg-[#7F00FF]/10 hover:bg-[#7F00FF]/20 text-[#7F00FF] cursor-pointer"
-              >
-                + Dupliquer vers version suivante
-              </button>
-            </div>
-
-            <textarea
-              rows="11"
-              oninput="app.updateSpecificVersion('${esc(activeVer)}', this.value)"
-              placeholder="Contenu de la version ${esc(activeVer)}..."
-              class="manuscript-editor w-full rounded-xl border border-[#E2E8F0] bg-[#F4F7FB]/50 focus:bg-white p-4 text-[#0B132B] focus:outline-none focus:ring-2 focus:ring-[#1D4ED8]"
-            >${esc((ed.versions && ed.versions[activeVer]) || '')}</textarea>
-          </div>
-        </div>
-
-        <div class="xl:col-span-5">
-          <div class="bg-white rounded-2xl border border-[#E2E8F0] p-5 shadow-xs space-y-4">
-            <div class="pb-3.5 border-b border-[#E2E8F0]">
-              <span class="text-xs font-bold uppercase tracking-wider text-[#7F00FF]">Traçabilité</span>
-              <h2 class="font-editorial text-lg font-semibold text-[#0B132B]">Journal d'échanges</h2>
-              <p class="text-xs text-[#5A677D] mt-0.5">Visios, retours par mail et jalons de réécriture avec l’auteur.</p>
-            </div>
-
-            <form onsubmit="app.addExchange(event)" class="rounded-xl bg-[#F4F7FB] border border-[#E2E8F0] p-3.5 space-y-3">
-              <div class="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
-                <div>
-                  <label class="block text-[11px] font-bold uppercase text-[#5A677D] mb-1">Date</label>
-                  <input
-                    type="text"
-                    name="date"
-                    value="${esc(new Date().toLocaleDateString('fr-FR'))}"
-                    required
-                    class="w-full rounded-lg border border-[#E2E8F0] bg-white px-2.5 py-1.5 text-xs"
-                  />
-                </div>
-                <div>
-                  <label class="block text-[11px] font-bold uppercase text-[#5A677D] mb-1">Canal</label>
-                  <select name="channel" class="w-full rounded-lg border border-[#E2E8F0] bg-white px-2.5 py-1.5 text-xs">
-                    <option value="Visio / Téléphone">Visio / Téléphone</option>
-                    <option value="Mail / Manuscrit">Mail / Manuscrit</option>
-                    <option value="Lecture à voix haute">Lecture à voix haute</option>
-                    <option value="Note éditoriale">Note éditoriale</option>
-                  </select>
-                </div>
-              </div>
-              <div>
-                <label class="block text-[11px] font-bold uppercase text-[#5A677D] mb-1">Résumé de l'échange</label>
-                <input
-                  type="text"
-                  name="summary"
-                  required
-                  placeholder="Ex. Point de 20 min : validation du rythme de la scène 3..."
-                  class="w-full rounded-lg border border-[#E2E8F0] bg-white px-3 py-2 text-xs"
-                />
-              </div>
-              <button type="submit" class="btn-edito-primary w-full rounded-xl py-2 text-xs font-semibold cursor-pointer">
-                + Ajouter au journal
-              </button>
-            </form>
-
-            <div class="space-y-2.5 max-h-[360px] overflow-y-auto pr-1">
-              ${
-                (ed.exchanges && ed.exchanges.length
-                  ? ed.exchanges
-                  : []
-                )
-                  .map(
-                    ex => `
-                  <div class="rounded-xl border border-[#E2E8F0] bg-white p-3.5 flex items-start justify-between gap-3">
-                    <div>
-                      <div class="flex items-center gap-2 flex-wrap">
-                        <span class="text-xs font-bold text-[#1D4ED8]">${esc(ex.date)}</span>
-                        <span class="text-[11px] font-semibold px-2 py-0.5 rounded-full bg-[#2589F5]/10 text-[#0047AB]">${esc(
-                          ex.channel
-                        )}</span>
-                      </div>
-                      <p class="text-sm text-[#0B132B] mt-1">${esc(ex.summary)}</p>
-                    </div>
-                    <button
-                      type="button"
-                      onclick="app.deleteExchange('${esc(ex.id)}')"
-                      class="text-slate-400 hover:text-rose-600 text-xs px-1.5 py-1 cursor-pointer"
-                      title="Supprimer l'entrée"
-                    >
-                      ✕
-                    </button>
-                  </div>
-                `
-                  )
-                  .join('') ||
-                `<p class="text-xs text-[#5A677D] text-center py-6">Aucun échange consigné pour le moment.</p>`
-              }
-            </div>
-          </div>
-        </div>
-      </div>
-    `;
-  }
-
-  function renderEditoCopyTab(project, ed) {
-    const doneCount = COPY_CHECKLIST_ITEMS.filter(
-      item => ed.copyChecklist && ed.copyChecklist[item.id]
-    ).length;
-    const pct = Math.round((doneCount / COPY_CHECKLIST_ITEMS.length) * 100);
-
-    return `
-      <div class="grid grid-cols-1 xl:grid-cols-12 gap-6">
-        <div class="xl:col-span-7 bg-white rounded-2xl border border-[#E2E8F0] p-5 shadow-xs space-y-4">
-          <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 pb-3.5 border-b border-[#E2E8F0]">
-            <div>
-              <span class="text-xs font-bold uppercase tracking-wider text-[#1D4ED8]">Contrôle qualité</span>
-              <h2 class="font-editorial text-lg font-semibold text-[#0B132B]">Check-list Éditoriale &amp; Ortho-Typographique</h2>
-            </div>
-            <span class="text-xs font-bold px-3 py-1 rounded-full bg-[#0047AB]/10 text-[#0047AB]">
-              ${doneCount} / ${COPY_CHECKLIST_ITEMS.length} validés (${pct}%)
-            </span>
-          </div>
-
-          <div class="space-y-3">
-            ${COPY_CHECKLIST_ITEMS.map(item => {
-              const checked = Boolean(ed.copyChecklist && ed.copyChecklist[item.id]);
-              return `
-                <label class="flex items-start gap-3.5 p-3.5 rounded-xl border transition cursor-pointer ${
-                  checked
-                    ? 'border-[#1D4ED8]/40 bg-[#2589F5]/5'
-                    : 'border-[#E2E8F0] bg-[#F4F7FB]/60 hover:bg-white'
-                }">
-                  <input
-                    type="checkbox"
-                    ${checked ? 'checked' : ''}
-                    onchange="app.toggleCopyItem('${item.id}')"
-                    class="mt-1 w-4 h-4 accent-[#1D4ED8] rounded cursor-pointer"
-                  />
-                  <div>
-                    <div class="text-sm font-semibold ${
-                      checked ? 'text-[#0047AB]' : 'text-[#0B132B]'
-                    }">${esc(item.label)}</div>
-                    <p class="text-xs text-[#5A677D] mt-0.5">${esc(item.detail)}</p>
-                  </div>
-                </label>
-              `;
-            }).join('')}
-          </div>
-        </div>
-
-        <div class="xl:col-span-5 bg-white rounded-2xl border border-[#E2E8F0] p-5 shadow-xs flex flex-col justify-between space-y-4">
-          <div class="space-y-3">
-            <div class="pb-3 border-b border-[#E2E8F0]">
-              <span class="text-xs font-bold uppercase tracking-wider text-[#7F00FF]">Atelier de copie</span>
-              <h2 class="font-editorial text-lg font-semibold text-[#0B132B]">Repères typographiques, décors &amp; scènes</h2>
-              <p class="text-xs text-[#5A677D] mt-0.5">
-                Notez ici les vérifications de cohérence (prénoms, décors, ponctuation) et vos propositions de découpage visuel.
-              </p>
-            </div>
-
-            <textarea
-              rows="12"
-              oninput="app.updateCopyNotes(this.value)"
-              placeholder="Ex. Vérifier les majuscules des titres, la cohérence des noms de lieux, les temps forts visuels pour chaque double-page..."
-              class="w-full rounded-xl border border-[#E2E8F0] bg-[#F4F7FB]/50 focus:bg-white p-3.5 text-sm text-[#0B132B] focus:outline-none focus:ring-2 focus:ring-[#1D4ED8]"
-            >${esc(ed.copyNotes || '')}</textarea>
-          </div>
-
-          <div class="rounded-xl bg-[#F4F7FB] border border-[#E2E8F0] p-3.5 flex items-center justify-between gap-3">
-            <div class="text-xs text-[#5A677D]">
-              <strong class="text-[#0B132B]">Astuce Lune &amp; Papier :</strong> une fois les 6 points cochés, vous pouvez marquer la préparation de copie comme prête pour le verrouillage.
-            </div>
-            <button
-              type="button"
-              onclick="app.completeCopyGate()"
-              class="btn-edito-primary rounded-xl px-3.5 py-2 text-xs font-semibold shrink-0 cursor-pointer"
-            >
-              Valider la copie
-            </button>
-          </div>
-        </div>
-      </div>
-    `;
-  }
-
-  function renderEditoLockTab(project, ed) {
-    const allGatesChecked = GATE_CRITERIA.every(g => Boolean(ed.gates && ed.gates[g.id]));
-    const pct = computeEditoProgress(ed);
-
-    return `
-      <div class="grid grid-cols-1 xl:grid-cols-12 gap-6">
-        <div class="xl:col-span-7 bg-white rounded-2xl border border-[#E2E8F0] p-5 shadow-xs space-y-4">
-          <div class="flex items-center justify-between gap-3 pb-3.5 border-b border-[#E2E8F0]">
-            <div>
-              <span class="text-xs font-bold uppercase tracking-wider text-[#7F00FF]">Porte de sortie Phase 1</span>
-              <h2 class="font-editorial text-lg font-semibold text-[#0B132B]">Critères avant « Bon pour storyboard »</h2>
-            </div>
-            <span class="text-xs font-bold px-3 py-1 rounded-full bg-[#7F00FF]/10 text-[#7F00FF]">
-              Progression : ${pct}%
-            </span>
-          </div>
-
-          <div class="space-y-3">
-            ${GATE_CRITERIA.map(criterion => {
-              const ok = Boolean(ed.gates && ed.gates[criterion.id]);
-              return `
-                <div class="flex items-start justify-between gap-4 p-3.5 rounded-xl border ${
-                  ok ? 'border-emerald-300 bg-emerald-50/40' : 'border-[#E2E8F0] bg-[#F4F7FB]/60'
-                }">
-                  <label class="flex items-start gap-3 cursor-pointer flex-1">
-                    <input
-                      type="checkbox"
-                      ${ok ? 'checked' : ''}
-                      onchange="app.toggleGate('${criterion.id}')"
-                      class="mt-1 w-4 h-4 accent-[#0047AB] rounded cursor-pointer"
-                    />
-                    <div>
-                      <div class="text-sm font-semibold text-[#0B132B]">${esc(criterion.title)}</div>
-                      <p class="text-xs text-[#5A677D] mt-0.5">${esc(criterion.description)}</p>
-                    </div>
-                  </label>
-                  <span class="text-[11px] font-bold px-2.5 py-1 rounded-full shrink-0 ${
-                    ok ? 'bg-emerald-100 text-emerald-800' : 'bg-amber-100 text-amber-800'
-                  }">${ok ? 'Validé' : 'À vérifier'}</span>
-                </div>
-              `;
-            }).join('')}
-          </div>
-        </div>
-
-        <div class="xl:col-span-5 space-y-5">
-          <div class="bg-white rounded-2xl border border-[#E2E8F0] p-5 shadow-xs space-y-4">
-            <div class="pb-3.5 border-b border-[#E2E8F0]">
-              <span class="text-xs font-bold uppercase tracking-wider text-[#1D4ED8]">Décision éditoriale</span>
-              <h2 class="font-editorial text-lg font-semibold text-[#0B132B]">Statut « Bon pour storyboard »</h2>
-            </div>
-
-            ${
-              ed.lockedForStoryboard
-                ? `
-              <div class="rounded-2xl bg-emerald-50 border border-emerald-200 p-4 space-y-2">
-                <div class="text-sm font-bold text-emerald-900">✓ Texte verrouillé — Bon pour storyboard</div>
-                <p class="text-xs text-emerald-800">
-                  Verrouillé le <strong>${esc(ed.lockedAt || 'aujourd’hui')}</strong> sur la version <strong>${esc(
-                    ed.activeVersion || 'V1'
-                  )}</strong>. Le manuscrit est prêt pour le cadrage artistique et le découpage en doubles-pages.
-                </p>
-              </div>
-            `
-                : `
-              <div class="rounded-2xl bg-[#F4F7FB] border border-[#E2E8F0] p-4 space-y-2">
-                <div class="text-sm font-bold text-[#0B132B]">En attente de verrouillage</div>
-                <p class="text-xs text-[#5A677D]">
-                  ${
-                    allGatesChecked
-                      ? 'Tous les critères sont cochés : vous pouvez verrouiller le texte en toute sérénité.'
-                      : 'Vous pouvez cocher les critères ci-contre ou forcer le verrouillage si le texte est prêt pour le storyboard.'
-                  }
-                </p>
-              </div>
-            `
-            }
-
-            <div>
-              <label for="studio-handover" class="block text-xs font-bold uppercase tracking-wider text-[#5A677D] mb-1.5">
-                Note de transmission vers la phase Storyboard &amp; Studio
-              </label>
-              <textarea
-                id="studio-handover"
-                rows="4"
-                oninput="app.updateStudioHandover(this.value)"
-                placeholder="Ambiance souhaitée, points d’attention visuels, rythme des doubles-pages..."
-                class="w-full rounded-xl border border-[#E2E8F0] bg-[#F4F7FB]/50 focus:bg-white p-3 text-sm text-[#0B132B] focus:outline-none focus:ring-2 focus:ring-[#7F00FF]"
-              >${esc(ed.studioHandoverNote || '')}</textarea>
-            </div>
-
-            <div class="flex flex-col sm:flex-row gap-3 pt-1">
-              <button
-                type="button"
-                onclick="app.toggleStoryboardLock()"
-                class="flex-1 rounded-xl px-4 py-3 text-sm font-bold cursor-pointer ${
-                  ed.lockedForStoryboard
-                    ? 'bg-slate-800 hover:bg-slate-900 text-white'
-                    : 'btn-edito-violet'
-                }"
-              >
-                ${
-                  ed.lockedForStoryboard
-                    ? '🔓 Déverrouiller le texte'
-                    : '🔒 Verrouiller « Bon pour storyboard »'
-                }
-              </button>
-              <button
-                type="button"
-                onclick="app.copyHandoverSummary()"
-                class="rounded-xl border border-[#E2E8F0] bg-white hover:bg-[#F4F7FB] px-4 py-3 text-xs font-semibold text-[#0B132B] cursor-pointer"
-              >
-                📋 Récap Studio
-              </button>
-            </div>
-          </div>
-        </div>
-      </div>
-    `;
-  }
-
-  function renderPhase1EditorialWorkspace(project) {
-    const ed = project.editorial || buildEditorialDataForProject(project);
-    const activeEditoTab = db.editoTab || 'atelier';
-    const copyDone = COPY_CHECKLIST_ITEMS.filter(i => ed.copyChecklist && ed.copyChecklist[i.id]).length;
-
-    let tabBodyHtml = '';
-    if (activeEditoTab === 'versions') {
-      tabBodyHtml = renderEditoVersionsTab(project, ed);
-    } else if (activeEditoTab === 'copie') {
-      tabBodyHtml = renderEditoCopyTab(project, ed);
-    } else if (activeEditoTab === 'verrouillage') {
-      tabBodyHtml = renderEditoLockTab(project, ed);
-    } else {
-      tabBodyHtml = renderEditoAtelierTab(project, ed);
-    }
-
-    return `
-      <div class="mt-4 rounded-2xl border border-[#2575EB] bg-[#F4F7FB] p-4 sm:p-5 shadow-xs space-y-5">
-        <!-- Bandeau d'étape du workflow : Écriture, Édition & Préparation du Texte -->
-        <div class="rounded-2xl bg-gradient-to-r from-[#2589F5] via-[#1D4ED8] to-[#0047AB] text-white px-5 py-4 shadow-sm flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
-          <div class="flex items-center gap-3.5">
-            <div class="w-10 h-10 rounded-xl bg-white/15 border border-white/25 flex items-center justify-center font-editorial font-semibold text-base shrink-0">
-              01
-            </div>
-            <div>
-              <div class="text-[11px] uppercase tracking-wider text-blue-100 font-semibold">
-                Étape du workflow éditorial
-              </div>
-              <div class="font-editorial text-lg sm:text-xl font-semibold leading-snug">
-                Écriture, Édition &amp; Préparation du Texte
-              </div>
-            </div>
-          </div>
-          <div class="text-xs sm:text-sm text-blue-100 font-medium">
-            Voix haute • Note éditoriale • Versions V1–V3 • Copie &amp; Verrouillage
-          </div>
-        </div>
-
-        <!-- Navigation des 4 modules de la Phase 1 -->
-        <nav aria-label="Modules de la Phase 1" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
-          <button
-            type="button"
-            onclick="app.setEditoTab('atelier')"
-            class="edito-tab-btn rounded-2xl border border-[#E2E8F0] bg-white/75 p-3.5 text-left cursor-pointer ${activeEditoTab === 'atelier' ? 'active' : ''}"
-          >
-            <div class="flex items-center justify-between mb-1">
-              <span class="text-xs font-bold uppercase tracking-wider text-[#1D4ED8]">01 • Lecture &amp; Note</span>
-              <span class="text-xs px-2 py-0.5 rounded-full bg-[#2589F5]/10 text-[#0047AB] font-semibold">Voix haute</span>
-            </div>
-            <div class="font-semibold text-sm text-[#0B132B]">Atelier de Lecture &amp; Note Éditoriale</div>
-            <p class="text-xs text-[#5A677D] mt-0.5">Rythme oral, répétitions &amp; sandwich bienveillant</p>
-          </button>
-
-          <button
-            type="button"
-            onclick="app.setEditoTab('versions')"
-            class="edito-tab-btn rounded-2xl border border-[#E2E8F0] bg-white/75 p-3.5 text-left cursor-pointer ${activeEditoTab === 'versions' ? 'active' : ''}"
-          >
-            <div class="flex items-center justify-between mb-1">
-              <span class="text-xs font-bold uppercase tracking-wider text-[#1D4ED8]">02 • Versions &amp; Suivi</span>
-              <span class="text-xs px-2 py-0.5 rounded-full bg-[#7F00FF]/10 text-[#7F00FF] font-semibold">${esc(ed.activeVersion || 'V1')}</span>
-            </div>
-            <div class="font-semibold text-sm text-[#0B132B]">Versions V1 / V2 / V3 &amp; Échanges</div>
-            <p class="text-xs text-[#5A677D] mt-0.5">Comparaison des jets, statut auteur &amp; journal</p>
-          </button>
-
-          <button
-            type="button"
-            onclick="app.setEditoTab('copie')"
-            class="edito-tab-btn rounded-2xl border border-[#E2E8F0] bg-white/75 p-3.5 text-left cursor-pointer ${activeEditoTab === 'copie' ? 'active' : ''}"
-          >
-            <div class="flex items-center justify-between mb-1">
-              <span class="text-xs font-bold uppercase tracking-wider text-[#1D4ED8]">03 • Préparation de Copie</span>
-              <span class="text-xs px-2 py-0.5 rounded-full bg-[#0047AB]/10 text-[#0047AB] font-semibold">${copyDone}/${COPY_CHECKLIST_ITEMS.length}</span>
-            </div>
-            <div class="font-semibold text-sm text-[#0B132B]">Copie &amp; Check-list Ortho-Typo</div>
-            <p class="text-xs text-[#5A677D] mt-0.5">Vocabulaire riche, ponctuation, cohérence &amp; scènes</p>
-          </button>
-
-          <button
-            type="button"
-            onclick="app.setEditoTab('verrouillage')"
-            class="edito-tab-btn rounded-2xl border border-[#E2E8F0] bg-white/75 p-3.5 text-left cursor-pointer ${activeEditoTab === 'verrouillage' ? 'active' : ''}"
-          >
-            <div class="flex items-center justify-between mb-1">
-              <span class="text-xs font-bold uppercase tracking-wider text-[#7F00FF]">04 • Validation Finale</span>
-              <span class="text-xs px-2 py-0.5 rounded-full font-semibold ${
-                ed.lockedForStoryboard
-                  ? 'bg-emerald-100 text-emerald-800'
-                  : 'bg-slate-100 text-[#0047AB]'
-              }">${ed.lockedForStoryboard ? 'Verrouillé ✓' : esc(ed.workflowStatus)}</span>
-            </div>
-            <div class="font-semibold text-sm text-[#0B132B]">Verrouillage « Bon pour storyboard »</div>
-            <p class="text-xs text-[#5A677D] mt-0.5">Critères de passage &amp; fiche de bascule Studio</p>
-          </button>
-        </nav>
-
-        <div>${tabBodyHtml}</div>
-      </div>
-    `;
-  }
-
-  function renderProjectsDashboard() {
-    const q = (db.search || '').toLowerCase().trim();
-    const filtered = db.projects.filter(p =>
-      !q ||
-      p.title.toLowerCase().includes(q) ||
-      p.author.toLowerCase().includes(q) ||
-      p.phaseLabel.toLowerCase().includes(q) ||
-      p.status.toLowerCase().includes(q)
-    );
-
-    const activeCount = db.projects.length;
-    const editionCount = db.projects.filter(p => calcProgress(p) < 60).length;
-    const fabCount = db.projects.filter(p => calcProgress(p) >= 60).length;
-
-    return `
-      <div class="section-head">
-        <h1 class="serif-title">Projets en cours</h1>
-        <div class="head-controls">
-          <div class="search-box">
-            <span class="search-icon">🔍</span>
-            <input type="text" placeholder="Rechercher un projet..." value="${esc(db.search)}" oninput="app.onSearch(this.value)" />
-          </div>
-          <button class="btn-new" onclick="app.openModal()">+ Nouveau Projet</button>
-        </div>
-      </div>
-
-      <div class="kpi-row">
-        <div class="kpi-box k-amber">
-          <div class="kpi-top">
-            <span>Projets actifs</span>
-            <span class="dots"><span class="dot"></span><span class="dot"></span></span>
-          </div>
-          <div class="kpi-number">${activeCount}</div>
-          <div class="kpi-bar-track">
-            <div class="kpi-bar-fill" style="width:68%; background:var(--ambre-attente);"></div>
-          </div>
-        </div>
-
-        <div class="kpi-box k-violet">
-          <div class="kpi-top">
-            <span>En phase d’édition</span>
-            <span class="dots"><span class="dot"></span><span class="dot"></span><span class="dot"></span></span>
-          </div>
-          <div class="kpi-number">${editionCount}</div>
-          <div class="kpi-bar-track">
-            <div class="kpi-bar-fill" style="width:52%; background:var(--violet);"></div>
-          </div>
-        </div>
-
-        <div class="kpi-box k-blue">
-          <div class="kpi-top">
-            <span>En fabrication &amp; suite</span>
-            <span class="dots"><span class="dot"></span><span class="dot"></span><span class="dot"></span></span>
-          </div>
-          <div class="kpi-number">${fabCount}</div>
-          <div class="kpi-bar-track">
-            <div class="kpi-bar-fill" style="width:45%; background:var(--bleu-roi);"></div>
-          </div>
-        </div>
-      </div>
-
-      <div class="panel-card">
-        <div class="panel-title">
-          <span>Suivi des projets</span>
-          <span style="font-size:0.8rem; color:var(--text-muted); font-weight:400;">Cliquez sur un projet pour ouvrir son workflow complet (de la Phase 0 amont à Dilicom/Electre)</span>
-        </div>
-        <div class="table-wrap">
-          <table>
-            <thead>
-              <tr>
-                <th>TITRE</th>
-                <th>AUTEUR</th>
-                <th>PHASE</th>
-                <th>DATE LIMITE</th>
-                <th>PROGRESSION</th>
-                <th>STATUT</th>
-              </tr>
-            </thead>
-            <tbody>
-              ${filtered.map(p => {
-                const pct = calcProgress(p);
-                return `
-                  <tr class="project-row" onclick="app.openWorkflow('${p.id}')">
-                    <td><strong>${esc(p.title)}</strong></td>
-                    <td>${esc(p.author)}</td>
-                    <td>${esc(p.phaseLabel)}</td>
-                    <td>${esc(p.deadline || '—')}</td>
-                    <td>
-                      <div class="prog-cell">
-                        <div class="mini-track"><div class="mini-fill" style="width:${pct}%;"></div></div>
-                        <span>${pct}%</span>
-                      </div>
-                    </td>
-                    <td>${statusPill(p.status)}</td>
-                  </tr>
-                `;
-              }).join('')}
-              ${!filtered.length ? `<tr><td colspan="6" style="text-align:center; color:var(--text-muted); padding:24px;">Aucun projet ne correspond à votre recherche.</td></tr>` : ''}
-            </tbody>
-          </table>
-        </div>
-      </div>
-    `;
-  }
-
-  function renderWorkflowView() {
-    const project = getCurrentWorkflowProject();
-    if (!project) return renderProjectsDashboard();
-
-    const pct = calcProgress(project);
-    const activeStage = typeof db.activeWorkflowPhase === 'number' ? db.activeWorkflowPhase : 0;
-    const currentPhase = PHASES_TEMPLATE.find(ph => ph.num === activeStage) || PHASES_TEMPLATE[0];
-    const phaseSteps = project.steps.filter(s => s.phaseNum === currentPhase.num);
-    const phDone = phaseSteps.filter(s => normalizeStepState(s.state) === 'Fait').length;
-
-    return `
-      <div class="workflow-top">
-        <div style="display:flex; align-items:center; gap:12px; flex-wrap:wrap;">
-          <button class="btn-secondary" onclick="app.backToProjects()">← Retour aux projets</button>
-          <div>
-            <h1 class="serif-title" style="font-size:1.65rem;">${esc(project.title)}</h1>
-            <div style="font-size:0.84rem; color:var(--text-muted);">
-              ${esc(project.author)} • ${esc(project.type)} • Technique : ${esc(project.technique)} • Échéance : ${esc(project.deadline || 'À définir')}
-            </div>
-          </div>
-        </div>
-        <div style="display:flex; align-items:center; gap:10px; flex-wrap:wrap;">
-          <select class="step-select" style="padding:7px 10px; font-weight:600;" onchange="app.changeProjectStatus('${project.id}', this.value)">
-            ${['Idée / Amont','Planifié','En cours','En attente','BAT Validé','Terminé'].map(st =>
-              `<option value="${st}" ${project.status === st ? 'selected' : ''}>Statut : ${st}</option>`
-            ).join('')}
-          </select>
-          <span class="pill pill-encours" style="background:var(--bleu-roi); font-size:0.86rem;">${pct}% complété</span>
-        </div>
-      </div>
-
-      <!-- Bandeau horizontal des étapes du workflow -->
-      <div class="workflow-stepper" role="tablist" aria-label="Étapes du workflow">
-        ${PHASES_TEMPLATE.map(ph => {
-          const isActive = ph.num === currentPhase.num;
-          return `
-            <button
-              type="button"
-              class="wf-step-card ${isActive ? 'active-stage' : ''}"
-              onclick="app.selectWorkflowPhase(${ph.num})"
-            >
-              <span>${ph.bannerLabel}</span>
-            </button>
-          `;
-        }).join('')}
-      </div>
-
-      <div class="panel-card" style="padding:14px 18px; margin-bottom:16px;">
-        <div style="display:flex; justify-content:space-between; font-size:0.84rem; margin-bottom:6px;">
-          <span><strong>Avancement global du workflow (Amont &amp; Idéation → Lancement, Diffusion &amp; Commercialisation)</strong></span>
-          <span>${project.steps.filter(s => normalizeStepState(s.state) === 'Fait').length} / ${project.steps.length} étapes terminées</span>
-        </div>
-        <div class="kpi-bar-track" style="height:8px;">
-          <div class="kpi-bar-fill" style="width:${pct}%; background:linear-gradient(90deg, var(--violet), var(--bleu-roi));"></div>
-        </div>
-      </div>
-
-      <!-- Uniquement la to-do de la phase du workflow concernée -->
-      <div class="phase-card" id="phase-block-${currentPhase.num}" style="border-color:#2575EB; box-shadow:0 4px 14px rgba(37,117,235,0.12);">
-        <div class="phase-header">
-          <span class="phase-name">${esc(currentPhase.title)}</span>
-          <span style="font-size:0.8rem; font-weight:600; color:var(--bleu-cobalt);">${phDone}/${phaseSteps.length} validées</span>
-        </div>
-        ${phaseSteps.map(st => {
-          const stNorm = normalizeStepState(st.state);
-          const isDone = stNorm === 'Fait';
-          return `
-            <div class="step-item">
-              <div class="step-left">
-                <input type="checkbox" ${isDone ? 'checked' : ''} onchange="app.toggleStep('${project.id}', '${st.id}')" />
-                <span class="step-title ${isDone ? 'done' : ''}">${esc(st.label)}</span>
-              </div>
-              <div class="step-controls">
-                <select class="step-select ${stepStatusClass(stNorm)}" onchange="app.setStepState('${project.id}', '${st.id}', this.value)">
-                  ${STEP_STATUSES.map(opt =>
-                    `<option value="${opt}" ${stNorm === opt ? 'selected' : ''}>${opt}</option>`
-                  ).join('')}
-                </select>
-                <input class="step-note" type="text" placeholder="Note / date..." value="${esc(st.note)}" onchange="app.setStepNote('${project.id}', '${st.id}', this.value)" />
-              </div>
-            </div>
-          `;
-        }).join('')}
-
-        ${currentPhase.num === 1 ? renderPhase1EditorialWorkspace(project) : ''}
-      </div>
-    `;
-  }
-
-  function renderSecondarySection() {
-    const labels = {
-      dashboard: 'Tableau de bord',
-      editorial: 'Projets éditoriaux',
-      manuscripts: 'Manuscrits & Auteurs',
-      production: 'Production & Impression (BnF / Dilicom / Electre)',
-      catalogue: 'Catalogue Lune & Papier',
-      distribution: 'Ventes & Distribution',
-      accounting: 'Comptabilité (BIC / BNC)',
-      settings: 'Paramètres'
-    };
-    const title = labels[db.nav] || 'Espace Éditorial';
-
-    return `
-      <div class="section-head">
-        <h1 class="serif-title">${esc(title)}</h1>
-        <button class="btn-secondary" onclick="app.setNav('projects')">← Voir Projets en cours</button>
-      </div>
-      <div class="panel-card">
-        <div class="panel-title">Accès rapide aux projets liés</div>
-        <p style="font-size:0.9rem; color:var(--text-muted); margin-bottom:14px;">
-          Retrouvez l’ensemble de vos albums actifs et cliquez sur n’importe lequel pour piloter ses étapes éditoriales, artistiques, contrats, BnF et Dilicom/Electre.
-        </p>
-        <div style="display:flex; gap:10px; flex-wrap:wrap;">
-          ${db.projects.map(p => `
-            <button class="btn-secondary" onclick="app.openWorkflow('${p.id}')">
-              ${esc(p.title)} (${calcProgress(p)}%)
-            </button>
-          `).join('')}
-        </div>
-      </div>
-    `;
-  }
-
-  function render() {
-    document.querySelectorAll('.nav-item').forEach(btn => {
-      btn.classList.toggle('active', btn.dataset.nav === db.nav);
-    });
-    const main = document.getElementById('main-content');
-    if (db.nav === 'workflow') {
-      main.innerHTML = renderWorkflowView();
-    } else if (db.nav === 'projects') {
-      main.innerHTML = renderProjectsDashboard();
-    } else {
-      main.innerHTML = renderSecondarySection();
-    }
-  }
-
-  window.app = {
-    setNav(nav) {
-      db.nav = nav;
-      save();
-      render();
-    },
-    onSearch(val) {
-      db.search = val;
-      save();
-      render();
-    },
-    openModal() {
-      document.getElementById('modal-new-project').classList.add('open');
-    },
-    closeModal() {
-      document.getElementById('modal-new-project').classList.remove('open');
-    },
-    createProject(e) {
-      e.preventDefault();
-      const fd = new FormData(e.target);
-      const startPhase = parseInt(fd.get('startPhase') || '0', 10);
-      const steps = buildSteps(0);
-      steps.forEach(s => {
-        if (s.phaseNum < startPhase) s.state = 'Fait';
-      });
-      const firstActive = steps.find(s => s.state !== 'Fait');
-      if (firstActive) firstActive.state = 'En cours';
-
-      const phaseNames = ['Idée / Amont', 'Édition', 'Storyboard', 'Contrats', 'Maquette', 'BnF / Dilicom', 'Lancement'];
-      const newProj = {
-        id: 'p_' + Date.now(),
-        title: (fd.get('title') || '').trim(),
-        author: (fd.get('author') || '').trim() || 'À définir',
-        type: fd.get('type'),
-        phaseLabel: phaseNames[startPhase] || 'Idée / Amont',
-        deadline: (fd.get('deadline') || '').trim(),
-        technique: fd.get('technique'),
-        status: fd.get('status'),
-        steps
-      };
-      newProj.editorial = buildEditorialDataForProject(newProj);
-      db.projects.unshift(newProj);
-      db.selectedProjectId = newProj.id;
-      db.activeWorkflowPhase = startPhase;
-      db.nav = 'workflow';
-      save();
-      e.target.reset();
-      this.closeModal();
-      render();
-    },
-    openWorkflow(id) {
-      db.selectedProjectId = id;
-      db.activeWorkflowPhase = 0;
-      db.voiceReadingActive = false;
-      db.voiceReadingIndex = 0;
-      clearInterval(voiceTimer);
-      db.nav = 'workflow';
-      save();
-      render();
-    },
-    selectWorkflowPhase(phaseNum) {
-      db.activeWorkflowPhase = phaseNum;
-      db.voiceReadingActive = false;
-      db.voiceReadingIndex = 0;
-      clearInterval(voiceTimer);
-      save();
-      render();
-      const el = document.getElementById('phase-block-' + phaseNum);
-      if (el) el.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
-    },
-    backToProjects() {
-      db.voiceReadingActive = false;
-      clearInterval(voiceTimer);
-      db.nav = 'projects';
-      save();
-      render();
-    },
-    changeProjectStatus(id, status) {
-      const p = db.projects.find(x => x.id === id);
-      if (p) { p.status = status; save(); render(); }
-    },
-    toggleStep(projId, stepId) {
-      const p = db.projects.find(x => x.id === projId);
-      const s = p && p.steps.find(x => x.id === stepId);
-      if (!s) return;
-      s.state = (normalizeStepState(s.state) === 'Fait') ? 'À faire' : 'Fait';
-      save();
-      render();
-    },
-    setStepState(projId, stepId, stateVal) {
-      const p = db.projects.find(x => x.id === projId);
-      const s = p && p.steps.find(x => x.id === stepId);
-      if (s) { s.state = normalizeStepState(stateVal); save(); render(); }
-    },
-    setStepNote(projId, stepId, noteVal) {
-      const p = db.projects.find(x => x.id === projId);
-      const s = p && p.steps.find(x => x.id === stepId);
-      if (s) { s.note = noteVal; save(); }
-    },
-
-    /* Actions Phase 1 : Écriture, Édition & Préparation du Texte */
-    setEditoTab(tabName) {
-      db.editoTab = tabName;
-      save();
-      render();
-    },
-    updateManuscriptText(value) {
-      const p = getCurrentWorkflowProject();
-      const ed = p.editorial;
-      const ver = ed.activeVersion || 'V1';
-      ed.versions[ver] = value;
-      save();
-    },
-    toggleVoiceReadingSim() {
-      const p = getCurrentWorkflowProject();
-      const stats = analyzeText(getActiveManuscriptText(p.editorial));
-      if (!stats.sentencesList.length) {
-        showToast('Ajoutez d’abord un texte à lire à voix haute.');
-        return;
-      }
-
-      db.voiceReadingActive = !db.voiceReadingActive;
-      db.voiceReadingIndex = 0;
-      clearInterval(voiceTimer);
-
-      if (db.voiceReadingActive) {
-        voiceTimer = setInterval(() => {
-          const currentStats = analyzeText(getActiveManuscriptText(getCurrentWorkflowProject().editorial));
-          if (!currentStats.sentencesList.length) return;
-          db.voiceReadingIndex = (db.voiceReadingIndex + 1) % currentStats.sentencesList.length;
-          render();
-        }, 3400);
-        showToast('Guide de lecture à voix haute activé (1 phrase ~3,4 s).');
-      } else {
-        showToast('Guide de lecture à voix haute arrêté.');
-      }
-      render();
-    },
-    stepVoicePhrase(delta) {
-      const stats = analyzeText(getActiveManuscriptText(getCurrentWorkflowProject().editorial));
-      if (!stats.sentencesList.length) return;
-      const total = stats.sentencesList.length;
-      db.voiceReadingIndex = (db.voiceReadingIndex + delta + total) % total;
-      render();
-    },
-    markReadAloudValidated() {
-      const p = getCurrentWorkflowProject();
-      p.editorial.gates.readAloudDone = true;
-      save();
-      render();
-      showToast('Lecture à voix haute marquée comme validée.');
-    },
-    updateNoteField(field, value) {
-      const ed = getCurrentWorkflowProject().editorial;
-      ed.note[field] = value;
-      if (ed.note.strengths.trim() && ed.note.axes.trim()) {
-        ed.gates.editorialNoteDone = true;
-      }
-      save();
-    },
-    highlightWordInNote(word) {
-      const ed = getCurrentWorkflowProject().editorial;
-      const addition = `Répétition repérée : « ${word} » — vérifier si elle est voulue ou à varier.`;
-      if (!ed.note.axes.includes(word)) {
-        ed.note.axes = ed.note.axes.trim()
-          ? `${ed.note.axes.trim()}\n• ${addition}`
-          : `• ${addition}`;
-        save();
-        render();
-        showToast(`Repère « ${word} » ajouté aux axes de la note éditoriale.`);
-      }
-    },
-    copyEditorialNote() {
-      const p = getCurrentWorkflowProject();
-      const ed = p.editorial;
-      const formatted = [
-        `NOTE ÉDITORIALE — ${p.title}`,
-        `Auteur : ${p.author} | Version : ${ed.activeVersion || 'V1'}`,
-        '',
-        '1. POINTS FORTS',
-        ed.note.strengths.trim() || '(À compléter)',
-        '',
-        '2. AXES DE TRAVAIL (STRUCTURE, RYTHME, PERSONNAGES, POTENTIEL VISUEL)',
-        ed.note.axes.trim() || '(À compléter)',
-        '',
-        '3. PROJECTION',
-        ed.note.projection.trim() || '(À compléter)'
-      ].join('\n');
-
-      this.copyToClipboard(formatted, 'Note éditoriale copiée dans le presse-papiers.');
-    },
-    switchVersion(ver) {
-      getCurrentWorkflowProject().editorial.activeVersion = ver;
-      save();
-      render();
-    },
-    updateSpecificVersion(ver, value) {
-      const ed = getCurrentWorkflowProject().editorial;
-      ed.versions[ver] = value;
-      if ((ver === 'V2' || ver === 'V3') && value.trim().length > 20) {
-        ed.gates.versionValidated = true;
-      }
-      save();
-    },
-    duplicateVersionToNext() {
-      const ed = getCurrentWorkflowProject().editorial;
-      const order = ['V1', 'V2', 'V3'];
-      const currentIdx = order.indexOf(ed.activeVersion || 'V1');
-      if (currentIdx === -1 || currentIdx >= order.length - 1) {
-        showToast('La version V3 est déjà la dernière version disponible.');
-        return;
-      }
-      const nextVer = order[currentIdx + 1];
-      ed.versions[nextVer] = ed.versions[order[currentIdx]] || '';
-      ed.activeVersion = nextVer;
-      ed.workflowStatus = 'Réécriture reçue';
-      save();
-      render();
-      showToast(`Texte dupliqué vers ${nextVer}.`);
-    },
-    updateWorkflowStatus(newStatus) {
-      const ed = getCurrentWorkflowProject().editorial;
-      ed.workflowStatus = newStatus;
-      if (newStatus === 'Validé') {
-        ed.gates.versionValidated = true;
-      }
-      save();
-      render();
-      showToast(`Statut mis à jour : ${newStatus}.`);
-    },
-    addExchange(event) {
-      event.preventDefault();
-      const form = event.target;
-      const fd = new FormData(form);
-      const summary = (fd.get('summary') || '').trim();
-      if (!summary) return;
-
-      const ed = getCurrentWorkflowProject().editorial;
-      ed.exchanges.unshift({
-        id: 'ex_' + Date.now(),
-        date: (fd.get('date') || '').trim(),
-        channel: fd.get('channel') || 'Mail / Manuscrit',
-        summary
-      });
-      save();
-      form.reset();
-      render();
-      showToast('Échange ajouté au journal.');
-    },
-    deleteExchange(exchangeId) {
-      const ed = getCurrentWorkflowProject().editorial;
-      ed.exchanges = (ed.exchanges || []).filter(e => e.id !== exchangeId);
-      save();
-      render();
-    },
-    toggleCopyItem(itemId) {
-      const ed = getCurrentWorkflowProject().editorial;
-      ed.copyChecklist[itemId] = !Boolean(ed.copyChecklist[itemId]);
-      save();
-      render();
-    },
-    updateCopyNotes(value) {
-      getCurrentWorkflowProject().editorial.copyNotes = value;
-      save();
-    },
-    completeCopyGate() {
-      getCurrentWorkflowProject().editorial.gates.copyPrepDone = true;
-      save();
-      render();
-      showToast('Préparation de copie validée dans les critères de verrouillage.');
-    },
-    toggleGate(gateId) {
-      const ed = getCurrentWorkflowProject().editorial;
-      ed.gates[gateId] = !Boolean(ed.gates[gateId]);
-      save();
-      render();
-    },
-    updateStudioHandover(value) {
-      getCurrentWorkflowProject().editorial.studioHandoverNote = value;
-      save();
-    },
-    toggleStoryboardLock() {
-      const ed = getCurrentWorkflowProject().editorial;
-      ed.lockedForStoryboard = !ed.lockedForStoryboard;
-      if (ed.lockedForStoryboard) {
-        ed.lockedAt = new Date().toLocaleDateString('fr-FR');
-        ed.workflowStatus = 'Validé';
-        ed.gates.readAloudDone = true;
-        ed.gates.editorialNoteDone = true;
-        ed.gates.versionValidated = true;
-        ed.gates.copyPrepDone = true;
-        showToast('Texte verrouillé « Bon pour storyboard » !');
-      } else {
-        ed.lockedAt = null;
-        showToast('Verrouillage levé : le texte repasse en édition.');
-      }
-      save();
-      render();
-    },
-    copyHandoverSummary() {
-      const p = getCurrentWorkflowProject();
-      const ed = p.editorial;
-      const summary = [
-        `BASCULE STUDIO (BON POUR STORYBOARD) — ${p.title}`,
-        `Auteur : ${p.author} | Tranche d’âge : ${ed.ageGroup}`,
-        `Version verrouillée : ${ed.activeVersion || 'V1'} | Statut : ${
-          ed.lockedForStoryboard ? 'VERROUILLÉ (' + (ed.lockedAt || '') + ')' : ed.workflowStatus
-        }`,
-        `Notes Studio : ${ed.studioHandoverNote.trim() || '(Aucune note transmise)'}`
-      ].join('\n');
-
-      this.copyToClipboard(summary, 'Récapitulatif pour le Studio copié.');
-    },
-    copyToClipboard(text, successMsg) {
+    function loadState() {
       try {
-        const helper = document.createElement('textarea');
-        helper.value = text;
-        helper.setAttribute('readonly', '');
-        helper.style.position = 'absolute';
-        helper.style.left = '-9999px';
-        document.body.appendChild(helper);
-        helper.select();
-        document.execCommand('copy');
-        document.body.removeChild(helper);
-        showToast(successMsg);
-      } catch (err) {
-        console.error('Copie impossible :', err);
-        showToast('Impossible de copier automatiquement.');
+        const raw = localStorage.getItem(STORAGE_KEY);
+        if (!raw) return structuredClone(defaultData);
+        const parsed = JSON.parse(raw);
+        return {
+          posts: Array.isArray(parsed.posts) ? parsed.posts : structuredClone(defaultData.posts),
+          media: Array.isArray(parsed.media) ? parsed.media : structuredClone(defaultData.media)
+        };
+      } catch {
+        return structuredClone(defaultData);
       }
     }
-  };
 
-  render();
-})();
-</script>
+    function saveState() {
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+    }
+
+    function showToast(msg) {
+      const el = document.getElementById("toast");
+      el.textContent = msg;
+      el.classList.add("show");
+      setTimeout(() => el.classList.remove("show"), 2400);
+    }
+
+    function getMediaById(id) {
+      return state.media.find((m) => m.id === id) || null;
+    }
+
+    function getMediaUsage(mediaId) {
+      const usedPosts = state.posts.filter((p) => p.mediaId === mediaId);
+      if (!usedPosts.length) return "Disponible";
+      if (usedPosts.some((p) => p.statut === "Publié")) return "Déjà publié";
+      return "Planifié (" + usedPosts.length + ")";
+    }
+
+    /* Navigation Onglets */
+    document.querySelectorAll(".tab-btn").forEach((btn) => {
+      btn.addEventListener("click", () => {
+        document.querySelectorAll(".tab-btn").forEach((b) => b.classList.remove("active"));
+        document.querySelectorAll(".section").forEach((s) => s.classList.remove("active"));
+        btn.classList.add("active");
+        document.getElementById("tab-" + btn.dataset.tab).classList.add("active");
+        renderAll();
+      });
+    });
+
+    function switchToTab(tabName) {
+      document.querySelector(`.tab-btn[data-tab="${tabName}"]`).click();
+    }
+
+    /* Rendu KPIs & Calendrier */
+    function renderKpis() {
+      const total = state.posts.length;
+      const prepa = state.posts.filter((p) => ["Idée", "Préparation", "Validé"].includes(p.statut)).length;
+      const prog = state.posts.filter((p) => p.statut === "Programmé").length;
+      const pub = state.posts.filter((p) => p.statut === "Publié").length;
+
+      document.getElementById("kpiContainer").innerHTML = `
+        <div class="kpi"><div class="label">Publications au calendrier</div><div class="value">${total}</div></div>
+        <div class="kpi"><div class="label">En préparation / validation</div><div class="value">${prepa}</div></div>
+        <div class="kpi"><div class="label">Programmées</div><div class="value">${prog}</div></div>
+        <div class="kpi"><div class="label">Publiées</div><div class="value">${pub}</div></div>
+      `;
+    }
+
+    function renderPostsGrid() {
+      const statut = document.getElementById("filterStatut").value;
+      const format = document.getElementById("filterFormat").value;
+      const pilier = document.getElementById("filterPilier").value;
+      const q = document.getElementById("filterSearch").value.trim().toLowerCase();
+
+      const filtered = state.posts
+        .filter((p) => !statut || p.statut === statut)
+        .filter((p) => !format || p.format === format)
+        .filter((p) => !pilier || p.pilier === pilier)
+        .filter((p) => {
+          if (!q) return true;
+          return (
+            p.title.toLowerCase().includes(q) ||
+            p.caption.toLowerCase().includes(q) ||
+            p.pilier.toLowerCase().includes(q)
+          );
+        })
+        .sort((a, b) => (a.date + a.time).localeCompare(b.date + b.time));
+
+      const grid = document.getElementById("postsGrid");
+      if (!filtered.length) {
+        grid.innerHTML = `<div class="panel" style="grid-column: 1 / -1;">Aucune publication ne correspond aux filtres sélectionnés.</div>`;
+        return;
+      }
+
+      grid.innerHTML = filtered
+        .map((post) => {
+          const media = getMediaById(post.mediaId);
+          const statusClass = "st-" + post.statut.toLowerCase().replace(/\s+/g, "-");
+          return `
+            <article class="post-card">
+              <div class="post-thumb">
+                <span class="format-pill">${post.format}</span>
+                ${media ? `<img src="${media.src}" alt="${post.title}" />` : `<span>Sans visuel</span>`}
+              </div>
+              <div class="post-body">
+                <div class="post-meta-top">
+                  <span>${post.date || "Date à définir"} • ${post.time || "--:--"}</span>
+                  <span class="status-badge ${statusClass}">${post.statut}</span>
+                </div>
+                <h3 class="post-title">${escapeHtml(post.title || "Sans titre")}</h3>
+                <div class="post-caption-preview">${escapeHtml(post.caption || "")}</div>
+                <div class="tag-row">
+                  <span class="mini-tag">${post.pilier}</span>
+                  ${media ? `<span class="mini-tag">${escapeHtml(media.name)}</span>` : ""}
+                </div>
+                <div class="post-actions">
+                  <button class="sm primary" onclick="editPost('${post.id}')">Préparer / Éditer</button>
+                  <button class="sm danger" onclick="deletePost('${post.id}')">Supprimer</button>
+                </div>
+              </div>
+            </article>
+          `;
+        })
+        .join("");
+    }
+
+    /* Préparation & Aperçu */
+    function populateMediaSelect(selectedId) {
+      const sel = document.getElementById("postMediaSelect");
+      const options = [`<option value="">— Aucun visuel —</option>`].concat(
+        state.media.map((m) => `<option value="${m.id}" ${m.id === selectedId ? "selected" : ""}>${escapeHtml(m.name)}</option>`)
+      );
+      sel.innerHTML = options.join("");
+    }
+
+    function loadPostIntoEditor(postId) {
+      const post = state.posts.find((p) => p.id === postId);
+      editingPostId = post ? post.id : null;
+
+      document.getElementById("editorHeading").textContent = post
+        ? "Préparer la publication : " + (post.title || "Sans titre")
+        : "Créer une nouvelle publication";
+
+      document.getElementById("postTitle").value = post?.title || "";
+      document.getElementById("postDate").value = post?.date || new Date().toISOString().slice(0, 10);
+      document.getElementById("postTime").value = post?.time || "18:00";
+      document.getElementById("postFormat").value = post?.format || "Post";
+      document.getElementById("postPilier").value = post?.pilier || "Pédagogie";
+      document.getElementById("postStatut").value = post?.statut || "Idée";
+      document.getElementById("postCta").value = post?.cta || "";
+      document.getElementById("postCaption").value = post?.caption || "";
+      document.getElementById("btnDeleteCurrentPost").style.display = post ? "inline-block" : "none";
+
+      populateMediaSelect(post?.mediaId || "");
+      updateLivePreview();
+    }
+
+    function updateLivePreview() {
+      const caption = document.getElementById("postCaption").value;
+      const mediaId = document.getElementById("postMediaSelect").value;
+      const media = getMediaById(mediaId);
+
+      const len = caption.length;
+      document.getElementById("charCounter").textContent = `${len} / 2 200 caractères`;
+      document.getElementById("charCounter").style.color = len > 2200 ? "#b42318" : "";
+
+      const firstLine = caption.split("\n")[0] || "";
+      document.getElementById("foldWarning").textContent =
+        firstLine.length > 125
+          ? "⚠️ Première ligne longue : risque de troncature avant « … plus »"
+          : "Accroche visible avant « … plus » : OK";
+
+      const mediaBox = document.getElementById("previewMediaBox");
+      mediaBox.innerHTML = media
+        ? `<img src="${media.src}" alt="${escapeHtml(media.name)}" />`
+        : `<span>Aucun visuel sélectionné</span>`;
+
+      document.getElementById("previewCaptionBox").textContent =
+        caption.trim() || "Votre légende apparaîtra ici en temps réel.";
+
+      renderFeedPreviewGrid();
+    }
+
+    function renderFeedPreviewGrid() {
+      const grid = document.getElementById("feedPreviewGrid");
+      const sorted = [...state.posts].sort((a, b) => (b.date + b.time).localeCompare(a.date + a.time)).slice(0, 9);
+
+      if (!sorted.length) {
+        grid.innerHTML = `<div class="feed-cell" style="grid-column: 1 / -1;">Grille vide</div>`;
+        return;
+      }
+
+      grid.innerHTML = sorted
+        .map((p) => {
+          const isCurrent = p.id === editingPostId;
+          const m = getMediaById(p.mediaId);
+          return `
+            <div class="feed-cell ${isCurrent ? "draft-ring" : ""}" title="${escapeHtml(p.title)}">
+              ${m ? `<img src="${m.src}" alt="${escapeHtml(p.title)}" />` : `<span>${escapeHtml(p.title || p.format)}</span>`}
+            </div>
+          `;
+        })
+        .join("");
+    }
+
+    function saveCurrentPost() {
+      const title = document.getElementById("postTitle").value.trim() || "Publication sans titre";
+      const date = document.getElementById("postDate").value;
+      const time = document.getElementById("postTime").value;
+      const format = document.getElementById("postFormat").value;
+      const pilier = document.getElementById("postPilier").value;
+      const statut = document.getElementById("postStatut").value;
+      const mediaId = document.getElementById("postMediaSelect").value;
+      const cta = document.getElementById("postCta").value.trim();
+      const caption = document.getElementById("postCaption").value;
+
+      if (editingPostId) {
+        const idx = state.posts.findIndex((p) => p.id === editingPostId);
+        if (idx !== -1) {
+          state.posts[idx] = { ...state.posts[idx], title, date, time, format, pilier, statut, mediaId, cta, caption };
+        }
+      } else {
+        const newId = "p_" + Date.now();
+        state.posts.push({ id: newId, title, date, time, format, pilier, statut, mediaId, cta, caption });
+        editingPostId = newId;
+      }
+
+      saveState();
+      renderAll();
+      showToast("Publication enregistrée");
+    }
+
+    window.editPost = function (id) {
+      loadPostIntoEditor(id);
+      switchToTab("preparation");
+    };
+
+    window.deletePost = function (id) {
+      state.posts = state.posts.filter((p) => p.id !== id);
+      if (editingPostId === id) {
+        editingPostId = state.posts[0]?.id || null;
+      }
+      saveState();
+      renderAll();
+      showToast("Publication supprimée");
+    };
+
+    /* Médiathèque */
+    function renderMediaGrid() {
+      const grid = document.getElementById("mediaGrid");
+      if (!state.media.length) {
+        grid.innerHTML = `<div class="panel" style="grid-column: 1 / -1;">Aucun visuel dans la médiathèque.</div>`;
+        return;
+      }
+
+      grid.innerHTML = state.media
+        .map((m) => {
+          const usage = getMediaUsage(m.id);
+          return `
+            <article class="media-card">
+              <div class="media-preview">
+                <img src="${m.src}" alt="${escapeHtml(m.name)}" />
+              </div>
+              <div class="media-info">
+                <div class="media-name">${escapeHtml(m.name)}</div>
+                <div style="color: var(--muted); margin-bottom: 6px;">${escapeHtml(m.ratioNote || "Visuel")} • ${usage}</div>
+                <div class="tag-row" style="margin-bottom: 10px;">
+                  ${(m.tags || []).map((t) => `<span class="mini-tag">#${escapeHtml(t)}</span>`).join("")}
+                </div>
+                <button class="sm danger" onclick="deleteMedia('${m.id}')">Retirer</button>
+              </div>
+            </article>
+          `;
+        })
+        .join("");
+    }
+
+    window.deleteMedia = function (mediaId) {
+      state.media = state.media.filter((m) => m.id !== mediaId);
+      state.posts = state.posts.map((p) => (p.mediaId === mediaId ? { ...p, mediaId: "" } : p));
+      saveState();
+      renderAll();
+      showToast("Visuel retiré de la médiathèque");
+    };
+
+    function addMediaItem(src, defaultName, ratioNote = "Visuel importé") {
+      const customName = document.getElementById("mediaNameInput").value.trim();
+      const tagsRaw = document.getElementById("mediaTagsInput").value;
+      const tags = tagsRaw
+        .split(",")
+        .map((t) => t.trim())
+        .filter(Boolean);
+
+      state.media.unshift({
+        id: "m_" + Date.now(),
+        name: customName || defaultName || "visuel-instagram.png",
+        tags,
+        ratioNote,
+        src
+      });
+
+      document.getElementById("mediaNameInput").value = "";
+      document.getElementById("mediaTagsInput").value = "";
+      document.getElementById("mediaUrlInput").value = "";
+      document.getElementById("mediaFileInput").value = "";
+
+      saveState();
+      renderAll();
+      showToast("Visuel ajouté à la médiathèque");
+    }
+
+    document.getElementById("btnAddMedia").addEventListener("click", () => {
+      const fileInput = document.getElementById("mediaFileInput");
+      const urlInput = document.getElementById("mediaUrlInput").value.trim();
+
+      if (fileInput.files && fileInput.files[0]) {
+        const file = fileInput.files[0];
+        const reader = new FileReader();
+        reader.onload = (e) => {
+          const img = new Image();
+          img.onload = () => {
+            const ratio = img.width && img.height ? (img.width / img.height).toFixed(2) : null;
+            const note = ratio
+              ? `Dimensions : ${img.width}x${img.height}px (ratio ${ratio})`
+              : "Fichier local";
+            addMediaItem(e.target.result, file.name, note);
+          };
+          img.src = e.target.result;
+        };
+        reader.readAsDataURL(file);
+        return;
+      }
+
+      if (urlInput) {
+        addMediaItem(urlInput, "visuel-externe", "URL externe");
+        return;
+      }
+
+      showToast("Choisissez un fichier ou saisissez une URL");
+    });
+
+    /* Événements divers */
+    document.getElementById("btnNewPost").addEventListener("click", () => {
+      loadPostIntoEditor(null);
+      switchToTab("preparation");
+    });
+
+    document.getElementById("btnSavePost").addEventListener("click", saveCurrentPost);
+    document.getElementById("btnDeleteCurrentPost").addEventListener("click", () => {
+      if (editingPostId) deletePost(editingPostId);
+    });
+
+    document.getElementById("btnCopyCaption").addEventListener("click", async () => {
+      const text = document.getElementById("postCaption").value;
+      try {
+        await navigator.clipboard.writeText(text);
+        showToast("Légende copiée dans le presse-papiers");
+      } catch {
+        showToast("Sélectionnez et copiez la légende manuellement");
+      }
+    });
+
+    document.querySelectorAll("[data-insert]").forEach((btn) => {
+      btn.addEventListener("click", () => {
+        const ta = document.getElementById("postCaption");
+        ta.value += btn.dataset.insert;
+        updateLivePreview();
+      });
+    });
+
+    ["postCaption", "postMediaSelect"].forEach((id) => {
+      document.getElementById(id).addEventListener("input", updateLivePreview);
+      document.getElementById(id).addEventListener("change", updateLivePreview);
+    });
+
+    ["filterStatut", "filterFormat", "filterPilier", "filterSearch"].forEach((id) => {
+      document.getElementById(id).addEventListener("input", renderPostsGrid);
+      document.getElementById(id).addEventListener("change", renderPostsGrid);
+    });
+
+    document.getElementById("btnResetFilters").addEventListener("click", () => {
+      document.getElementById("filterStatut").value = "";
+      document.getElementById("filterFormat").value = "";
+      document.getElementById("filterPilier").value = "";
+      document.getElementById("filterSearch").value = "";
+      renderPostsGrid();
+    });
+
+    /* Export / Import JSON */
+    document.getElementById("btnExportJson").addEventListener("click", () => {
+      const blob = new Blob([JSON.stringify(state, null, 2)], { type: "application/json" });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = "calendrier-instagram-sauvegarde.json";
+      a.click();
+      URL.revokeObjectURL(url);
+      showToast("Sauvegarde JSON exportée");
+    });
+
+    document.getElementById("btnImportJson").addEventListener("click", () => {
+      document.getElementById("importFileInput").click();
+    });
+
+    document.getElementById("importFileInput").addEventListener("change", (e) => {
+      const file = e.target.files?.[0];
+      if (!file) return;
+      const reader = new FileReader();
+      reader.onload = (ev) => {
+        try {
+          const imported = JSON.parse(ev.target.result);
+          if (Array.isArray(imported.posts) && Array.isArray(imported.media)) {
+            state = { posts: imported.posts, media: imported.media };
+            editingPostId = state.posts[0]?.id || null;
+            saveState();
+            renderAll();
+            showToast("Données importées avec succès");
+          } else {
+            showToast("Format JSON non reconnu");
+          }
+        } catch {
+          showToast("Fichier JSON invalide");
+        }
+      };
+      reader.readAsText(file);
+    });
+
+    function escapeHtml(str) {
+      return String(str)
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/"/g, "&quot;");
+    }
+
+    function renderAll() {
+      renderKpis();
+      renderPostsGrid();
+      populateMediaSelect(document.getElementById("postMediaSelect").value || (state.posts.find((p) => p.id === editingPostId)?.mediaId ?? ""));
+      renderMediaGrid();
+      updateLivePreview();
+    }
+
+    loadPostIntoEditor(editingPostId);
+    renderAll();
+  </script>
 </body>
 </html>
