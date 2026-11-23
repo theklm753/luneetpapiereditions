@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Studio Gestion Instagram — Calendrier, Posts & Médiathèque</title>
+  <title>Studio Gestion Instagram — Calendrier, Idées, Posts, Médiathèque & Stats</title>
   <style>
     :root {
       --bg: #f6f7fb;
@@ -47,14 +47,14 @@
     }
 
     .header-inner {
-      max-width: 1380px;
+      max-width: 1420px;
       margin: 0 auto;
       padding: 14px 24px;
       display: flex;
       flex-wrap: wrap;
       align-items: center;
       justify-content: space-between;
-      gap: 16px;
+      gap: 14px;
     }
 
     .brand {
@@ -77,7 +77,7 @@
 
     .brand h1 {
       margin: 0;
-      font-size: 18px;
+      font-size: 17px;
       font-weight: 700;
     }
 
@@ -89,7 +89,7 @@
 
     nav.tabs {
       display: flex;
-      gap: 8px;
+      gap: 7px;
       flex-wrap: wrap;
     }
 
@@ -97,7 +97,7 @@
       border: 1px solid var(--border);
       background: var(--surface);
       color: var(--text);
-      padding: 9px 15px;
+      padding: 8px 14px;
       border-radius: 999px;
       font-size: 13px;
       font-weight: 600;
@@ -122,7 +122,7 @@
     }
 
     main {
-      max-width: 1380px;
+      max-width: 1420px;
       margin: 0 auto;
       padding: 24px;
     }
@@ -137,7 +137,7 @@
 
     .kpis {
       display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(190px, 1fr));
+      grid-template-columns: repeat(auto-fit, minmax(185px, 1fr));
       gap: 14px;
       margin-bottom: 22px;
     }
@@ -157,7 +157,7 @@
     }
 
     .kpi .value {
-      font-size: 24px;
+      font-size: 23px;
       font-weight: 700;
       margin-top: 4px;
     }
@@ -183,7 +183,29 @@
       align-items: center;
     }
 
-    select, input[type="text"], input[type="date"], input[type="time"], textarea {
+    .view-switch {
+      display: inline-flex;
+      background: var(--surface-alt);
+      padding: 3px;
+      border-radius: 9px;
+      border: 1px solid var(--border);
+    }
+
+    .view-switch button {
+      border: none;
+      background: transparent;
+      padding: 6px 11px;
+      border-radius: 7px;
+      font-size: 12px;
+    }
+
+    .view-switch button.active {
+      background: var(--surface);
+      box-shadow: 0 1px 4px rgba(0, 0, 0, 0.08);
+      color: var(--primary);
+    }
+
+    select, input[type="text"], input[type="number"], input[type="date"], input[type="time"], textarea {
       font-family: inherit;
       font-size: 13px;
       border: 1px solid var(--border);
@@ -195,7 +217,7 @@
 
     textarea {
       width: 100%;
-      min-height: 130px;
+      min-height: 120px;
       resize: vertical;
     }
 
@@ -242,9 +264,10 @@
       font-size: 12px;
     }
 
+    /* Vue Cartes */
     .posts-grid {
       display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(310px, 1fr));
+      grid-template-columns: repeat(auto-fill, minmax(305px, 1fr));
       gap: 16px;
     }
 
@@ -259,7 +282,7 @@
     }
 
     .post-thumb {
-      height: 185px;
+      height: 175px;
       background: var(--surface-alt);
       display: flex;
       align-items: center;
@@ -357,6 +380,132 @@
       gap: 8px;
     }
 
+    /* Vue Calendrier Mensuel */
+    .calendar-wrapper {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 18px;
+      box-shadow: var(--shadow);
+    }
+
+    .calendar-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      margin-bottom: 16px;
+    }
+
+    .calendar-header h2 {
+      margin: 0;
+      font-size: 17px;
+      text-transform: capitalize;
+    }
+
+    .calendar-weekdays, .calendar-days {
+      display: grid;
+      grid-template-columns: repeat(7, minmax(0, 1fr));
+      gap: 8px;
+    }
+
+    .weekday-label {
+      text-align: center;
+      font-size: 12px;
+      font-weight: 700;
+      color: var(--muted);
+      padding: 6px 0;
+    }
+
+    .cal-day {
+      min-height: 118px;
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 8px;
+      background: #fff;
+      display: flex;
+      flex-direction: column;
+      gap: 5px;
+    }
+
+    .cal-day.muted-day {
+      background: var(--surface-alt);
+      opacity: 0.65;
+    }
+
+    .cal-day.today {
+      border-color: var(--primary);
+      background: #faf9ff;
+    }
+
+    .cal-day-num {
+      font-size: 12px;
+      font-weight: 700;
+      color: var(--muted);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .cal-event {
+      font-size: 11px;
+      padding: 4px 7px;
+      border-radius: 6px;
+      background: var(--primary-soft);
+      color: var(--primary);
+      font-weight: 600;
+      cursor: pointer;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      border: none;
+      text-align: left;
+    }
+
+    .cal-event:hover {
+      filter: brightness(0.96);
+    }
+
+    @media (max-width: 780px) {
+      .calendar-weekdays, .calendar-days {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+      .weekday-label {
+        display: none;
+      }
+    }
+
+    /* Espace Idées */
+    .ideas-layout {
+      display: grid;
+      grid-template-columns: 1fr 1.4fr;
+      gap: 20px;
+      align-items: start;
+    }
+
+    @media (max-width: 920px) {
+      .ideas-layout {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    .ideas-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+      gap: 14px;
+    }
+
+    .idea-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 15px;
+      box-shadow: var(--shadow);
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
     /* Studio Préparation */
     .studio-layout {
       display: grid;
@@ -387,7 +536,7 @@
 
     .form-grid {
       display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+      grid-template-columns: repeat(auto-fit, minmax(175px, 1fr));
       gap: 12px;
       margin-bottom: 12px;
     }
@@ -545,6 +694,37 @@
       word-break: break-word;
     }
 
+    /* Statistiques */
+    .table-wrap {
+      overflow-x: auto;
+    }
+
+    table.stats-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 13px;
+    }
+
+    table.stats-table th, table.stats-table td {
+      padding: 10px 12px;
+      border-bottom: 1px solid var(--border);
+      text-align: left;
+      white-space: nowrap;
+    }
+
+    table.stats-table th {
+      background: var(--surface-alt);
+      font-size: 12px;
+      color: var(--muted);
+      font-weight: 700;
+    }
+
+    table.stats-table input[type="number"] {
+      width: 82px;
+      padding: 5px 7px;
+      font-size: 12px;
+    }
+
     .toast {
       position: fixed;
       bottom: 20px;
@@ -575,14 +755,16 @@
         <div class="brand-badge">IG</div>
         <div>
           <h1>Studio éditorial Instagram</h1>
-          <p>Calendrier • Préparation de posts • Médiathèque</p>
+          <p>Calendrier • Idées • Préparation • Médiathèque • Statistiques</p>
         </div>
       </div>
 
       <nav class="tabs" role="tablist">
         <button class="tab-btn active" data-tab="calendrier">Calendrier éditorial</button>
+        <button class="tab-btn" data-tab="idees">Idées</button>
         <button class="tab-btn" data-tab="preparation">Préparation & Feed</button>
         <button class="tab-btn" data-tab="mediatheque">Médiathèque</button>
+        <button class="tab-btn" data-tab="statistiques">Statistiques</button>
       </nav>
 
       <div class="header-actions">
@@ -595,12 +777,17 @@
   </header>
 
   <main>
-    <!-- ONGLET 1 : CALENDRIER ÉDITORIAL -->
+    <!-- ONGLET 1 : CALENDRIER ÉDITORIAL (CARTES + VUE CALENDRIER MENSUEL) -->
     <section id="tab-calendrier" class="section active">
       <div class="kpis" id="kpiContainer"></div>
 
       <div class="toolbar">
         <div class="filters">
+          <div class="view-switch">
+            <button type="button" id="viewModeCards" class="active">Vue cartes</button>
+            <button type="button" id="viewModeMonth">Vue calendrier</button>
+          </div>
+
           <select id="filterStatut">
             <option value="">Tous les statuts</option>
             <option value="Idée">Idée</option>
@@ -633,9 +820,84 @@
       </div>
 
       <div class="posts-grid" id="postsGrid"></div>
+
+      <div class="calendar-wrapper" id="calendarMonthView" style="display: none;">
+        <div class="calendar-header">
+          <button type="button" class="sm" id="btnPrevMonth">← Mois précédent</button>
+          <h2 id="calendarMonthLabel"></h2>
+          <button type="button" class="sm" id="btnNextMonth">Mois suivant →</button>
+        </div>
+        <div class="calendar-weekdays">
+          <div class="weekday-label">Lun</div>
+          <div class="weekday-label">Mar</div>
+          <div class="weekday-label">Mer</div>
+          <div class="weekday-label">Jeu</div>
+          <div class="weekday-label">Ven</div>
+          <div class="weekday-label">Sam</div>
+          <div class="weekday-label">Dim</div>
+        </div>
+        <div class="calendar-days" id="calendarDaysGrid"></div>
+      </div>
     </section>
 
-    <!-- ONGLET 2 : PRÉPARATION DE POST & SIMULATEUR DE GRILLE -->
+    <!-- ONGLET 2 : ESPACE IDÉES -->
+    <section id="tab-idees" class="section">
+      <div class="ideas-layout">
+        <div class="panel">
+          <h2>Capturer une nouvelle idée</h2>
+          <div class="field" style="margin-bottom: 12px;">
+            <label for="ideaTitle">Titre / angle de l'idée</label>
+            <input type="text" id="ideaTitle" placeholder="Ex. 5 erreurs fréquentes sur la bio Instagram" />
+          </div>
+
+          <div class="form-grid">
+            <div class="field">
+              <label for="ideaFormat">Format pressenti</label>
+              <select id="ideaFormat">
+                <option value="Carrousel">Carrousel</option>
+                <option value="Reel">Reel</option>
+                <option value="Post">Post</option>
+                <option value="Story">Story</option>
+              </select>
+            </div>
+            <div class="field">
+              <label for="ideaPilier">Pilier éditorial</label>
+              <select id="ideaPilier">
+                <option value="Pédagogie">Pédagogie</option>
+                <option value="Coulisses">Coulisses</option>
+                <option value="Offre / Produit">Offre / Produit</option>
+                <option value="Preuve sociale">Preuve sociale</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="field" style="margin-bottom: 14px;">
+            <label for="ideaNotes">Notes, accroche ou référence</label>
+            <textarea id="ideaNotes" placeholder="Notez vos points clés, une accroche ou une inspiration..."></textarea>
+          </div>
+
+          <button class="primary" id="btnAddIdea">Ajouter à la boîte à idées</button>
+        </div>
+
+        <div>
+          <div class="toolbar">
+            <div class="filters">
+              <select id="filterIdeaPilier">
+                <option value="">Tous les piliers</option>
+                <option value="Pédagogie">Pédagogie</option>
+                <option value="Coulisses">Coulisses</option>
+                <option value="Offre / Produit">Offre / Produit</option>
+                <option value="Preuve sociale">Preuve sociale</option>
+              </select>
+              <input type="text" id="filterIdeaSearch" placeholder="Filtrer les idées..." />
+            </div>
+          </div>
+          <div class="ideas-grid" id="ideasGrid"></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ONGLET 3 : PRÉPARATION DE POST & SIMULATEUR DE GRILLE -->
     <section id="tab-preparation" class="section">
       <div class="studio-layout">
         <div>
@@ -749,7 +1011,7 @@
       </div>
     </section>
 
-    <!-- ONGLET 3 : MÉDIATHÈQUE -->
+    <!-- ONGLET 4 : MÉDIATHÈQUE -->
     <section id="tab-mediatheque" class="section">
       <div class="panel">
         <h2>Ajouter un visuel à la médiathèque</h2>
@@ -776,12 +1038,46 @@
 
       <div class="media-grid" id="mediaGrid"></div>
     </section>
+
+    <!-- ONGLET 5 : SUIVI DES STATISTIQUES -->
+    <section id="tab-statistiques" class="section">
+      <div class="kpis" id="statsKpis"></div>
+
+      <div class="panel">
+        <h2>Suivi des performances par publication</h2>
+        <p style="font-size: 13px; color: var(--muted); margin-top: -6px; margin-bottom: 16px;">
+          Renseignez vos métriques Instagram (portée, likes, commentaires, enregistrements, partages, clics) pour suivre vos meilleurs formats et piliers.
+        </p>
+
+        <div class="table-wrap">
+          <table class="stats-table">
+            <thead>
+              <tr>
+                <th>Publication</th>
+                <th>Date</th>
+                <th>Format</th>
+                <th>Pilier</th>
+                <th>Portée</th>
+                <th>Likes</th>
+                <th>Commentaires</th>
+                <th>Enreg.</th>
+                <th>Partages</th>
+                <th>Clics</th>
+                <th>Eng. / Portée</th>
+                <th>Action</th>
+              </tr>
+            </thead>
+            <tbody id="statsTableBody"></tbody>
+          </table>
+        </div>
+      </div>
+    </section>
   </main>
 
   <div class="toast" id="toast"></div>
 
   <script>
-    const STORAGE_KEY = "ig_studio_data_v1";
+    const STORAGE_KEY = "ig_studio_data_v2";
 
     const defaultData = {
       posts: [
@@ -795,7 +1091,8 @@
           statut: "Validé",
           mediaId: "m1",
           cta: "Enregistre le carrousel pour ta prochaine planification",
-          caption: "Tu publies au feeling et tu manques de régularité ?\n\nVoici les 4 étapes simples pour bâtir ton calendrier éditorial en 45 minutes.\n\n👉 Enregistre ce post pour le relire et partage-le en Story !\n\n#instagram #creationdecontenu #strategie #communitymanagement"
+          caption: "Tu publies au feeling et tu manques de régularité ?\n\nVoici les 4 étapes simples pour bâtir ton calendrier éditorial en 45 minutes.\n\n👉 Enregistre ce post pour le relire et partage-le en Story !\n\n#instagram #creationdecontenu #strategie #communitymanagement",
+          stats: { reach: 2450, likes: 185, comments: 24, saves: 92, shares: 31, clicks: 48 }
         },
         {
           id: "p2",
@@ -807,7 +1104,8 @@
           statut: "Préparation",
           mediaId: "m2",
           cta: "Active le rappel en commentaire",
-          caption: "Ce qui se passe vraiment en coulisses avant la sortie d'un nouveau format.\n\n💬 Et toi, quel est ton avis en commentaire ?"
+          caption: "Ce qui se passe vraiment en coulisses avant la sortie d'un nouveau format.\n\n💬 Et toi, quel est ton avis en commentaire ?",
+          stats: { reach: 3820, likes: 260, comments: 19, saves: 34, shares: 44, clicks: 27 }
         },
         {
           id: "p3",
@@ -816,10 +1114,27 @@
           time: "09:30",
           format: "Post",
           pilier: "Preuve sociale",
-          statut: "Idée",
+          statut: "Publié",
           mediaId: "m3",
           cta: "Découvre l'étude de cas complète",
-          caption: "Comment structurer ses visuels et sa légende a permis de gagner du temps chaque semaine."
+          caption: "Comment structurer ses visuels et sa légende a permis de gagner du temps chaque semaine.",
+          stats: { reach: 1590, likes: 118, comments: 11, saves: 29, shares: 9, clicks: 63 }
+        }
+      ],
+      ideas: [
+        {
+          id: "i1",
+          title: "3 formats de hook en vidéo pour les 3 premières secondes",
+          format: "Reel",
+          pilier: "Pédagogie",
+          notes: "Montrer un contre-exemple puis la version optimisée avec texte à l'écran."
+        },
+        {
+          id: "i2",
+          title: "Avant / Après d'une grille Instagram désorganisée",
+          format: "Carrousel",
+          pilier: "Preuve sociale",
+          notes: "Slide 1 : capture d'écran floutée + gain de lisibilité. Slide 5 : CTA audit."
         }
       ],
       media: [
@@ -849,6 +1164,19 @@
 
     let state = loadState();
     let editingPostId = state.posts[0]?.id || null;
+    let calendarViewMode = "cards"; // "cards" | "month"
+    let currentCalendarDate = new Date(2026, 10, 1); // Novembre 2026
+
+    function normalizeStats(s) {
+      return {
+        reach: Number(s?.reach) || 0,
+        likes: Number(s?.likes) || 0,
+        comments: Number(s?.comments) || 0,
+        saves: Number(s?.saves) || 0,
+        shares: Number(s?.shares) || 0,
+        clicks: Number(s?.clicks) || 0
+      };
+    }
 
     function loadState() {
       try {
@@ -856,7 +1184,10 @@
         if (!raw) return structuredClone(defaultData);
         const parsed = JSON.parse(raw);
         return {
-          posts: Array.isArray(parsed.posts) ? parsed.posts : structuredClone(defaultData.posts),
+          posts: Array.isArray(parsed.posts)
+            ? parsed.posts.map((p) => ({ ...p, stats: normalizeStats(p.stats) }))
+            : structuredClone(defaultData.posts),
+          ideas: Array.isArray(parsed.ideas) ? parsed.ideas : structuredClone(defaultData.ideas),
           media: Array.isArray(parsed.media) ? parsed.media : structuredClone(defaultData.media)
         };
       } catch {
@@ -901,15 +1232,38 @@
       document.querySelector(`.tab-btn[data-tab="${tabName}"]`).click();
     }
 
-    /* Rendu KPIs & Calendrier */
+    /* Filtres publications */
+    function getFilteredPosts() {
+      const statut = document.getElementById("filterStatut").value;
+      const format = document.getElementById("filterFormat").value;
+      const pilier = document.getElementById("filterPilier").value;
+      const q = document.getElementById("filterSearch").value.trim().toLowerCase();
+
+      return state.posts
+        .filter((p) => !statut || p.statut === statut)
+        .filter((p) => !format || p.format === format)
+        .filter((p) => !pilier || p.pilier === pilier)
+        .filter((p) => {
+          if (!q) return true;
+          return (
+            (p.title || "").toLowerCase().includes(q) ||
+            (p.caption || "").toLowerCase().includes(q) ||
+            (p.pilier || "").toLowerCase().includes(q)
+          );
+        })
+        .sort((a, b) => ((a.date || "") + (a.time || "")).localeCompare((b.date || "") + (b.time || "")));
+    }
+
     function renderKpis() {
       const total = state.posts.length;
+      const ideasCount = state.ideas.length;
       const prepa = state.posts.filter((p) => ["Idée", "Préparation", "Validé"].includes(p.statut)).length;
       const prog = state.posts.filter((p) => p.statut === "Programmé").length;
       const pub = state.posts.filter((p) => p.statut === "Publié").length;
 
       document.getElementById("kpiContainer").innerHTML = `
         <div class="kpi"><div class="label">Publications au calendrier</div><div class="value">${total}</div></div>
+        <div class="kpi"><div class="label">Idées en réserve</div><div class="value">${ideasCount}</div></div>
         <div class="kpi"><div class="label">En préparation / validation</div><div class="value">${prepa}</div></div>
         <div class="kpi"><div class="label">Programmées</div><div class="value">${prog}</div></div>
         <div class="kpi"><div class="label">Publiées</div><div class="value">${pub}</div></div>
@@ -917,26 +1271,9 @@
     }
 
     function renderPostsGrid() {
-      const statut = document.getElementById("filterStatut").value;
-      const format = document.getElementById("filterFormat").value;
-      const pilier = document.getElementById("filterPilier").value;
-      const q = document.getElementById("filterSearch").value.trim().toLowerCase();
-
-      const filtered = state.posts
-        .filter((p) => !statut || p.statut === statut)
-        .filter((p) => !format || p.format === format)
-        .filter((p) => !pilier || p.pilier === pilier)
-        .filter((p) => {
-          if (!q) return true;
-          return (
-            p.title.toLowerCase().includes(q) ||
-            p.caption.toLowerCase().includes(q) ||
-            p.pilier.toLowerCase().includes(q)
-          );
-        })
-        .sort((a, b) => (a.date + a.time).localeCompare(b.date + b.time));
-
+      const filtered = getFilteredPosts();
       const grid = document.getElementById("postsGrid");
+
       if (!filtered.length) {
         grid.innerHTML = `<div class="panel" style="grid-column: 1 / -1;">Aucune publication ne correspond aux filtres sélectionnés.</div>`;
         return;
@@ -950,7 +1287,7 @@
             <article class="post-card">
               <div class="post-thumb">
                 <span class="format-pill">${post.format}</span>
-                ${media ? `<img src="${media.src}" alt="${post.title}" />` : `<span>Sans visuel</span>`}
+                ${media ? `<img src="${media.src}" alt="${escapeHtml(post.title)}" />` : `<span>Sans visuel</span>`}
               </div>
               <div class="post-body">
                 <div class="post-meta-top">
@@ -973,6 +1310,208 @@
         })
         .join("");
     }
+
+    /* Vue Calendrier Mensuel */
+    function toIsoDate(year, monthIndex, day) {
+      const m = String(monthIndex + 1).padStart(2, "0");
+      const d = String(day).padStart(2, "0");
+      return `${year}-${m}-${d}`;
+    }
+
+    function renderCalendarMonthView() {
+      const year = currentCalendarDate.getFullYear();
+      const month = currentCalendarDate.getMonth();
+      const label = currentCalendarDate.toLocaleDateString("fr-FR", { month: "long", year: "numeric" });
+      document.getElementById("calendarMonthLabel").textContent = label;
+
+      const firstDay = new Date(year, month, 1);
+      // Lundi = 0 ... Dimanche = 6
+      const startOffset = (firstDay.getDay() + 6) % 7;
+      const daysInMonth = new Date(year, month + 1, 0).getDate();
+      const daysInPrevMonth = new Date(year, month, 0).getDate();
+
+      const filteredPosts = getFilteredPosts();
+      const todayIso = new Date().toISOString().slice(0, 10);
+
+      const cells = [];
+
+      // Jours du mois précédent
+      for (let i = startOffset - 1; i >= 0; i--) {
+        const d = daysInPrevMonth - i;
+        const prevMonthDate = new Date(year, month - 1, d);
+        const iso = toIsoDate(prevMonthDate.getFullYear(), prevMonthDate.getMonth(), d);
+        cells.push({ day: d, iso, muted: true });
+      }
+
+      // Jours du mois courant
+      for (let d = 1; d <= daysInMonth; d++) {
+        const iso = toIsoDate(year, month, d);
+        cells.push({ day: d, iso, muted: false });
+      }
+
+      // Compléter jusqu'à un multiple de 7
+      while (cells.length % 7 !== 0) {
+        const nextIndex = cells.length - (startOffset + daysInMonth) + 1;
+        const nextMonthDate = new Date(year, month + 1, nextIndex);
+        const iso = toIsoDate(nextMonthDate.getFullYear(), nextMonthDate.getMonth(), nextIndex);
+        cells.push({ day: nextIndex, iso, muted: true });
+      }
+
+      document.getElementById("calendarDaysGrid").innerHTML = cells
+        .map((c) => {
+          const dayPosts = filteredPosts.filter((p) => p.date === c.iso);
+          const isToday = c.iso === todayIso;
+          return `
+            <div class="cal-day ${c.muted ? "muted-day" : ""} ${isToday ? "today" : ""}">
+              <div class="cal-day-num">
+                <span>${c.day}</span>
+                ${dayPosts.length ? `<span>${dayPosts.length}</span>` : ""}
+              </div>
+              ${dayPosts
+                .map(
+                  (p) =>
+                    `<button type="button" class="cal-event" title="${escapeHtml(p.time || "")} — ${escapeHtml(p.title)}" onclick="editPost('${p.id}')">${escapeHtml((p.time ? p.time + " " : "") + (p.title || p.format))}</button>`
+                )
+                .join("")}
+            </div>
+          `;
+        })
+        .join("");
+    }
+
+    function applyCalendarViewMode() {
+      const showMonth = calendarViewMode === "month";
+      document.getElementById("postsGrid").style.display = showMonth ? "none" : "grid";
+      document.getElementById("calendarMonthView").style.display = showMonth ? "block" : "none";
+      document.getElementById("viewModeCards").classList.toggle("active", !showMonth);
+      document.getElementById("viewModeMonth").classList.toggle("active", showMonth);
+      if (showMonth) renderCalendarMonthView();
+    }
+
+    document.getElementById("viewModeCards").addEventListener("click", () => {
+      calendarViewMode = "cards";
+      applyCalendarViewMode();
+    });
+
+    document.getElementById("viewModeMonth").addEventListener("click", () => {
+      calendarViewMode = "month";
+      applyCalendarViewMode();
+    });
+
+    document.getElementById("btnPrevMonth").addEventListener("click", () => {
+      currentCalendarDate = new Date(currentCalendarDate.getFullYear(), currentCalendarDate.getMonth() - 1, 1);
+      renderCalendarMonthView();
+    });
+
+    document.getElementById("btnNextMonth").addEventListener("click", () => {
+      currentCalendarDate = new Date(currentCalendarDate.getFullYear(), currentCalendarDate.getMonth() + 1, 1);
+      renderCalendarMonthView();
+    });
+
+    /* Espace Idées */
+    function renderIdeasGrid() {
+      const pilier = document.getElementById("filterIdeaPilier").value;
+      const q = document.getElementById("filterIdeaSearch").value.trim().toLowerCase();
+
+      const items = state.ideas.filter((idea) => {
+        if (pilier && idea.pilier !== pilier) return false;
+        if (!q) return true;
+        return (
+          (idea.title || "").toLowerCase().includes(q) ||
+          (idea.notes || "").toLowerCase().includes(q) ||
+          (idea.pilier || "").toLowerCase().includes(q)
+        );
+      });
+
+      const grid = document.getElementById("ideasGrid");
+      if (!items.length) {
+        grid.innerHTML = `<div class="panel" style="grid-column: 1 / -1;">Aucune idée enregistrée avec ces critères.</div>`;
+        return;
+      }
+
+      grid.innerHTML = items
+        .map(
+          (idea) => `
+            <article class="idea-card">
+              <div class="post-meta-top">
+                <span class="mini-tag">${escapeHtml(idea.format)}</span>
+                <span class="mini-tag">${escapeHtml(idea.pilier)}</span>
+              </div>
+              <h3 class="post-title">${escapeHtml(idea.title)}</h3>
+              <p style="margin: 0; font-size: 13px; color: var(--muted); white-space: pre-line;">${escapeHtml(idea.notes || "")}</p>
+              <div class="post-actions">
+                <button class="sm primary" onclick="convertIdeaToPost('${idea.id}')">Planifier en post</button>
+                <button class="sm danger" onclick="deleteIdea('${idea.id}')">Supprimer</button>
+              </div>
+            </article>
+          `
+        )
+        .join("");
+    }
+
+    document.getElementById("btnAddIdea").addEventListener("click", () => {
+      const title = document.getElementById("ideaTitle").value.trim();
+      const format = document.getElementById("ideaFormat").value;
+      const pilier = document.getElementById("ideaPilier").value;
+      const notes = document.getElementById("ideaNotes").value.trim();
+
+      if (!title && !notes) {
+        showToast("Ajoutez un titre ou une note d'idée");
+        return;
+      }
+
+      state.ideas.unshift({
+        id: "i_" + Date.now(),
+        title: title || "Idée sans titre",
+        format,
+        pilier,
+        notes
+      });
+
+      document.getElementById("ideaTitle").value = "";
+      document.getElementById("ideaNotes").value = "";
+      saveState();
+      renderAll();
+      showToast("Idée ajoutée");
+    });
+
+    window.convertIdeaToPost = function (ideaId) {
+      const idea = state.ideas.find((i) => i.id === ideaId);
+      if (!idea) return;
+
+      const newPostId = "p_" + Date.now();
+      state.posts.unshift({
+        id: newPostId,
+        title: idea.title,
+        date: new Date().toISOString().slice(0, 10),
+        time: "18:00",
+        format: idea.format || "Post",
+        pilier: idea.pilier || "Pédagogie",
+        statut: "Préparation",
+        mediaId: "",
+        cta: "",
+        caption: idea.notes || "",
+        stats: normalizeStats({})
+      });
+
+      state.ideas = state.ideas.filter((i) => i.id !== ideaId);
+      saveState();
+      loadPostIntoEditor(newPostId);
+      switchToTab("preparation");
+      showToast("Idée transférée dans la préparation de post");
+    };
+
+    window.deleteIdea = function (ideaId) {
+      state.ideas = state.ideas.filter((i) => i.id !== ideaId);
+      saveState();
+      renderAll();
+      showToast("Idée supprimée");
+    };
+
+    ["filterIdeaPilier", "filterIdeaSearch"].forEach((id) => {
+      document.getElementById(id).addEventListener("input", renderIdeasGrid);
+      document.getElementById(id).addEventListener("change", renderIdeasGrid);
+    });
 
     /* Préparation & Aperçu */
     function populateMediaSelect(selectedId) {
@@ -1033,7 +1572,7 @@
 
     function renderFeedPreviewGrid() {
       const grid = document.getElementById("feedPreviewGrid");
-      const sorted = [...state.posts].sort((a, b) => (b.date + b.time).localeCompare(a.date + a.time)).slice(0, 9);
+      const sorted = [...state.posts].sort((a, b) => ((b.date || "") + (b.time || "")).localeCompare((a.date || "") + (a.time || ""))).slice(0, 9);
 
       if (!sorted.length) {
         grid.innerHTML = `<div class="feed-cell" style="grid-column: 1 / -1;">Grille vide</div>`;
@@ -1071,7 +1610,7 @@
         }
       } else {
         const newId = "p_" + Date.now();
-        state.posts.push({ id: newId, title, date, time, format, pilier, statut, mediaId, cta, caption });
+        state.posts.push({ id: newId, title, date, time, format, pilier, statut, mediaId, cta, caption, stats: normalizeStats({}) });
         editingPostId = newId;
       }
 
@@ -1189,6 +1728,85 @@
       showToast("Choisissez un fichier ou saisissez une URL");
     });
 
+    /* Suivi des Statistiques */
+    function computeEngagementRate(st) {
+      const reach = Number(st.reach) || 0;
+      if (reach <= 0) return "0.0%";
+      const interactions = (Number(st.likes) || 0) + (Number(st.comments) || 0) + (Number(st.saves) || 0) + (Number(st.shares) || 0);
+      return ((interactions / reach) * 100).toFixed(1) + "%";
+    }
+
+    function renderStatisticsSection() {
+      let totalReach = 0;
+      let totalInteractions = 0;
+      let totalSaves = 0;
+      let totalClicks = 0;
+
+      state.posts.forEach((p) => {
+        const st = normalizeStats(p.stats);
+        totalReach += st.reach;
+        totalInteractions += st.likes + st.comments + st.saves + st.shares;
+        totalSaves += st.saves;
+        totalClicks += st.clicks;
+      });
+
+      const avgEng = totalReach > 0 ? ((totalInteractions / totalReach) * 100).toFixed(1) + "%" : "0.0%";
+
+      document.getElementById("statsKpis").innerHTML = `
+        <div class="kpi"><div class="label">Portée cumulée</div><div class="value">${totalReach.toLocaleString("fr-FR")}</div></div>
+        <div class="kpi"><div class="label">Interactions totales</div><div class="value">${totalInteractions.toLocaleString("fr-FR")}</div></div>
+        <div class="kpi"><div class="label">Enregistrements totaux</div><div class="value">${totalSaves.toLocaleString("fr-FR")}</div></div>
+        <div class="kpi"><div class="label">Clics totaux</div><div class="value">${totalClicks.toLocaleString("fr-FR")}</div></div>
+        <div class="kpi"><div class="label">Engagement moyen / portée</div><div class="value">${avgEng}</div></div>
+      `;
+
+      const tbody = document.getElementById("statsTableBody");
+      if (!state.posts.length) {
+        tbody.innerHTML = `<tr><td colspan="12">Aucune publication à afficher.</td></tr>`;
+        return;
+      }
+
+      tbody.innerHTML = state.posts
+        .map((p) => {
+          const st = normalizeStats(p.stats);
+          return `
+            <tr>
+              <td><strong>${escapeHtml(p.title || "Sans titre")}</strong></td>
+              <td>${escapeHtml(p.date || "—")}</td>
+              <td>${escapeHtml(p.format)}</td>
+              <td>${escapeHtml(p.pilier)}</td>
+              <td><input type="number" min="0" id="st-reach-${p.id}" value="${st.reach}" /></td>
+              <td><input type="number" min="0" id="st-likes-${p.id}" value="${st.likes}" /></td>
+              <td><input type="number" min="0" id="st-comments-${p.id}" value="${st.comments}" /></td>
+              <td><input type="number" min="0" id="st-saves-${p.id}" value="${st.saves}" /></td>
+              <td><input type="number" min="0" id="st-shares-${p.id}" value="${st.shares}" /></td>
+              <td><input type="number" min="0" id="st-clicks-${p.id}" value="${st.clicks}" /></td>
+              <td><strong>${computeEngagementRate(st)}</strong></td>
+              <td><button class="sm primary" onclick="savePostStats('${p.id}')">Enregistrer</button></td>
+            </tr>
+          `;
+        })
+        .join("");
+    }
+
+    window.savePostStats = function (postId) {
+      const idx = state.posts.findIndex((p) => p.id === postId);
+      if (idx === -1) return;
+
+      state.posts[idx].stats = {
+        reach: Number(document.getElementById(`st-reach-${postId}`).value) || 0,
+        likes: Number(document.getElementById(`st-likes-${postId}`).value) || 0,
+        comments: Number(document.getElementById(`st-comments-${postId}`).value) || 0,
+        saves: Number(document.getElementById(`st-saves-${postId}`).value) || 0,
+        shares: Number(document.getElementById(`st-shares-${postId}`).value) || 0,
+        clicks: Number(document.getElementById(`st-clicks-${postId}`).value) || 0
+      };
+
+      saveState();
+      renderStatisticsSection();
+      showToast("Statistiques mises à jour");
+    };
+
     /* Événements divers */
     document.getElementById("btnNewPost").addEventListener("click", () => {
       loadPostIntoEditor(null);
@@ -1224,8 +1842,14 @@
     });
 
     ["filterStatut", "filterFormat", "filterPilier", "filterSearch"].forEach((id) => {
-      document.getElementById(id).addEventListener("input", renderPostsGrid);
-      document.getElementById(id).addEventListener("change", renderPostsGrid);
+      document.getElementById(id).addEventListener("input", () => {
+        renderPostsGrid();
+        if (calendarViewMode === "month") renderCalendarMonthView();
+      });
+      document.getElementById(id).addEventListener("change", () => {
+        renderPostsGrid();
+        if (calendarViewMode === "month") renderCalendarMonthView();
+      });
     });
 
     document.getElementById("btnResetFilters").addEventListener("click", () => {
@@ -1234,6 +1858,7 @@
       document.getElementById("filterPilier").value = "";
       document.getElementById("filterSearch").value = "";
       renderPostsGrid();
+      if (calendarViewMode === "month") renderCalendarMonthView();
     });
 
     /* Export / Import JSON */
@@ -1260,7 +1885,11 @@
         try {
           const imported = JSON.parse(ev.target.result);
           if (Array.isArray(imported.posts) && Array.isArray(imported.media)) {
-            state = { posts: imported.posts, media: imported.media };
+            state = {
+              posts: imported.posts.map((p) => ({ ...p, stats: normalizeStats(p.stats) })),
+              ideas: Array.isArray(imported.ideas) ? imported.ideas : [],
+              media: imported.media
+            };
             editingPostId = state.posts[0]?.id || null;
             saveState();
             renderAll();
@@ -1286,8 +1915,11 @@
     function renderAll() {
       renderKpis();
       renderPostsGrid();
+      applyCalendarViewMode();
+      renderIdeasGrid();
       populateMediaSelect(document.getElementById("postMediaSelect").value || (state.posts.find((p) => p.id === editingPostId)?.mediaId ?? ""));
       renderMediaGrid();
+      renderStatisticsSection();
       updateLivePreview();
     }
 
