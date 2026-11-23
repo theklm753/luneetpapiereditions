@@ -1325,7 +1325,6 @@
       document.getElementById("calendarMonthLabel").textContent = label;
 
       const firstDay = new Date(year, month, 1);
-      // Lundi = 0 ... Dimanche = 6
       const startOffset = (firstDay.getDay() + 6) % 7;
       const daysInMonth = new Date(year, month + 1, 0).getDate();
       const daysInPrevMonth = new Date(year, month, 0).getDate();
@@ -1335,7 +1334,6 @@
 
       const cells = [];
 
-      // Jours du mois précédent
       for (let i = startOffset - 1; i >= 0; i--) {
         const d = daysInPrevMonth - i;
         const prevMonthDate = new Date(year, month - 1, d);
@@ -1343,13 +1341,11 @@
         cells.push({ day: d, iso, muted: true });
       }
 
-      // Jours du mois courant
       for (let d = 1; d <= daysInMonth; d++) {
         const iso = toIsoDate(year, month, d);
         cells.push({ day: d, iso, muted: false });
       }
 
-      // Compléter jusqu'à un multiple de 7
       while (cells.length % 7 !== 0) {
         const nextIndex = cells.length - (startOffset + daysInMonth) + 1;
         const nextMonthDate = new Date(year, month + 1, nextIndex);
