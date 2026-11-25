@@ -679,6 +679,67 @@
       margin-bottom: 14px;
     }
 
+    /* Éditeur de stickers Story */
+    .story-stickers-toolbar {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+      margin-top: 6px;
+      margin-bottom: 12px;
+    }
+
+    .sticker-add-btn {
+      font-size: 12px;
+      padding: 6px 10px;
+      border-radius: 999px;
+      background: var(--fmt-story-bg);
+      border: 1px solid var(--fmt-story-border);
+      color: #92400e;
+    }
+
+    .sticker-add-btn:hover {
+      background: #fde68a;
+    }
+
+    .story-stickers-list {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      margin-bottom: 14px;
+    }
+
+    .sticker-editor-item {
+      background: var(--surface-alt);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 10px 12px;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .sticker-editor-head {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+      font-size: 12px;
+      font-weight: 700;
+      color: var(--text);
+    }
+
+    .sticker-editor-fields {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
+      gap: 8px;
+    }
+
+    .sticker-editor-fields input {
+      width: 100%;
+      padding: 6px 9px;
+      font-size: 12px;
+    }
+
     /* Bloc Performance du post */
     .perf-kpi-grid {
       display: grid;
@@ -730,6 +791,7 @@
       height: 30px;
       border-radius: 50%;
       background: var(--accent-ig);
+      flex-shrink: 0;
     }
 
     .ig-media {
@@ -785,6 +847,308 @@
     .feed-cell.draft-ring {
       outline: 3px solid var(--primary);
       outline-offset: -3px;
+    }
+
+    /* Aperçu Mode Story Instagram (9:16) */
+    .story-phone {
+      position: relative;
+      width: 100%;
+      max-width: 320px;
+      aspect-ratio: 9 / 16;
+      margin: 0 auto;
+      border-radius: 22px;
+      overflow: hidden;
+      background: linear-gradient(160deg, #1f2433 0%, #312e59 55%, #4c2a4f 100%);
+      box-shadow: 0 12px 30px rgba(24, 26, 32, 0.22);
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      color: #fff;
+    }
+
+    .story-bg-img {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      z-index: 0;
+    }
+
+    .story-scrim-top {
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 92px;
+      background: linear-gradient(to bottom, rgba(0, 0, 0, 0.58), transparent);
+      z-index: 1;
+      pointer-events: none;
+    }
+
+    .story-scrim-bottom {
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      height: 82px;
+      background: linear-gradient(to top, rgba(0, 0, 0, 0.58), transparent);
+      z-index: 1;
+      pointer-events: none;
+    }
+
+    .story-top {
+      position: relative;
+      z-index: 2;
+      padding: 10px 12px 0;
+    }
+
+    .story-progress {
+      height: 2.5px;
+      border-radius: 999px;
+      background: rgba(255, 255, 255, 0.35);
+      overflow: hidden;
+      margin-bottom: 10px;
+    }
+
+    .story-progress-fill {
+      width: 65%;
+      height: 100%;
+      background: #fff;
+    }
+
+    .story-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      font-size: 12px;
+      font-weight: 700;
+    }
+
+    .story-user {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .story-user .ig-avatar {
+      width: 28px;
+      height: 28px;
+      border: 2px solid #fff;
+    }
+
+    .story-time-label {
+      font-weight: 400;
+      opacity: 0.8;
+      font-size: 11px;
+    }
+
+    .story-stage {
+      position: relative;
+      z-index: 2;
+      flex: 1;
+      padding: 14px 16px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      overflow-y: auto;
+    }
+
+    .story-empty-hint {
+      font-size: 12px;
+      color: rgba(255, 255, 255, 0.78);
+      text-align: center;
+      padding: 8px 12px;
+      border-radius: 10px;
+      background: rgba(0, 0, 0, 0.25);
+    }
+
+    .story-text-overlay {
+      background: rgba(24, 26, 32, 0.74);
+      backdrop-filter: blur(4px);
+      color: #fff;
+      font-size: 13px;
+      font-weight: 600;
+      text-align: center;
+      padding: 9px 13px;
+      border-radius: 12px;
+      white-space: pre-line;
+      max-width: 100%;
+      word-break: break-word;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+    }
+
+    /* Rendu visuel des stickers sur la Story */
+    .ig-sticker-pill {
+      background: #ffffff;
+      color: #181a20;
+      padding: 6px 12px;
+      border-radius: 9px;
+      font-size: 12px;
+      font-weight: 700;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.22);
+      max-width: 95%;
+      word-break: break-word;
+      text-align: center;
+    }
+
+    .ig-sticker-mention {
+      color: #e6683c;
+      text-transform: uppercase;
+      letter-spacing: 0.02em;
+    }
+
+    .ig-sticker-hashtag {
+      color: #5b4ce6;
+      text-transform: uppercase;
+    }
+
+    .ig-sticker-link {
+      color: #1d5fd6;
+    }
+
+    .ig-sticker-music {
+      background: rgba(255, 255, 255, 0.94);
+      color: #181a20;
+      padding: 7px 11px;
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 11px;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.22);
+      max-width: 92%;
+    }
+
+    .ig-sticker-music-icon {
+      width: 26px;
+      height: 26px;
+      border-radius: 6px;
+      background: var(--accent-ig);
+      color: #fff;
+      display: grid;
+      place-items: center;
+      font-size: 13px;
+      flex-shrink: 0;
+    }
+
+    .ig-sticker-poll {
+      background: #ffffff;
+      color: #181a20;
+      border-radius: 12px;
+      overflow: hidden;
+      width: 88%;
+      box-shadow: 0 4px 14px rgba(0, 0, 0, 0.24);
+    }
+
+    .ig-sticker-poll-q {
+      background: #181a20;
+      color: #fff;
+      padding: 8px 10px;
+      font-size: 12px;
+      font-weight: 700;
+      text-align: center;
+    }
+
+    .ig-sticker-poll-opts {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+    }
+
+    .ig-sticker-poll-opts span {
+      padding: 8px 6px;
+      font-size: 11px;
+      font-weight: 700;
+      text-align: center;
+      border-right: 1px solid var(--border);
+    }
+
+    .ig-sticker-poll-opts span:last-child {
+      border-right: none;
+    }
+
+    .ig-sticker-slider {
+      background: #ffffff;
+      color: #181a20;
+      border-radius: 12px;
+      padding: 9px 12px;
+      width: 88%;
+      box-shadow: 0 4px 14px rgba(0, 0, 0, 0.24);
+      text-align: center;
+    }
+
+    .ig-sticker-slider-q {
+      font-size: 12px;
+      font-weight: 700;
+      margin-bottom: 8px;
+    }
+
+    .ig-sticker-slider-bar {
+      position: relative;
+      height: 8px;
+      border-radius: 999px;
+      background: #e5e7eb;
+    }
+
+    .ig-sticker-slider-fill {
+      width: 65%;
+      height: 100%;
+      border-radius: 999px;
+      background: var(--accent-ig);
+    }
+
+    .ig-sticker-slider-emoji {
+      position: absolute;
+      top: 50%;
+      left: 65%;
+      transform: translate(-50%, -50%);
+      font-size: 18px;
+    }
+
+    .ig-sticker-countdown {
+      background: linear-gradient(135deg, #5b4ce6 0%, #db2777 100%);
+      color: #fff;
+      border-radius: 12px;
+      padding: 9px 12px;
+      width: 88%;
+      text-align: center;
+      box-shadow: 0 4px 14px rgba(0, 0, 0, 0.24);
+    }
+
+    .ig-sticker-countdown-title {
+      font-size: 11px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+      margin-bottom: 6px;
+    }
+
+    .ig-sticker-countdown-val {
+      background: rgba(255, 255, 255, 0.2);
+      border-radius: 7px;
+      padding: 5px 8px;
+      font-size: 12px;
+      font-weight: 700;
+    }
+
+    .story-bottom {
+      position: relative;
+      z-index: 2;
+      padding: 0 12px 12px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .story-reply-bar {
+      flex: 1;
+      border: 1px solid rgba(255, 255, 255, 0.55);
+      border-radius: 999px;
+      padding: 7px 12px;
+      font-size: 11px;
+      color: rgba(255, 255, 255, 0.85);
     }
 
     /* Statistiques */
@@ -1016,18 +1380,44 @@
               </div>
             </div>
 
-            <div class="field">
-              <label for="postCaption">Légende Instagram</label>
-              <textarea id="postCaption" placeholder="Écrivez votre accroche, le corps de texte, votre appel à l'action et vos hashtags..."></textarea>
-              <div class="helper-bar">
-                <span id="charCounter">0 / 2 200 caractères</span>
+            <!-- BLOC STANDARD (Carrousel / Reel) : Légende + raccourcis -->
+            <div id="standardCaptionBlock">
+              <div class="field">
+                <label for="postCaption">Légende Instagram</label>
+                <textarea id="postCaption" placeholder="Écrivez votre accroche, le corps de texte, votre appel à l'action et vos hashtags..."></textarea>
+                <div class="helper-bar">
+                  <span id="charCounter">0 / 2 200 caractères</span>
+                </div>
+              </div>
+
+              <div class="snippet-chips">
+                <button type="button" class="sm" data-insert="\n\n👉 Enregistre ce post pour le relire et partage-le en Story !">+ CTA Enregistrement</button>
+                <button type="button" class="sm" data-insert="\n\n💬 Et toi, quel est ton avis en commentaire ?">+ Question engagement</button>
+                <button type="button" class="sm" data-insert="\n\n#instagram #creationdecontenu #strategie #communitymanagement #marketingdigital">+ Pack hashtags</button>
               </div>
             </div>
 
-            <div class="snippet-chips">
-              <button type="button" class="sm" data-insert="\n\n👉 Enregistre ce post pour le relire et partage-le en Story !">+ CTA Enregistrement</button>
-              <button type="button" class="sm" data-insert="\n\n💬 Et toi, quel est ton avis en commentaire ?">+ Question engagement</button>
-              <button type="button" class="sm" data-insert="\n\n#instagram #creationdecontenu #strategie #communitymanagement #marketingdigital">+ Pack hashtags</button>
+            <!-- BLOC STORY : Ajout de texte + Stickers interactifs -->
+            <div id="storyEditorBlock" style="display: none;">
+              <div class="field" style="margin-bottom: 12px;">
+                <label for="storyText">Ajout de texte sur la Story</label>
+                <textarea id="storyText" style="min-height: 84px;" placeholder="Écrivez le texte affiché directement sur votre Story..."></textarea>
+              </div>
+
+              <div class="field">
+                <label>Stickers & éléments interactifs de la Story</label>
+                <div class="story-stickers-toolbar">
+                  <button type="button" class="sticker-add-btn" onclick="addStorySticker('lieu')">📍 Lieu</button>
+                  <button type="button" class="sticker-add-btn" onclick="addStorySticker('mention')">@ Mention</button>
+                  <button type="button" class="sticker-add-btn" onclick="addStorySticker('musique')">🎵 Musique</button>
+                  <button type="button" class="sticker-add-btn" onclick="addStorySticker('sondage')">📊 Sondage</button>
+                  <button type="button" class="sticker-add-btn" onclick="addStorySticker('lien')">🔗 Lien</button>
+                  <button type="button" class="sticker-add-btn" onclick="addStorySticker('hashtag')"># Hashtag</button>
+                  <button type="button" class="sticker-add-btn" onclick="addStorySticker('curseur')">😍 Curseur</button>
+                  <button type="button" class="sticker-add-btn" onclick="addStorySticker('compte_a_rebours')">⏳ Compte à rebours</button>
+                </div>
+                <div id="storyStickersEditorList" class="story-stickers-list"></div>
+              </div>
             </div>
 
             <!-- Champs séparés : Objectif et CTA -->
@@ -1094,18 +1484,18 @@
           </div>
         </div>
 
-        <!-- COLONNE DROITE : APERÇU MODE FIL / MODE FEED -->
+        <!-- COLONNE DROITE : APERÇU MODE FIL / MODE FEED / MODE STORY -->
         <div>
           <div class="panel">
             <div class="panel-header-row">
               <h3 id="previewPanelTitle">Aperçu du post</h3>
-              <div class="view-switch">
+              <div class="view-switch" id="previewViewSwitch">
                 <button type="button" id="previewModeFil" class="active">Mode Fil</button>
                 <button type="button" id="previewModeFeed">Mode Feed</button>
               </div>
             </div>
 
-            <!-- Mode Fil (post individuel) -->
+            <!-- Mode Fil (Carrousel / Reel) -->
             <div id="previewFilContainer">
               <div class="ig-card">
                 <div class="ig-header">
@@ -1117,12 +1507,43 @@
               </div>
             </div>
 
-            <!-- Mode Feed (grille 3 colonnes) -->
+            <!-- Mode Feed (grille 3 colonnes - Carrousel / Reel uniquement) -->
             <div id="previewFeedContainer" style="display: none;">
               <p style="font-size: 12px; color: var(--muted); margin-top: 0;">
-                Aperçu des publications triées chronologiquement (le post en cours d'édition est encadré en violet).
+                Aperçu des publications du fil triées chronologiquement (le post en cours d'édition est encadré en violet).
               </p>
               <div class="feed-grid" id="feedPreviewGrid"></div>
+            </div>
+
+            <!-- Mode Story Instagram (9:16) -->
+            <div id="previewStoryContainer" style="display: none;">
+              <div class="story-phone">
+                <img id="storyPreviewBgImg" class="story-bg-img" style="display: none;" alt="Aperçu Story" />
+                <div class="story-scrim-top"></div>
+                <div class="story-scrim-bottom"></div>
+
+                <div class="story-top">
+                  <div class="story-progress"><div class="story-progress-fill"></div></div>
+                  <div class="story-header">
+                    <div class="story-user">
+                      <div class="ig-avatar"></div>
+                      <span>@votre_compte</span>
+                      <span class="story-time-label">À l'instant</span>
+                    </div>
+                    <span>✕</span>
+                  </div>
+                </div>
+
+                <div class="story-stage" id="storyPreviewStage">
+                  <div class="story-empty-hint">Importez un visuel, ajoutez du texte ou un sticker pour prévisualiser votre Story</div>
+                </div>
+
+                <div class="story-bottom">
+                  <div class="story-reply-bar">Envoyer un message...</div>
+                  <span>🤍</span>
+                  <span>➤</span>
+                </div>
+              </div>
             </div>
           </div>
         </div>
@@ -1197,6 +1618,17 @@
       "Publié": "🚀"
     };
 
+    const STICKER_META = {
+      lieu: { label: "📍 Lieu", placeholder: "Ex. Paris, France" },
+      mention: { label: "@ Mention", placeholder: "Ex. @editions_jeunesse" },
+      musique: { label: "🎵 Musique", placeholder: "Titre du morceau", placeholder2: "Artiste" },
+      sondage: { label: "📊 Sondage", placeholder: "Question du sondage", placeholder2: "Option 1", placeholder3: "Option 2" },
+      lien: { label: "🔗 Lien", placeholder: "Texte du bouton (ex. Voir l'album)", placeholder2: "https://..." },
+      hashtag: { label: "# Hashtag", placeholder: "Ex. #illustrationjeunesse" },
+      curseur: { label: "😍 Curseur", placeholder: "Question du curseur", placeholder2: "Emoji (ex. 😍)" },
+      compte_a_rebours: { label: "⏳ Compte à rebours", placeholder: "Nom de l'événement", placeholder2: "Date / heure (ex. 15/12 à 18h)" }
+    };
+
     function getStatusEmoji(statut) {
       return STATUS_EMOJI[statut] || "💡";
     }
@@ -1224,6 +1656,8 @@
           canvaUrl: "",
           metaUrl: "",
           caption: "Tu publies au feeling et tu manques de régularité ?\n\nVoici les 4 étapes simples pour bâtir ton calendrier éditorial en 45 minutes.\n\n👉 Enregistre ce post pour le relire et partage-le en Story !\n\n#instagram #creationdecontenu #strategie #communitymanagement",
+          storyText: "",
+          storyStickers: [],
           stats: { reach: 2450, likes: 185, comments: 24, saves: 92, shares: 31, clicks: 48 }
         },
         {
@@ -1240,6 +1674,8 @@
           canvaUrl: "",
           metaUrl: "",
           caption: "Ce qui se passe vraiment en coulisses avant la sortie d'un nouveau format.\n\n💬 Et toi, quel est ton avis en commentaire ?",
+          storyText: "",
+          storyStickers: [],
           stats: { reach: 3820, likes: 260, comments: 19, saves: 34, shares: 44, clicks: 27 }
         },
         {
@@ -1255,7 +1691,11 @@
           cta: "Découvre l'étude de cas complète",
           canvaUrl: "",
           metaUrl: "",
-          caption: "Comment structurer ses visuels et sa légende a permis de gagner du temps chaque semaine.",
+          caption: "",
+          storyText: "Merci pour vos adorables retours cette semaine ✨",
+          storyStickers: [
+            { id: "st_1", type: "sondage", value: "Tu préfères quelle couverture ?", value2: "Bleue 💙", value3: "Rose 🌸" }
+          ],
           stats: { reach: 1590, likes: 118, comments: 11, saves: 29, shares: 9, clicks: 63 }
         }
       ],
@@ -1288,6 +1728,7 @@
     let state = loadState();
     let editingPostId = state.posts[0]?.id || null;
     let currentEditorMediaId = state.posts[0]?.mediaId || "";
+    let currentEditorStoryStickers = [];
     let calendarViewMode = "month"; // "cards" | "month"
     let previewViewMode = "fil"; // "fil" | "feed"
     let currentCalendarDate = new Date(2026, 10, 1); // Novembre 2026
@@ -1317,6 +1758,8 @@
               cta: p.cta || "",
               canvaUrl: p.canvaUrl || "",
               metaUrl: p.metaUrl || "",
+              storyText: p.storyText !== undefined ? p.storyText : (p.format === "Story" ? (p.caption || "") : ""),
+              storyStickers: Array.isArray(p.storyStickers) ? p.storyStickers : [],
               stats: normalizeStats(p.stats)
             }))
           : structuredClone(defaultData.posts),
@@ -1408,15 +1851,8 @@
 
       const wsPosts = XLSX.utils.aoa_to_sheet([headers, exampleRow]);
       wsPosts["!cols"] = [
-        { wch: 36 }, // Titre
-        { wch: 18 }, // Date
-        { wch: 14 }, // Heure
-        { wch: 15 }, // Format
-        { wch: 18 }, // Pilier
-        { wch: 15 }, // Statut
-        { wch: 32 }, // Objectif
-        { wch: 32 }, // CTA
-        { wch: 65 }  // Légende
+        { wch: 36 }, { wch: 18 }, { wch: 14 }, { wch: 15 },
+        { wch: 18 }, { wch: 15 }, { wch: 32 }, { wch: 32 }, { wch: 65 }
       ];
 
       const instructions = [
@@ -1429,7 +1865,7 @@
         ["Statut", "Oui", "Idée | Préparation | Validé | Programmé | Publié"],
         ["Objectif", "Non", "Objectif principal de la publication"],
         ["CTA", "Non", "Appel à l'action demandé à l'audience"],
-        ["Légende Instagram", "Oui", "Texte complet de la légende avec accroche, sauts de ligne et hashtags"],
+        ["Légende Instagram", "Oui", "Légende complète (ou texte principal si le format est Story)"],
         ["", "", ""],
         ["Consigne pour Gemini :", "", "Remplis l'onglet 'Calendrier_Posts' en remplaçant la ligne d'exemple par les publications du calendrier éditorial, tout en conservant exactement les titres de colonnes en ligne 1."]
       ];
@@ -1559,12 +1995,15 @@
             const parsedDate = parseExcelDate(rawDate) || new Date().toISOString().slice(0, 10);
             if (!firstImportedDate && parsedDate) firstImportedDate = parsedDate;
 
+            const matchedFormat = matchAllowedValue(rawFormat, VALID_FORMATS, "Carrousel");
+            const isStory = matchedFormat === "Story";
+
             const newPost = {
               id: `p_${baseTs}_${idx}`,
               title: rawTitle || "Publication sans titre",
               date: parsedDate,
               time: parseExcelTime(rawTime),
-              format: matchAllowedValue(rawFormat, VALID_FORMATS, "Carrousel"),
+              format: matchedFormat,
               pilier: matchAllowedValue(rawPilier, VALID_PILIERS, "Pédagogie"),
               statut: matchAllowedValue(rawStatut, VALID_STATUTS, "Préparation"),
               mediaId: "",
@@ -1572,7 +2011,9 @@
               cta: rawCta,
               canvaUrl: "",
               metaUrl: "",
-              caption: rawCaption,
+              caption: isStory ? "" : rawCaption,
+              storyText: isStory ? rawCaption : "",
+              storyStickers: [],
               stats: normalizeStats({})
             };
 
@@ -1643,6 +2084,7 @@
           return (
             (p.title || "").toLowerCase().includes(q) ||
             (p.caption || "").toLowerCase().includes(q) ||
+            (p.storyText || "").toLowerCase().includes(q) ||
             (p.pilier || "").toLowerCase().includes(q)
           );
         })
@@ -1664,6 +2106,8 @@
           const statusClass = "st-" + post.statut.toLowerCase().replace(/\s+/g, "-");
           const fmtClass = getFormatClass(post.format);
           const emoji = getStatusEmoji(post.statut);
+          const previewText = post.format === "Story" ? (post.storyText || post.caption || "") : (post.caption || "");
+          const stickersCount = Array.isArray(post.storyStickers) ? post.storyStickers.length : 0;
           return `
             <article class="post-card card-${fmtClass}">
               <div class="post-thumb">
@@ -1676,9 +2120,10 @@
                   <span class="status-badge ${statusClass}">${emoji} ${post.statut}</span>
                 </div>
                 <h3 class="post-title">${emoji} ${escapeHtml(post.title || "Sans titre")}</h3>
-                <div class="post-caption-preview">${escapeHtml(post.caption || "")}</div>
+                <div class="post-caption-preview">${escapeHtml(previewText)}</div>
                 <div class="tag-row">
                   <span class="mini-tag">${post.pilier}</span>
+                  ${post.format === "Story" && stickersCount ? `<span class="mini-tag">✨ ${stickersCount} sticker(s)</span>` : ""}
                   ${media ? `<span class="mini-tag">${escapeHtml(media.name)}</span>` : ""}
                 </div>
                 <div class="post-actions">
@@ -1789,6 +2234,150 @@
     });
 
     /* ============================================================
+       GESTION DES STICKERS STORY & ADAPTATION FORMAT
+       ============================================================ */
+    window.addStorySticker = function (type) {
+      const defaults = {
+        lieu: { value: "" },
+        mention: { value: "@" },
+        musique: { value: "", value2: "" },
+        sondage: { value: "", value2: "Oui", value3: "Non" },
+        lien: { value: "", value2: "" },
+        hashtag: { value: "#" },
+        curseur: { value: "", value2: "😍" },
+        compte_a_rebours: { value: "", value2: "" }
+      };
+      currentEditorStoryStickers.push({
+        id: "st_" + Date.now() + "_" + Math.floor(Math.random() * 1000),
+        type,
+        ...(defaults[type] || { value: "" })
+      });
+      renderStoryStickersEditor();
+      updateLivePreview();
+    };
+
+    window.removeStorySticker = function (stickerId) {
+      currentEditorStoryStickers = currentEditorStoryStickers.filter((s) => s.id !== stickerId);
+      renderStoryStickersEditor();
+      updateLivePreview();
+    };
+
+    window.updateStoryStickerField = function (stickerId, field, newVal) {
+      const st = currentEditorStoryStickers.find((s) => s.id === stickerId);
+      if (st) {
+        st[field] = newVal;
+        updateLivePreview();
+      }
+    };
+
+    function renderStoryStickersEditor() {
+      const container = document.getElementById("storyStickersEditorList");
+      if (!currentEditorStoryStickers.length) {
+        container.innerHTML = `<div style="font-size: 12px; color: var(--muted);">Aucun sticker ajouté. Cliquez sur un bouton ci-dessus pour enrichir votre Story.</div>`;
+        return;
+      }
+
+      container.innerHTML = currentEditorStoryStickers
+        .map((st) => {
+          const meta = STICKER_META[st.type] || { label: st.type, placeholder: "Texte" };
+          let fieldsHtml = `<input type="text" value="${escapeHtml(st.value || "")}" placeholder="${escapeHtml(meta.placeholder)}" oninput="updateStoryStickerField('${st.id}', 'value', this.value)" />`;
+
+          if (meta.placeholder2) {
+            fieldsHtml += `<input type="text" value="${escapeHtml(st.value2 || "")}" placeholder="${escapeHtml(meta.placeholder2)}" oninput="updateStoryStickerField('${st.id}', 'value2', this.value)" />`;
+          }
+          if (meta.placeholder3) {
+            fieldsHtml += `<input type="text" value="${escapeHtml(st.value3 || "")}" placeholder="${escapeHtml(meta.placeholder3)}" oninput="updateStoryStickerField('${st.id}', 'value3', this.value)" />`;
+          }
+
+          return `
+            <div class="sticker-editor-item">
+              <div class="sticker-editor-head">
+                <span>${meta.label}</span>
+                <button type="button" class="sm danger" onclick="removeStorySticker('${st.id}')">✕</button>
+              </div>
+              <div class="sticker-editor-fields">${fieldsHtml}</div>
+            </div>
+          `;
+        })
+        .join("");
+    }
+
+    function renderStoryStickerPreview(st) {
+      switch (st.type) {
+        case "lieu":
+          return `<div class="ig-sticker-pill">📍 ${escapeHtml(st.value || "Lieu")}</div>`;
+        case "mention": {
+          const txt = st.value ? (st.value.startsWith("@") ? st.value : "@" + st.value) : "@mention";
+          return `<div class="ig-sticker-pill ig-sticker-mention">${escapeHtml(txt)}</div>`;
+        }
+        case "hashtag": {
+          const txt = st.value ? (st.value.startsWith("#") ? st.value : "#" + st.value) : "#hashtag";
+          return `<div class="ig-sticker-pill ig-sticker-hashtag">${escapeHtml(txt)}</div>`;
+        }
+        case "lien":
+          return `<div class="ig-sticker-pill ig-sticker-link">🔗 ${escapeHtml(st.value || st.value2 || "Lien")}</div>`;
+        case "musique":
+          return `
+            <div class="ig-sticker-music">
+              <div class="ig-sticker-music-icon">🎵</div>
+              <div>
+                <div style="font-weight:700;">${escapeHtml(st.value || "Titre du morceau")}</div>
+                <div style="color:var(--muted); font-size:10px;">${escapeHtml(st.value2 || "Artiste")}</div>
+              </div>
+            </div>`;
+        case "sondage":
+          return `
+            <div class="ig-sticker-poll">
+              <div class="ig-sticker-poll-q">${escapeHtml(st.value || "Votre question ?")}</div>
+              <div class="ig-sticker-poll-opts">
+                <span>${escapeHtml(st.value2 || "Oui")}</span>
+                <span>${escapeHtml(st.value3 || "Non")}</span>
+              </div>
+            </div>`;
+        case "curseur":
+          return `
+            <div class="ig-sticker-slider">
+              <div class="ig-sticker-slider-q">${escapeHtml(st.value || "Votre avis ?")}</div>
+              <div class="ig-sticker-slider-bar">
+                <div class="ig-sticker-slider-fill"></div>
+                <span class="ig-sticker-slider-emoji">${escapeHtml(st.value2 || "😍")}</span>
+              </div>
+            </div>`;
+        case "compte_a_rebours":
+          return `
+            <div class="ig-sticker-countdown">
+              <div class="ig-sticker-countdown-title">⏳ ${escapeHtml(st.value || "Compte à rebours")}</div>
+              <div class="ig-sticker-countdown-val">${escapeHtml(st.value2 || "Bientôt disponible")}</div>
+            </div>`;
+        default:
+          return "";
+      }
+    }
+
+    function updateEditorForFormat() {
+      const isStory = document.getElementById("postFormat").value === "Story";
+
+      document.getElementById("standardCaptionBlock").style.display = isStory ? "none" : "block";
+      document.getElementById("storyEditorBlock").style.display = isStory ? "block" : "none";
+      document.getElementById("previewViewSwitch").style.display = isStory ? "none" : "inline-flex";
+      document.getElementById("btnCopyCaption").textContent = isStory ? "Copier le texte" : "Copier la légende";
+
+      if (isStory) {
+        document.getElementById("previewFilContainer").style.display = "none";
+        document.getElementById("previewFeedContainer").style.display = "none";
+        document.getElementById("previewStoryContainer").style.display = "block";
+        document.getElementById("previewPanelTitle").textContent = "Aperçu de la Story (9:16)";
+      } else {
+        document.getElementById("previewStoryContainer").style.display = "none";
+        applyPreviewViewMode();
+      }
+
+      updateLivePreview();
+    }
+
+    document.getElementById("postFormat").addEventListener("change", updateEditorForFormat);
+
+    /* ============================================================
        IMPORT VISUEL (avec compression légère pour Firebase)
        ============================================================ */
     function updateVisualIndicator() {
@@ -1889,6 +2478,7 @@
 
     /* Switch Mode Fil / Mode Feed */
     function applyPreviewViewMode() {
+      if (document.getElementById("postFormat").value === "Story") return;
       const isFil = previewViewMode === "fil";
       document.getElementById("previewFilContainer").style.display = isFil ? "block" : "none";
       document.getElementById("previewFeedContainer").style.display = isFil ? "none" : "block";
@@ -1949,6 +2539,9 @@
       const post = state.posts.find((p) => p.id === postId);
       editingPostId = post ? post.id : null;
       currentEditorMediaId = post?.mediaId || "";
+      currentEditorStoryStickers = Array.isArray(post?.storyStickers)
+        ? structuredClone(post.storyStickers)
+        : [];
 
       document.getElementById("editorHeading").textContent = post
         ? `Préparer la publication : ${getStatusEmoji(post.statut)} ${post.title || "Sans titre"}`
@@ -1965,6 +2558,7 @@
       document.getElementById("postObjectif").value = post?.objectif || "";
       document.getElementById("postCta").value = post?.cta || "";
       document.getElementById("postCaption").value = post?.caption || "";
+      document.getElementById("storyText").value = post?.storyText || (post?.format === "Story" ? (post?.caption || "") : "");
       document.getElementById("btnDeleteCurrentPost").style.display = post ? "inline-block" : "none";
 
       const st = normalizeStats(post?.stats);
@@ -1976,14 +2570,44 @@
       document.getElementById("perfClicks").value = st.clicks;
       updatePerfSummaryPreview();
 
+      renderStoryStickersEditor();
       updateVisualIndicator();
-      updateLivePreview();
+      updateEditorForFormat();
     }
 
     function updateLivePreview() {
-      const caption = document.getElementById("postCaption").value;
+      const format = document.getElementById("postFormat").value;
       const media = getMediaById(currentEditorMediaId);
 
+      if (format === "Story") {
+        const bgImg = document.getElementById("storyPreviewBgImg");
+        if (media) {
+          bgImg.src = media.src;
+          bgImg.style.display = "block";
+        } else {
+          bgImg.style.display = "none";
+          bgImg.removeAttribute("src");
+        }
+
+        const storyTextVal = document.getElementById("storyText").value.trim();
+        const stage = document.getElementById("storyPreviewStage");
+        let html = "";
+
+        if (storyTextVal) {
+          html += `<div class="story-text-overlay">${escapeHtml(storyTextVal)}</div>`;
+        }
+        if (currentEditorStoryStickers.length) {
+          html += currentEditorStoryStickers.map(renderStoryStickerPreview).join("");
+        }
+        if (!html && !media) {
+          html = `<div class="story-empty-hint">Importez un visuel, ajoutez du texte ou un sticker pour prévisualiser votre Story</div>`;
+        }
+
+        stage.innerHTML = html;
+        return;
+      }
+
+      const caption = document.getElementById("postCaption").value;
       const len = caption.length;
       document.getElementById("charCounter").textContent = `${len} / 2 200 caractères`;
       document.getElementById("charCounter").style.color = len > 2200 ? "#b42318" : "";
@@ -2001,7 +2625,10 @@
 
     function renderFeedPreviewGrid() {
       const grid = document.getElementById("feedPreviewGrid");
-      const sorted = [...state.posts].sort((a, b) => ((b.date || "") + (b.time || "")).localeCompare((a.date || "") + (a.time || ""))).slice(0, 9);
+      const sorted = [...state.posts]
+        .filter((p) => p.format !== "Story")
+        .sort((a, b) => ((b.date || "") + (b.time || "")).localeCompare((a.date || "") + (a.time || "")))
+        .slice(0, 9);
 
       if (!sorted.length) {
         grid.innerHTML = `<div class="feed-cell" style="grid-column: 1 / -1;">Grille vide</div>`;
@@ -2035,6 +2662,8 @@
       const objectif = document.getElementById("postObjectif").value.trim();
       const cta = document.getElementById("postCta").value.trim();
       const caption = document.getElementById("postCaption").value;
+      const storyText = document.getElementById("storyText").value;
+      const storyStickers = structuredClone(currentEditorStoryStickers);
       const stats = getEditorStatsFromInputs();
 
       if (editingPostId) {
@@ -2054,6 +2683,8 @@
             objectif,
             cta,
             caption,
+            storyText,
+            storyStickers,
             stats
           };
         }
@@ -2073,6 +2704,8 @@
           objectif,
           cta,
           caption,
+          storyText,
+          storyStickers,
           stats
         });
         editingPostId = newId;
@@ -2192,12 +2825,15 @@
     });
 
     document.getElementById("btnCopyCaption").addEventListener("click", async () => {
-      const text = document.getElementById("postCaption").value;
+      const isStory = document.getElementById("postFormat").value === "Story";
+      const text = isStory
+        ? document.getElementById("storyText").value
+        : document.getElementById("postCaption").value;
       try {
         await navigator.clipboard.writeText(text);
-        showToast("Légende copiée dans le presse-papiers");
+        showToast(isStory ? "Texte de Story copié dans le presse-papiers" : "Légende copiée dans le presse-papiers");
       } catch {
-        showToast("Sélectionnez et copiez la légende manuellement");
+        showToast("Sélectionnez et copiez le texte manuellement");
       }
     });
 
@@ -2210,6 +2846,7 @@
     });
 
     document.getElementById("postCaption").addEventListener("input", updateLivePreview);
+    document.getElementById("storyText").addEventListener("input", updateLivePreview);
 
     ["filterStatut", "filterFormat", "filterPilier", "filterSearch"].forEach((id) => {
       document.getElementById(id).addEventListener("input", () => {
@@ -2233,9 +2870,8 @@
     function renderAll() {
       renderPostsGrid();
       applyCalendarViewMode();
-      applyPreviewViewMode();
+      updateEditorForFormat();
       renderStatisticsSection();
-      updateLivePreview();
     }
 
     loadPostIntoEditor(editingPostId);
