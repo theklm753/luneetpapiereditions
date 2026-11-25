@@ -3,7 +3,11 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Studio éditorial Instagram</title>
+  <title>Anne-Sophie illustrations — Studio</title>
+  <!-- Google Font pour le logo manuscrit -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Amatic+SC:wght@700&display=swap" rel="stylesheet" />
   <!-- Firebase -->
   <script src="https://www.gstatic.com/firebasejs/10.14.0/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/10.14.0/firebase-firestore-compat.js"></script>
@@ -23,7 +27,7 @@
       --border: #e3e6ef;
       --success: #168a54;
       --success-bg: #e7f7ef;
-      /* Couleurs par statut */
+      /* Couleurs par statut Instagram */
       --st-idee: #db2777;
       --st-idee-bg: #fce7f3;
       --st-idee-border: #f9a8d4;
@@ -48,6 +52,18 @@
       --st-retard-bg: #fee2e2;
       --st-retard-border: #fca5a5;
 
+      /* Couleurs statuts Projets */
+      --proj-a-demarrer: #ff0000;
+      --proj-a-demarrer-bar: #ff5b5b;
+      --proj-en-cours: #f5b800;
+      --proj-en-cours-bar: #fde068;
+      --proj-finalise: #009fe3;
+      --proj-finalise-bar: #7dd3fc;
+      --proj-envoye: #8cc63f;
+      --proj-envoye-bar: #bef264;
+      --proj-edite: #2e7d32;
+      --proj-edite-bar: #86efac;
+
       --radius: 12px;
       --shadow: 0 4px 18px rgba(24, 26, 32, 0.05);
     }
@@ -64,12 +80,97 @@
       line-height: 1.45;
     }
 
-    header {
+    /* ============================================================
+       BANDEAU SUPÉRIEUR PRINCIPAL (ANNE-SOPHIE ILLUSTRATIONS)
+       ============================================================ */
+    .top-banner {
+      background: linear-gradient(90deg, #5239e8 0%, #4332d6 55%, #3b2bc4 100%);
+      color: #fff;
+      position: sticky;
+      top: 0;
+      z-index: 30;
+      box-shadow: 0 3px 14px rgba(45, 32, 160, 0.18);
+    }
+
+    .top-banner-inner {
+      max-width: 1420px;
+      margin: 0 auto;
+      padding: 12px 24px;
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+    }
+
+    .logo-brand {
+      display: flex;
+      flex-direction: column;
+      line-height: 0.92;
+      cursor: pointer;
+      user-select: none;
+    }
+
+    .logo-name {
+      font-family: "Amatic SC", cursive;
+      font-size: 40px;
+      font-weight: 700;
+      letter-spacing: 0.5px;
+      color: #fff;
+    }
+
+    .logo-sub {
+      font-family: "Amatic SC", cursive;
+      font-size: 22px;
+      font-weight: 700;
+      letter-spacing: 0.8px;
+      color: rgba(255, 255, 255, 0.92);
+      padding-left: 4px;
+    }
+
+    .main-nav {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+
+    .main-nav-btn {
+      background: transparent;
+      color: #fff;
+      border: 1px solid rgba(255, 255, 255, 0.72);
+      border-radius: 4px;
+      padding: 9px 26px;
+      font-size: 14px;
+      font-weight: 500;
+      cursor: pointer;
+      transition: background 0.15s ease, border-color 0.15s ease;
+    }
+
+    .main-nav-btn:hover {
+      background: rgba(255, 255, 255, 0.14);
+    }
+
+    .main-nav-btn.active {
+      background: rgba(15, 10, 65, 0.34);
+      border-color: #fff;
+      font-weight: 700;
+    }
+
+    /* ============================================================
+       SOUS-EN-TÊTE PAR SECTION
+       ============================================================ */
+    .sub-header {
       background: var(--surface);
       border-bottom: 1px solid var(--border);
       position: sticky;
-      top: 0;
+      top: 80px;
       z-index: 20;
+    }
+
+    @media (max-width: 720px) {
+      .sub-header {
+        position: static;
+      }
     }
 
     .header-inner {
@@ -136,6 +237,14 @@
       padding: 24px;
     }
 
+    .main-view {
+      display: none;
+    }
+
+    .main-view.active {
+      display: block;
+    }
+
     .section {
       display: none;
     }
@@ -144,6 +253,241 @@
       display: block;
     }
 
+    /* ============================================================
+       TABLEAU DE BORD
+       ============================================================ */
+    .dashboard-greeting {
+      font-size: 18px;
+      font-weight: 700;
+      margin: 0 0 18px 0;
+      color: var(--text);
+    }
+
+    .dashboard-date-label {
+      font-size: 15px;
+      font-weight: 700;
+      color: var(--primary);
+      margin-bottom: 10px;
+    }
+
+    .dashboard-date-card {
+      background: var(--surface);
+      border-radius: 22px;
+      padding: 28px 34px;
+      display: inline-flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      min-width: 240px;
+      box-shadow: 0 6px 24px rgba(24, 26, 32, 0.06);
+      border: 1px solid rgba(227, 230, 239, 0.7);
+    }
+
+    .dashboard-date-day {
+      font-size: 56px;
+      font-weight: 800;
+      color: var(--primary);
+      line-height: 1.05;
+    }
+
+    .dashboard-date-month {
+      font-size: 24px;
+      font-weight: 700;
+      color: var(--primary);
+      margin-top: 8px;
+      text-transform: capitalize;
+    }
+
+    /* ============================================================
+       GESTION DES PROJETS
+       ============================================================ */
+    .projects-kpi-grid {
+      display: grid;
+      grid-template-columns: repeat(5, minmax(0, 1fr));
+      gap: 16px;
+      margin-bottom: 28px;
+    }
+
+    @media (max-width: 960px) {
+      .projects-kpi-grid {
+        grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+      }
+    }
+
+    .project-kpi-col {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 10px;
+      text-align: center;
+    }
+
+    .project-kpi-box {
+      width: 100%;
+      background: var(--surface);
+      border-radius: 18px;
+      padding: 22px 14px;
+      box-shadow: 0 4px 16px rgba(24, 26, 32, 0.05);
+      border: 1px solid rgba(227, 230, 239, 0.8);
+      font-size: 46px;
+      font-weight: 800;
+      line-height: 1;
+    }
+
+    .project-kpi-label {
+      font-size: 14px;
+      font-weight: 500;
+      color: var(--text);
+      line-height: 1.3;
+    }
+
+    .kpi-red { color: var(--proj-a-demarrer); }
+    .kpi-yellow { color: var(--proj-en-cours); }
+    .kpi-blue { color: var(--proj-finalise); }
+    .kpi-lightgreen { color: var(--proj-envoye); }
+    .kpi-darkgreen { color: var(--proj-edite); }
+
+    .project-group {
+      margin-bottom: 22px;
+    }
+
+    .project-group-header {
+      padding: 10px 16px;
+      font-size: 15px;
+      font-weight: 700;
+      border-radius: 4px;
+      margin-bottom: 10px;
+    }
+
+    .group-en_cours { background: var(--proj-en-cours-bar); color: #8c6400; }
+    .group-a_demarrer { background: var(--proj-a-demarrer-bar); color: #7f0000; }
+    .group-finalise { background: var(--proj-finalise-bar); color: #075985; }
+    .group-envoye { background: var(--proj-envoye-bar); color: #365314; }
+    .group-edite { background: var(--proj-edite-bar); color: #14532d; }
+
+    .project-list {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .project-row {
+      background: var(--surface);
+      border: 1px solid rgba(227, 230, 239, 0.85);
+      border-radius: 14px;
+      padding: 18px 22px;
+      box-shadow: var(--shadow);
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+      cursor: pointer;
+      transition: transform 0.12s ease, border-color 0.15s ease;
+    }
+
+    .project-row:hover {
+      border-color: var(--primary);
+      transform: translateY(-1px);
+    }
+
+    .project-row-info {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+      min-width: 220px;
+      flex: 1;
+    }
+
+    .project-row-title {
+      font-size: 16px;
+      font-weight: 700;
+      color: var(--text);
+    }
+
+    .project-row-meta {
+      font-size: 12px;
+      color: var(--muted);
+    }
+
+    .project-progress-wrap {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      width: 280px;
+      max-width: 100%;
+    }
+
+    .project-progress-track {
+      flex: 1;
+      height: 18px;
+      background: #efefef;
+      border-radius: 999px;
+      overflow: hidden;
+    }
+
+    .project-progress-fill {
+      height: 100%;
+      border-radius: 999px;
+      transition: width 0.25s ease;
+    }
+
+    .fill-a_demarrer { background: var(--proj-a-demarrer); }
+    .fill-en_cours { background: var(--proj-en-cours); }
+    .fill-finalise { background: var(--proj-finalise); }
+    .fill-envoye { background: var(--proj-envoye); }
+    .fill-edite { background: var(--proj-edite); }
+
+    .project-progress-pct {
+      font-size: 12px;
+      font-weight: 700;
+      color: var(--muted);
+      min-width: 36px;
+      text-align: right;
+    }
+
+    /* Modale Projet */
+    .modal-backdrop {
+      position: fixed;
+      inset: 0;
+      background: rgba(24, 26, 32, 0.52);
+      backdrop-filter: blur(3px);
+      display: none;
+      align-items: center;
+      justify-content: center;
+      padding: 18px;
+      z-index: 60;
+    }
+
+    .modal-backdrop.open {
+      display: flex;
+    }
+
+    .modal-card {
+      background: var(--surface);
+      border-radius: 16px;
+      width: 100%;
+      max-width: 520px;
+      padding: 22px;
+      box-shadow: 0 20px 50px rgba(24, 26, 32, 0.22);
+      border: 1px solid var(--border);
+    }
+
+    .modal-head {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 16px;
+    }
+
+    .modal-head h2 {
+      margin: 0;
+      font-size: 17px;
+    }
+
+    /* ============================================================
+       STUDIO INSTAGRAM (STYLES CONSERVÉS)
+       ============================================================ */
     .kpis {
       display: grid;
       grid-template-columns: repeat(auto-fit, minmax(185px, 1fr));
@@ -639,41 +983,12 @@
       text-align: left;
     }
 
-    .cal-event.st-idee {
-      background: var(--st-idee-bg);
-      color: var(--st-idee);
-      border-left-color: var(--st-idee);
-    }
-
-    .cal-event.st-prepa {
-      background: var(--st-prepa-bg);
-      color: var(--st-prepa);
-      border-left-color: #eab308;
-    }
-
-    .cal-event.st-valide {
-      background: var(--st-valide-bg);
-      color: var(--st-valide);
-      border-left-color: var(--st-valide);
-    }
-
-    .cal-event.st-programme {
-      background: var(--st-programme-bg);
-      color: var(--st-programme);
-      border-left-color: var(--st-programme);
-    }
-
-    .cal-event.st-publie {
-      background: var(--st-publie-bg);
-      color: var(--st-publie);
-      border-left-color: #94a3b8;
-    }
-
-    .cal-event.st-retard {
-      background: var(--st-retard-bg);
-      color: var(--st-retard);
-      border-left-color: var(--st-retard);
-    }
+    .cal-event.st-idee { background: var(--st-idee-bg); color: var(--st-idee); border-left-color: var(--st-idee); }
+    .cal-event.st-prepa { background: var(--st-prepa-bg); color: var(--st-prepa); border-left-color: #eab308; }
+    .cal-event.st-valide { background: var(--st-valide-bg); color: var(--st-valide); border-left-color: var(--st-valide); }
+    .cal-event.st-programme { background: var(--st-programme-bg); color: var(--st-programme); border-left-color: var(--st-programme); }
+    .cal-event.st-publie { background: var(--st-publie-bg); color: var(--st-publie); border-left-color: #94a3b8; }
+    .cal-event.st-retard { background: var(--st-retard-bg); color: var(--st-retard); border-left-color: var(--st-retard); }
 
     .cal-event:hover {
       filter: brightness(0.95);
@@ -1224,7 +1539,6 @@
       box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
     }
 
-    /* Rendu visuel des stickers sur la Story */
     .ig-sticker-pill {
       background: #ffffff;
       color: #181a20;
@@ -1238,20 +1552,9 @@
       text-align: center;
     }
 
-    .ig-sticker-mention {
-      color: #e6683c;
-      text-transform: uppercase;
-      letter-spacing: 0.02em;
-    }
-
-    .ig-sticker-hashtag {
-      color: #5b4ce6;
-      text-transform: uppercase;
-    }
-
-    .ig-sticker-link {
-      color: #1d5fd6;
-    }
+    .ig-sticker-mention { color: #e6683c; text-transform: uppercase; letter-spacing: 0.02em; }
+    .ig-sticker-hashtag { color: #5b4ce6; text-transform: uppercase; }
+    .ig-sticker-link { color: #1d5fd6; }
 
     .ig-sticker-music {
       background: rgba(255, 255, 255, 0.94);
@@ -1309,9 +1612,7 @@
       border-right: 1px solid var(--border);
     }
 
-    .ig-sticker-poll-opts span:last-child {
-      border-right: none;
-    }
+    .ig-sticker-poll-opts span:last-child { border-right: none; }
 
     .ig-sticker-slider {
       background: #ffffff;
@@ -1323,11 +1624,7 @@
       text-align: center;
     }
 
-    .ig-sticker-slider-q {
-      font-size: 12px;
-      font-weight: 700;
-      margin-bottom: 8px;
-    }
+    .ig-sticker-slider-q { font-size: 12px; font-weight: 700; margin-bottom: 8px; }
 
     .ig-sticker-slider-bar {
       position: relative;
@@ -1440,7 +1737,7 @@
       transform: translateY(10px);
       transition: all 0.2s ease;
       pointer-events: none;
-      z-index: 50;
+      z-index: 70;
     }
 
     .toast.show {
@@ -1450,419 +1747,528 @@
   </style>
 </head>
 <body>
-  <header>
-    <div class="header-inner">
-      <div class="brand">
-        <h1>Studio éditorial Instagram</h1>
+  <!-- BANDEAU SUPÉRIEUR PRINCIPAL -->
+  <div class="top-banner">
+    <div class="top-banner-inner">
+      <div class="logo-brand" onclick="switchMainSection('tableau')">
+        <span class="logo-name">Anne-Sophie</span>
+        <span class="logo-sub">illustrations</span>
       </div>
 
-      <nav class="tabs" role="tablist">
-        <button class="tab-btn active" data-tab="calendrier">Calendrier éditorial</button>
-        <button class="tab-btn" data-tab="statistiques">Statistiques</button>
+      <nav class="main-nav" aria-label="Navigation principale">
+        <button type="button" class="main-nav-btn active" data-main="tableau">Tableau de bord</button>
+        <button type="button" class="main-nav-btn" data-main="instagram">Instagram</button>
+        <button type="button" class="main-nav-btn" data-main="projets">Projets</button>
       </nav>
-
-      <div class="header-actions">
-        <button class="excel-btn" id="btnDownloadExcelTemplate" title="Télécharger un modèle Excel prêt à faire remplir par Gemini">📥 Modèle Excel</button>
-        <button class="excel-btn" id="btnImportExcel" title="Importer un fichier Excel rempli dans le calendrier">📤 Importer Excel</button>
-        <input type="file" id="importExcelInput" accept=".xlsx,.xls,.csv" hidden />
-        <button class="primary" id="btnNewPost">+ Nouveau post</button>
-      </div>
     </div>
-  </header>
+  </div>
 
-  <main>
-    <!-- ONGLET 1 : CALENDRIER ÉDITORIAL (CARTES + VUE CALENDRIER MENSUEL) -->
-    <section id="tab-calendrier" class="section active">
-      <div class="toolbar">
-        <div class="filters">
-          <div class="view-switch">
-            <button type="button" id="viewModeCards" class="active">Vue cartes</button>
-            <button type="button" id="viewModeMonth">Vue calendrier</button>
+  <!-- ============================================================
+       ESPACE 1 : TABLEAU DE BORD
+       ============================================================ -->
+  <div id="main-tableau" class="main-view active">
+    <header class="sub-header">
+      <div class="header-inner">
+        <div class="brand">
+          <h1>Tableau de bord</h1>
+        </div>
+      </div>
+    </header>
+
+    <main>
+      <p class="dashboard-greeting">Hello Anne-Sophie,</p>
+      <div class="dashboard-date-label">Date</div>
+      <div class="dashboard-date-card">
+        <div class="dashboard-date-day" id="dashDayNumber">25</div>
+        <div class="dashboard-date-month" id="dashMonthYear">Novembre 2026</div>
+      </div>
+    </main>
+  </div>
+
+  <!-- ============================================================
+       ESPACE 2 : INSTAGRAM
+       ============================================================ -->
+  <div id="main-instagram" class="main-view">
+    <header class="sub-header">
+      <div class="header-inner">
+        <div class="brand">
+          <h1>Studio éditorial Instagram</h1>
+        </div>
+
+        <nav class="tabs" role="tablist">
+          <button class="tab-btn active" data-tab="calendrier">Calendrier éditorial</button>
+          <button class="tab-btn" data-tab="statistiques">Statistiques</button>
+        </nav>
+
+        <div class="header-actions">
+          <button class="excel-btn" id="btnDownloadExcelTemplate" title="Télécharger un modèle Excel prêt à faire remplir par Gemini">📥 Modèle Excel</button>
+          <button class="excel-btn" id="btnImportExcel" title="Importer un fichier Excel rempli dans le calendrier">📤 Importer Excel</button>
+          <input type="file" id="importExcelInput" accept=".xlsx,.xls,.csv" hidden />
+          <button class="primary" id="btnNewPost">+ Nouveau post</button>
+        </div>
+      </div>
+    </header>
+
+    <main>
+      <!-- ONGLET 1 : CALENDRIER ÉDITORIAL (CARTES + VUE CALENDRIER MENSUEL) -->
+      <section id="tab-calendrier" class="section active">
+        <div class="toolbar">
+          <div class="filters">
+            <div class="view-switch">
+              <button type="button" id="viewModeCards" class="active">Vue cartes</button>
+              <button type="button" id="viewModeMonth">Vue calendrier</button>
+            </div>
+
+            <select id="filterStatut">
+              <option value="">Tous les statuts</option>
+              <option value="Idée">Idée</option>
+              <option value="Préparation">Préparation</option>
+              <option value="Validé">Validé</option>
+              <option value="Programmé">Programmé</option>
+              <option value="Publié">Publié</option>
+              <option value="__RETARD__">⚠️ Date dépassée (non publié)</option>
+            </select>
+
+            <!-- Filtre multi-sélection de formats -->
+            <div class="multiselect-wrap" id="formatMultiselect">
+              <button type="button" class="multiselect-trigger" id="formatFilterBtn">
+                <span id="formatFilterLabel">Tous les formats</span>
+                <span>▾</span>
+              </button>
+              <div class="multiselect-menu" id="formatFilterMenu">
+                <label class="multiselect-option">
+                  <input type="checkbox" class="fmt-checkbox" value="Carrousel" checked />
+                  <span>🎠 Carrousel</span>
+                </label>
+                <label class="multiselect-option">
+                  <input type="checkbox" class="fmt-checkbox" value="Reel" checked />
+                  <span>🎥 Reel</span>
+                </label>
+                <label class="multiselect-option">
+                  <input type="checkbox" class="fmt-checkbox" value="Story" checked />
+                  <span>✏️ Story</span>
+                </label>
+                <div class="multiselect-actions">
+                  <button type="button" id="btnFmtSelectAll">Tout cocher</button>
+                  <button type="button" id="btnFmtNoStory">Sans Story</button>
+                </div>
+              </div>
+            </div>
+
+            <select id="filterPilier">
+              <option value="">Tous les piliers</option>
+              <option value="Pédagogie">Pédagogie</option>
+              <option value="Coulisses">Coulisses</option>
+              <option value="Offre / Produit">Offre / Produit</option>
+              <option value="Preuve sociale">Preuve sociale</option>
+            </select>
+
+            <input type="text" id="filterSearch" placeholder="Rechercher un titre ou légende..." />
           </div>
 
-          <select id="filterStatut">
-            <option value="">Tous les statuts</option>
-            <option value="Idée">Idée</option>
-            <option value="Préparation">Préparation</option>
-            <option value="Validé">Validé</option>
-            <option value="Programmé">Programmé</option>
-            <option value="Publié">Publié</option>
-            <option value="__RETARD__">⚠️ Date dépassée (non publié)</option>
-          </select>
-
-          <!-- Filtre multi-sélection de formats -->
-          <div class="multiselect-wrap" id="formatMultiselect">
-            <button type="button" class="multiselect-trigger" id="formatFilterBtn">
-              <span id="formatFilterLabel">Tous les formats</span>
-              <span>▾</span>
-            </button>
-            <div class="multiselect-menu" id="formatFilterMenu">
-              <label class="multiselect-option">
-                <input type="checkbox" class="fmt-checkbox" value="Carrousel" checked />
-                <span>🎠 Carrousel</span>
-              </label>
-              <label class="multiselect-option">
-                <input type="checkbox" class="fmt-checkbox" value="Reel" checked />
-                <span>🎥 Reel</span>
-              </label>
-              <label class="multiselect-option">
-                <input type="checkbox" class="fmt-checkbox" value="Story" checked />
-                <span>✏️ Story</span>
-              </label>
-              <div class="multiselect-actions">
-                <button type="button" id="btnFmtSelectAll">Tout cocher</button>
-                <button type="button" id="btnFmtNoStory">Sans Story</button>
-              </div>
-            </div>
+          <div class="status-legend">
+            <span class="legend-item"><span class="legend-dot dot-idee"></span> Idée</span>
+            <span class="legend-item"><span class="legend-dot dot-prepa"></span> Préparation</span>
+            <span class="legend-item"><span class="legend-dot dot-valide"></span> Validé</span>
+            <span class="legend-item"><span class="legend-dot dot-programme"></span> Programmé</span>
+            <span class="legend-item"><span class="legend-dot dot-publie"></span> Publié</span>
+            <span class="legend-item"><span class="legend-dot dot-retard"></span> En retard</span>
           </div>
-
-          <select id="filterPilier">
-            <option value="">Tous les piliers</option>
-            <option value="Pédagogie">Pédagogie</option>
-            <option value="Coulisses">Coulisses</option>
-            <option value="Offre / Produit">Offre / Produit</option>
-            <option value="Preuve sociale">Preuve sociale</option>
-          </select>
-
-          <input type="text" id="filterSearch" placeholder="Rechercher un titre ou légende..." />
         </div>
 
-        <div class="status-legend">
-          <span class="legend-item"><span class="legend-dot dot-idee"></span> Idée</span>
-          <span class="legend-item"><span class="legend-dot dot-prepa"></span> Préparation</span>
-          <span class="legend-item"><span class="legend-dot dot-valide"></span> Validé</span>
-          <span class="legend-item"><span class="legend-dot dot-programme"></span> Programmé</span>
-          <span class="legend-item"><span class="legend-dot dot-publie"></span> Publié</span>
-          <span class="legend-item"><span class="legend-dot dot-retard"></span> En retard</span>
+        <div class="posts-grid" id="postsGrid"></div>
+
+        <div class="calendar-wrapper" id="calendarMonthView" style="display: none;">
+          <div class="calendar-header">
+            <button type="button" class="sm" id="btnPrevMonth">← Mois précédent</button>
+            <h2 id="calendarMonthLabel"></h2>
+            <button type="button" class="sm" id="btnNextMonth">Mois suivant →</button>
+          </div>
+          <div class="calendar-weekdays">
+            <div class="weekday-label">Lun</div>
+            <div class="weekday-label">Mar</div>
+            <div class="weekday-label">Mer</div>
+            <div class="weekday-label">Jeu</div>
+            <div class="weekday-label">Ven</div>
+            <div class="weekday-label">Sam</div>
+            <div class="weekday-label">Dim</div>
+          </div>
+          <div class="calendar-days" id="calendarDaysGrid"></div>
         </div>
-      </div>
+      </section>
 
-      <div class="posts-grid" id="postsGrid"></div>
-
-      <div class="calendar-wrapper" id="calendarMonthView" style="display: none;">
-        <div class="calendar-header">
-          <button type="button" class="sm" id="btnPrevMonth">← Mois précédent</button>
-          <h2 id="calendarMonthLabel"></h2>
-          <button type="button" class="sm" id="btnNextMonth">Mois suivant →</button>
+      <!-- VUE ÉDITION / CRÉATION DE POST -->
+      <section id="tab-preparation" class="section">
+        <div style="margin-bottom: 14px;">
+          <button type="button" class="sm" onclick="switchToTab('calendrier')">← Retour au calendrier</button>
         </div>
-        <div class="calendar-weekdays">
-          <div class="weekday-label">Lun</div>
-          <div class="weekday-label">Mar</div>
-          <div class="weekday-label">Mer</div>
-          <div class="weekday-label">Jeu</div>
-          <div class="weekday-label">Ven</div>
-          <div class="weekday-label">Sam</div>
-          <div class="weekday-label">Dim</div>
-        </div>
-        <div class="calendar-days" id="calendarDaysGrid"></div>
-      </div>
-    </section>
+        <div class="studio-layout">
+          <div>
+            <div class="panel">
+              <h2 id="editorHeading">Préparer une publication</h2>
 
-    <!-- VUE ÉDITION / CRÉATION DE POST (accessible via "+ Nouveau post" ou clic sur un post) -->
-    <section id="tab-preparation" class="section">
-      <div style="margin-bottom: 14px;">
-        <button type="button" class="sm" onclick="switchToTab('calendrier')">← Retour au calendrier</button>
-      </div>
-      <div class="studio-layout">
-        <!-- COLONNE GAUCHE : ÉDITEUR + BLOC PERFORMANCE -->
-        <div>
-          <div class="panel">
-            <h2 id="editorHeading">Préparer une publication</h2>
+              <div class="form-grid">
+                <div class="field">
+                  <label for="postTitle">Titre interne</label>
+                  <input type="text" id="postTitle" placeholder="Ex. 3 erreurs à éviter sur Reels" />
+                </div>
 
-            <div class="form-grid">
-              <div class="field">
-                <label for="postTitle">Titre interne</label>
-                <input type="text" id="postTitle" placeholder="Ex. 3 erreurs à éviter sur Reels" />
-              </div>
+                <div class="field">
+                  <label for="postDate">Date prévue</label>
+                  <input type="date" id="postDate" />
+                </div>
 
-              <div class="field">
-                <label for="postDate">Date prévue</label>
-                <input type="date" id="postDate" />
-              </div>
-
-              <div class="field">
-                <label for="postTime">Heure prévue</label>
-                <input type="time" id="postTime" value="18:00" />
-              </div>
-            </div>
-
-            <div class="form-grid">
-              <div class="field">
-                <label for="postFormat">Format</label>
-                <select id="postFormat">
-                  <option value="Carrousel">🎠 Carrousel</option>
-                  <option value="Reel">🎥 Reel</option>
-                  <option value="Story">✏️ Story</option>
-                </select>
-              </div>
-
-              <div class="field">
-                <label for="postPilier">Pilier éditorial</label>
-                <select id="postPilier">
-                  <option value="Pédagogie">Pédagogie</option>
-                  <option value="Coulisses">Coulisses</option>
-                  <option value="Offre / Produit">Offre / Produit</option>
-                  <option value="Preuve sociale">Preuve sociale</option>
-                </select>
-              </div>
-
-              <div class="field">
-                <label for="postStatut">Statut</label>
-                <select id="postStatut">
-                  <option value="Idée">Idée (Rose)</option>
-                  <option value="Préparation">Préparation (Jaune)</option>
-                  <option value="Validé">Validé (Bleu)</option>
-                  <option value="Programmé">Programmé — publication auto (Vert)</option>
-                  <option value="Publié">Publié (Gris)</option>
-                </select>
-              </div>
-            </div>
-
-            <!-- Visuel(s) (Import multiple + sélection de slide) -->
-            <div class="field" style="margin-bottom: 12px;">
-              <label id="visualSectionLabel">Visuel(s) de la publication</label>
-              <div class="upload-box">
-                <button type="button" id="btnUploadVisual">🖼️ Importer une ou plusieurs photos</button>
-                <input type="file" id="postMediaFileInput" accept="image/*" multiple hidden />
-                <button type="button" class="sm" id="btnAddEmptySlide" style="display: none;">+ Slide vide</button>
-                <span class="upload-filename" id="currentVisualName">Aucun visuel importé</span>
-                <button type="button" class="sm danger" id="btnRemoveVisual" style="display: none;">Retirer la photo</button>
-              </div>
-              <div id="slidesStrip" class="slides-strip" style="display: none;"></div>
-            </div>
-
-            <div class="form-grid">
-              <div class="field">
-                <label for="postCanvaUrl">Lien Canva (création du visuel)</label>
-                <div class="link-input-group">
-                  <input type="url" id="postCanvaUrl" placeholder="https://www.canva.com/design/..." />
-                  <button type="button" class="sm canva-btn" id="btnOpenCanva" title="Ouvrir le lien Canva">Canva ↗</button>
+                <div class="field">
+                  <label for="postTime">Heure prévue</label>
+                  <input type="time" id="postTime" value="18:00" />
                 </div>
               </div>
 
-              <div class="field">
-                <label for="postMetaUrl">Lien Meta Business Suite (programmation)</label>
-                <div class="link-input-group">
-                  <input type="url" id="postMetaUrl" placeholder="https://business.facebook.com/..." />
-                  <button type="button" class="sm meta-btn" id="btnOpenMeta" title="Ouvrir Meta Business Suite">Meta ↗</button>
+              <div class="form-grid">
+                <div class="field">
+                  <label for="postFormat">Format</label>
+                  <select id="postFormat">
+                    <option value="Carrousel">🎠 Carrousel</option>
+                    <option value="Reel">🎥 Reel</option>
+                    <option value="Story">✏️ Story</option>
+                  </select>
+                </div>
+
+                <div class="field">
+                  <label for="postPilier">Pilier éditorial</label>
+                  <select id="postPilier">
+                    <option value="Pédagogie">Pédagogie</option>
+                    <option value="Coulisses">Coulisses</option>
+                    <option value="Offre / Produit">Offre / Produit</option>
+                    <option value="Preuve sociale">Preuve sociale</option>
+                  </select>
+                </div>
+
+                <div class="field">
+                  <label for="postStatut">Statut</label>
+                  <select id="postStatut">
+                    <option value="Idée">Idée (Rose)</option>
+                    <option value="Préparation">Préparation (Jaune)</option>
+                    <option value="Validé">Validé (Bleu)</option>
+                    <option value="Programmé">Programmé — publication auto (Vert)</option>
+                    <option value="Publié">Publié (Gris)</option>
+                  </select>
                 </div>
               </div>
-            </div>
 
-            <!-- BLOC STANDARD (Carrousel / Reel) : Légende + raccourcis -->
-            <div id="standardCaptionBlock">
-              <div class="field">
-                <label for="postCaption">Légende Instagram</label>
-                <textarea id="postCaption" placeholder="Écrivez votre accroche, le corps de texte, votre appel à l'action et vos hashtags..."></textarea>
-                <div class="helper-bar">
-                  <span id="charCounter">0 / 2 200 caractères</span>
-                </div>
-              </div>
-
-              <div class="snippet-chips">
-                <button type="button" class="sm" data-insert="\n\n👉 Enregistre ce post pour le relire et partage-le en Story !">+ CTA Enregistrement</button>
-                <button type="button" class="sm" data-insert="\n\n💬 Et toi, quel est ton avis en commentaire ?">+ Question engagement</button>
-                <button type="button" class="sm" data-insert="\n\n#instagram #creationdecontenu #strategie #communitymanagement #marketingdigital">+ Pack hashtags</button>
-              </div>
-            </div>
-
-            <!-- BLOC STORY : Ajout de texte + Stickers interactifs (par photo/slide) -->
-            <div id="storyEditorBlock" style="display: none;">
+              <!-- Visuel(s) -->
               <div class="field" style="margin-bottom: 12px;">
-                <label for="storyText" id="storyTextLabel">Ajout de texte sur la Story (Slide 1)</label>
-                <textarea id="storyText" style="min-height: 84px;" placeholder="Écrivez le texte affiché sur cette photo de votre Story..."></textarea>
-              </div>
-
-              <div class="field">
-                <label id="storyStickersLabel">Stickers & éléments interactifs (Slide 1)</label>
-                <div class="story-stickers-toolbar">
-                  <button type="button" class="sticker-add-btn" onclick="addStorySticker('lieu')">📍 Lieu</button>
-                  <button type="button" class="sticker-add-btn" onclick="addStorySticker('mention')">@ Mention</button>
-                  <button type="button" class="sticker-add-btn" onclick="addStorySticker('musique')">🎵 Musique</button>
-                  <button type="button" class="sticker-add-btn" onclick="addStorySticker('sondage')">📊 Sondage</button>
-                  <button type="button" class="sticker-add-btn" onclick="addStorySticker('lien')">🔗 Lien</button>
-                  <button type="button" class="sticker-add-btn" onclick="addStorySticker('hashtag')"># Hashtag</button>
-                  <button type="button" class="sticker-add-btn" onclick="addStorySticker('curseur')">😍 Curseur</button>
-                  <button type="button" class="sticker-add-btn" onclick="addStorySticker('compte_a_rebours')">⏳ Compte à rebours</button>
+                <label id="visualSectionLabel">Visuel(s) de la publication</label>
+                <div class="upload-box">
+                  <button type="button" id="btnUploadVisual">🖼️ Importer une ou plusieurs photos</button>
+                  <input type="file" id="postMediaFileInput" accept="image/*" multiple hidden />
+                  <button type="button" class="sm" id="btnAddEmptySlide" style="display: none;">+ Slide vide</button>
+                  <span class="upload-filename" id="currentVisualName">Aucun visuel importé</span>
+                  <button type="button" class="sm danger" id="btnRemoveVisual" style="display: none;">Retirer la photo</button>
                 </div>
-                <div id="storyStickersEditorList" class="story-stickers-list"></div>
-              </div>
-            </div>
-
-            <!-- Champs séparés : Objectif et CTA (masqués en mode Story) -->
-            <div id="objectifCtaBlock" class="form-grid">
-              <div class="field">
-                <label for="postObjectif">Objectif du post</label>
-                <input type="text" id="postObjectif" placeholder="Ex. Créer de la proximité, gagner des abonnés..." />
+                <div id="slidesStrip" class="slides-strip" style="display: none;"></div>
               </div>
 
-              <div class="field">
-                <label for="postCta">CTA (Appel à l'action)</label>
-                <input type="text" id="postCta" placeholder="Ex. Enregistre ce post pour plus tard" />
-              </div>
-            </div>
-
-            <div style="margin-top: 18px; display: flex; gap: 10px; flex-wrap: wrap;">
-              <button class="primary" id="btnSavePost">Enregistrer la publication</button>
-              <button id="btnCopyCaption">Copier la légende</button>
-              <button class="danger" id="btnDeleteCurrentPost" style="display: none;">Supprimer</button>
-            </div>
-          </div>
-
-          <!-- TROISIÈME BLOC : PERFORMANCE DU POST (KPIs) -->
-          <div class="panel">
-            <h2>📊 Performance du post (KPIs)</h2>
-            <p style="font-size: 12px; color: var(--muted); margin-top: -6px; margin-bottom: 14px;">
-              Reportez les statistiques Instagram de cette publication (elles se synchronisent automatiquement avec l'onglet Statistiques).
-            </p>
-
-            <div class="perf-kpi-grid">
-              <div class="field">
-                <label for="perfReach">Portée</label>
-                <input type="number" min="0" id="perfReach" value="0" />
-              </div>
-              <div class="field">
-                <label for="perfLikes">Likes</label>
-                <input type="number" min="0" id="perfLikes" value="0" />
-              </div>
-              <div class="field">
-                <label for="perfComments">Commentaires</label>
-                <input type="number" min="0" id="perfComments" value="0" />
-              </div>
-              <div class="field">
-                <label for="perfSaves">Enregistrements</label>
-                <input type="number" min="0" id="perfSaves" value="0" />
-              </div>
-              <div class="field">
-                <label for="perfShares">Partages</label>
-                <input type="number" min="0" id="perfShares" value="0" />
-              </div>
-              <div class="field">
-                <label for="perfClicks">Clics</label>
-                <input type="number" min="0" id="perfClicks" value="0" />
-              </div>
-            </div>
-
-            <div class="perf-summary">
-              <div class="perf-summary-metrics">
-                <span>Interactions totales : <strong id="perfTotalInteractions">0</strong></span>
-                <span>Engagement / Portée : <strong id="perfEngRate">0.0%</strong></span>
-              </div>
-              <button type="button" class="sm primary" id="btnSavePerf">Enregistrer les KPIs</button>
-            </div>
-          </div>
-        </div>
-
-        <!-- COLONNE DROITE : APERÇU MODE FIL / MODE FEED / MODE STORY -->
-        <div>
-          <div class="panel">
-            <div class="panel-header-row">
-              <h3 id="previewPanelTitle">Aperçu du post</h3>
-              <div class="view-switch" id="previewViewSwitch">
-                <button type="button" id="previewModeFil" class="active">Mode Fil</button>
-                <button type="button" id="previewModeFeed">Mode Feed</button>
-              </div>
-            </div>
-
-            <!-- Mode Fil (Carrousel / Reel) -->
-            <div id="previewFilContainer">
-              <div class="ig-card">
-                <div class="ig-header">
-                  <div class="ig-avatar"></div>
-                  <span>@votre_compte</span>
-                </div>
-                <div class="ig-media" id="previewMediaBox">Aucun visuel sélectionné</div>
-                <div class="ig-caption" id="previewCaptionBox">Votre légende apparaîtra ici en temps réel.</div>
-              </div>
-            </div>
-
-            <!-- Mode Feed (grille 3 colonnes - Carrousel / Reel uniquement) -->
-            <div id="previewFeedContainer" style="display: none;">
-              <p style="font-size: 12px; color: var(--muted); margin-top: 0;">
-                Aperçu des publications du fil triées chronologiquement (le post en cours d'édition est encadré en violet).
-              </p>
-              <div class="feed-grid" id="feedPreviewGrid"></div>
-            </div>
-
-            <!-- Mode Story Instagram (9:16) -->
-            <div id="previewStoryContainer" style="display: none;">
-              <div class="story-phone">
-                <img id="storyPreviewBgImg" class="story-bg-img" style="display: none;" alt="Aperçu Story" />
-                <div class="story-scrim-top"></div>
-                <div class="story-scrim-bottom"></div>
-
-                <button type="button" class="preview-nav-arrow prev" id="storyPrevArrow" style="display: none;" onclick="navigateSlide(-1)" title="Photo précédente">‹</button>
-                <button type="button" class="preview-nav-arrow next" id="storyNextArrow" style="display: none;" onclick="navigateSlide(1)" title="Photo suivante">›</button>
-
-                <div class="story-top">
-                  <div class="story-progress-segments" id="storyProgressSegments"></div>
-                  <div class="story-header">
-                    <div class="story-user">
-                      <div class="ig-avatar"></div>
-                      <span>@votre_compte</span>
-                      <span class="story-time-label">À l'instant</span>
-                    </div>
-                    <span>✕</span>
+              <div class="form-grid">
+                <div class="field">
+                  <label for="postCanvaUrl">Lien Canva (création du visuel)</label>
+                  <div class="link-input-group">
+                    <input type="url" id="postCanvaUrl" placeholder="https://www.canva.com/design/..." />
+                    <button type="button" class="sm canva-btn" id="btnOpenCanva" title="Ouvrir le lien Canva">Canva ↗</button>
                   </div>
                 </div>
 
-                <div class="story-stage" id="storyPreviewStage">
-                  <div class="story-empty-hint">Importez une ou plusieurs photos, ajoutez du texte ou un sticker pour prévisualiser votre Story</div>
-                </div>
-
-                <div class="story-bottom">
-                  <div class="story-reply-bar">Envoyer un message...</div>
-                  <span>🤍</span>
-                  <span>➤</span>
+                <div class="field">
+                  <label for="postMetaUrl">Lien Meta Business Suite (programmation)</label>
+                  <div class="link-input-group">
+                    <input type="url" id="postMetaUrl" placeholder="https://business.facebook.com/..." />
+                    <button type="button" class="sm meta-btn" id="btnOpenMeta" title="Ouvrir Meta Business Suite">Meta ↗</button>
+                  </div>
                 </div>
               </div>
 
-              <div class="preview-nav-bar" id="storyPreviewNavBar" style="display: none;">
-                <button type="button" class="sm" onclick="navigateSlide(-1)">← Précédente</button>
-                <span id="storySlideIndicator">Photo 1 / 1</span>
-                <button type="button" class="sm" onclick="navigateSlide(1)">Suivante →</button>
+              <!-- BLOC STANDARD (Carrousel / Reel) -->
+              <div id="standardCaptionBlock">
+                <div class="field">
+                  <label for="postCaption">Légende Instagram</label>
+                  <textarea id="postCaption" placeholder="Écrivez votre accroche, le corps de texte, votre appel à l'action et vos hashtags..."></textarea>
+                  <div class="helper-bar">
+                    <span id="charCounter">0 / 2 200 caractères</span>
+                  </div>
+                </div>
+
+                <div class="snippet-chips">
+                  <button type="button" class="sm" data-insert="\n\n👉 Enregistre ce post pour le relire et partage-le en Story !">+ CTA Enregistrement</button>
+                  <button type="button" class="sm" data-insert="\n\n💬 Et toi, quel est ton avis en commentaire ?">+ Question engagement</button>
+                  <button type="button" class="sm" data-insert="\n\n#instagram #creationdecontenu #strategie #communitymanagement #marketingdigital">+ Pack hashtags</button>
+                </div>
+              </div>
+
+              <!-- BLOC STORY -->
+              <div id="storyEditorBlock" style="display: none;">
+                <div class="field" style="margin-bottom: 12px;">
+                  <label for="storyText" id="storyTextLabel">Ajout de texte sur la Story (Slide 1)</label>
+                  <textarea id="storyText" style="min-height: 84px;" placeholder="Écrivez le texte affiché sur cette photo de votre Story..."></textarea>
+                </div>
+
+                <div class="field">
+                  <label id="storyStickersLabel">Stickers & éléments interactifs (Slide 1)</label>
+                  <div class="story-stickers-toolbar">
+                    <button type="button" class="sticker-add-btn" onclick="addStorySticker('lieu')">📍 Lieu</button>
+                    <button type="button" class="sticker-add-btn" onclick="addStorySticker('mention')">@ Mention</button>
+                    <button type="button" class="sticker-add-btn" onclick="addStorySticker('musique')">🎵 Musique</button>
+                    <button type="button" class="sticker-add-btn" onclick="addStorySticker('sondage')">📊 Sondage</button>
+                    <button type="button" class="sticker-add-btn" onclick="addStorySticker('lien')">🔗 Lien</button>
+                    <button type="button" class="sticker-add-btn" onclick="addStorySticker('hashtag')"># Hashtag</button>
+                    <button type="button" class="sticker-add-btn" onclick="addStorySticker('curseur')">😍 Curseur</button>
+                    <button type="button" class="sticker-add-btn" onclick="addStorySticker('compte_a_rebours')">⏳ Compte à rebours</button>
+                  </div>
+                  <div id="storyStickersEditorList" class="story-stickers-list"></div>
+                </div>
+              </div>
+
+              <!-- Objectif et CTA -->
+              <div id="objectifCtaBlock" class="form-grid">
+                <div class="field">
+                  <label for="postObjectif">Objectif du post</label>
+                  <input type="text" id="postObjectif" placeholder="Ex. Créer de la proximité, gagner des abonnés..." />
+                </div>
+
+                <div class="field">
+                  <label for="postCta">CTA (Appel à l'action)</label>
+                  <input type="text" id="postCta" placeholder="Ex. Enregistre ce post pour plus tard" />
+                </div>
+              </div>
+
+              <div style="margin-top: 18px; display: flex; gap: 10px; flex-wrap: wrap;">
+                <button class="primary" id="btnSavePost">Enregistrer la publication</button>
+                <button id="btnCopyCaption">Copier la légende</button>
+                <button class="danger" id="btnDeleteCurrentPost" style="display: none;">Supprimer</button>
+              </div>
+            </div>
+
+            <!-- BLOC PERFORMANCE DU POST (KPIs) -->
+            <div class="panel">
+              <h2>📊 Performance du post (KPIs)</h2>
+              <p style="font-size: 12px; color: var(--muted); margin-top: -6px; margin-bottom: 14px;">
+                Reportez les statistiques Instagram de cette publication (elles se synchronisent automatiquement avec l'onglet Statistiques).
+              </p>
+
+              <div class="perf-kpi-grid">
+                <div class="field">
+                  <label for="perfReach">Portée</label>
+                  <input type="number" min="0" id="perfReach" value="0" />
+                </div>
+                <div class="field">
+                  <label for="perfLikes">Likes</label>
+                  <input type="number" min="0" id="perfLikes" value="0" />
+                </div>
+                <div class="field">
+                  <label for="perfComments">Commentaires</label>
+                  <input type="number" min="0" id="perfComments" value="0" />
+                </div>
+                <div class="field">
+                  <label for="perfSaves">Enregistrements</label>
+                  <input type="number" min="0" id="perfSaves" value="0" />
+                </div>
+                <div class="field">
+                  <label for="perfShares">Partages</label>
+                  <input type="number" min="0" id="perfShares" value="0" />
+                </div>
+                <div class="field">
+                  <label for="perfClicks">Clics</label>
+                  <input type="number" min="0" id="perfClicks" value="0" />
+                </div>
+              </div>
+
+              <div class="perf-summary">
+                <div class="perf-summary-metrics">
+                  <span>Interactions totales : <strong id="perfTotalInteractions">0</strong></span>
+                  <span>Engagement / Portée : <strong id="perfEngRate">0.0%</strong></span>
+                </div>
+                <button type="button" class="sm primary" id="btnSavePerf">Enregistrer les KPIs</button>
+              </div>
+            </div>
+          </div>
+
+          <!-- COLONNE DROITE : APERÇU -->
+          <div>
+            <div class="panel">
+              <div class="panel-header-row">
+                <h3 id="previewPanelTitle">Aperçu du post</h3>
+                <div class="view-switch" id="previewViewSwitch">
+                  <button type="button" id="previewModeFil" class="active">Mode Fil</button>
+                  <button type="button" id="previewModeFeed">Mode Feed</button>
+                </div>
+              </div>
+
+              <div id="previewFilContainer">
+                <div class="ig-card">
+                  <div class="ig-header">
+                    <div class="ig-avatar"></div>
+                    <span>@votre_compte</span>
+                  </div>
+                  <div class="ig-media" id="previewMediaBox">Aucun visuel sélectionné</div>
+                  <div class="ig-caption" id="previewCaptionBox">Votre légende apparaîtra ici en temps réel.</div>
+                </div>
+              </div>
+
+              <div id="previewFeedContainer" style="display: none;">
+                <p style="font-size: 12px; color: var(--muted); margin-top: 0;">
+                  Aperçu des publications du fil triées chronologiquement (le post en cours d'édition est encadré en violet).
+                </p>
+                <div class="feed-grid" id="feedPreviewGrid"></div>
+              </div>
+
+              <div id="previewStoryContainer" style="display: none;">
+                <div class="story-phone">
+                  <img id="storyPreviewBgImg" class="story-bg-img" style="display: none;" alt="Aperçu Story" />
+                  <div class="story-scrim-top"></div>
+                  <div class="story-scrim-bottom"></div>
+
+                  <button type="button" class="preview-nav-arrow prev" id="storyPrevArrow" style="display: none;" onclick="navigateSlide(-1)" title="Photo précédente">‹</button>
+                  <button type="button" class="preview-nav-arrow next" id="storyNextArrow" style="display: none;" onclick="navigateSlide(1)" title="Photo suivante">›</button>
+
+                  <div class="story-top">
+                    <div class="story-progress-segments" id="storyProgressSegments"></div>
+                    <div class="story-header">
+                      <div class="story-user">
+                        <div class="ig-avatar"></div>
+                        <span>@votre_compte</span>
+                        <span class="story-time-label">À l'instant</span>
+                      </div>
+                      <span>✕</span>
+                    </div>
+                  </div>
+
+                  <div class="story-stage" id="storyPreviewStage">
+                    <div class="story-empty-hint">Importez une ou plusieurs photos, ajoutez du texte ou un sticker pour prévisualiser votre Story</div>
+                  </div>
+
+                  <div class="story-bottom">
+                    <div class="story-reply-bar">Envoyer un message...</div>
+                    <span>🤍</span>
+                    <span>➤</span>
+                  </div>
+                </div>
+
+                <div class="preview-nav-bar" id="storyPreviewNavBar" style="display: none;">
+                  <button type="button" class="sm" onclick="navigateSlide(-1)">← Précédente</button>
+                  <span id="storySlideIndicator">Photo 1 / 1</span>
+                  <button type="button" class="sm" onclick="navigateSlide(1)">Suivante →</button>
+                </div>
               </div>
             </div>
           </div>
         </div>
-      </div>
-    </section>
+      </section>
 
-    <!-- ONGLET 2 : SUIVI DES STATISTIQUES -->
-    <section id="tab-statistiques" class="section">
-      <div class="kpis" id="statsKpis"></div>
+      <!-- ONGLET 2 : SUIVI DES STATISTIQUES -->
+      <section id="tab-statistiques" class="section">
+        <div class="kpis" id="statsKpis"></div>
 
-      <div class="panel">
-        <h2>Suivi des performances par publication</h2>
-        <p style="font-size: 13px; color: var(--muted); margin-top: -6px; margin-bottom: 16px;">
-          Renseignez vos métriques Instagram (portée, likes, commentaires, enregistrements, partages, clics) pour suivre vos meilleurs formats et piliers.
-        </p>
+        <div class="panel">
+          <h2>Suivi des performances par publication</h2>
+          <p style="font-size: 13px; color: var(--muted); margin-top: -6px; margin-bottom: 16px;">
+            Renseignez vos métriques Instagram (portée, likes, commentaires, enregistrements, partages, clics) pour suivre vos meilleurs formats et piliers.
+          </p>
 
-        <div class="table-wrap">
-          <table class="stats-table">
-            <thead>
-              <tr>
-                <th>Publication</th>
-                <th>Date</th>
-                <th>Format</th>
-                <th>Statut</th>
-                <th>Pilier</th>
-                <th>Portée</th>
-                <th>Likes</th>
-                <th>Commentaires</th>
-                <th>Enreg.</th>
-                <th>Partages</th>
-                <th>Clics</th>
-                <th>Eng. / Portée</th>
-                <th>Action</th>
-              </tr>
-            </thead>
-            <tbody id="statsTableBody"></tbody>
-          </table>
+          <div class="table-wrap">
+            <table class="stats-table">
+              <thead>
+                <tr>
+                  <th>Publication</th>
+                  <th>Date</th>
+                  <th>Format</th>
+                  <th>Statut</th>
+                  <th>Pilier</th>
+                  <th>Portée</th>
+                  <th>Likes</th>
+                  <th>Commentaires</th>
+                  <th>Enreg.</th>
+                  <th>Partages</th>
+                  <th>Clics</th>
+                  <th>Eng. / Portée</th>
+                  <th>Action</th>
+                </tr>
+              </thead>
+              <tbody id="statsTableBody"></tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <!-- ============================================================
+       ESPACE 3 : GESTION DES PROJETS
+       ============================================================ -->
+  <div id="main-projets" class="main-view">
+    <header class="sub-header">
+      <div class="header-inner">
+        <div class="brand">
+          <h1>Gestion des projets</h1>
+        </div>
+        <div class="header-actions">
+          <button type="button" class="primary" id="btnNewProject">+ nouveau projet</button>
         </div>
       </div>
-    </section>
-  </main>
+    </header>
+
+    <main>
+      <!-- 5 KPIs Projets -->
+      <div class="projects-kpi-grid" id="projectsKpiGrid"></div>
+
+      <!-- Liste groupée par statut -->
+      <div id="projectsGroupsContainer"></div>
+    </main>
+  </div>
+
+  <!-- MODALE CRÉATION / ÉDITION DE PROJET -->
+  <div class="modal-backdrop" id="projectModal">
+    <div class="modal-card">
+      <div class="modal-head">
+        <h2 id="projectModalTitle">Nouveau projet</h2>
+        <button type="button" class="sm" id="btnCloseProjectModal">✕</button>
+      </div>
+
+      <div class="field" style="margin-bottom: 12px;">
+        <label for="projTitle">Nom du projet</label>
+        <input type="text" id="projTitle" placeholder="Ex. Les aventures de Lilou le lapin de Pâques" />
+      </div>
+
+      <div class="form-grid">
+        <div class="field">
+          <label for="projStatus">Statut</label>
+          <select id="projStatus">
+            <option value="a_demarrer">Projets à démarrer</option>
+            <option value="en_cours">Projets en cours</option>
+            <option value="finalise">Projets finalisés</option>
+            <option value="envoye">Projets envoyés aux maisons d'éditions</option>
+            <option value="edite">Projets édités</option>
+          </select>
+        </div>
+
+        <div class="field">
+          <label for="projProgress">Avancement : <strong id="projProgressVal">0%</strong></label>
+          <input type="range" id="projProgress" min="0" max="100" step="5" value="0" style="padding: 6px 0;" />
+        </div>
+      </div>
+
+      <div class="field" style="margin-bottom: 14px;">
+        <label for="projNotes">Notes / Maison d'édition</label>
+        <textarea id="projNotes" style="min-height: 85px;" placeholder="Notes, éditeurs contactés, prochaine étape..."></textarea>
+      </div>
+
+      <div style="display: flex; justify-content: space-between; gap: 10px; flex-wrap: wrap;">
+        <button type="button" class="danger" id="btnDeleteProject" style="display: none;">Supprimer</button>
+        <div style="display: flex; gap: 8px; margin-left: auto;">
+          <button type="button" id="btnCancelProject">Annuler</button>
+          <button type="button" class="primary" id="btnSaveProject">Enregistrer</button>
+        </div>
+      </div>
+    </div>
+  </div>
 
   <div class="toast" id="toast"></div>
 
@@ -1889,12 +2295,21 @@
     const VALID_PILIERS = ["Pédagogie", "Coulisses", "Offre / Produit", "Preuve sociale"];
     const VALID_STATUTS = ["Idée", "Préparation", "Validé", "Programmé", "Publié"];
 
-    // Emojis en fonction du FORMAT
     const FORMAT_EMOJI = {
       "Story": "✏️",
       "Carrousel": "🎠",
       "Reel": "🎥"
     };
+
+    const PROJECT_STATUSES = [
+      { key: "a_demarrer", label: "Projets à démarrer", kpiClass: "kpi-red" },
+      { key: "en_cours", label: "Projets en cours", kpiClass: "kpi-yellow" },
+      { key: "finalise", label: "Projets finalisés", kpiClass: "kpi-blue" },
+      { key: "envoye", label: "Projets envoyés aux maisons d'éditions", kpiClass: "kpi-lightgreen" },
+      { key: "edite", label: "Projets édités", kpiClass: "kpi-darkgreen" }
+    ];
+
+    const PROJECT_GROUP_ORDER = ["en_cours", "a_demarrer", "finalise", "envoye", "edite"];
 
     const STICKER_META = {
       lieu: { label: "📍 Lieu", placeholder: "Ex. Paris, France" },
@@ -1919,7 +2334,6 @@
       return scheduled.getTime() < Date.now();
     }
 
-    // Couleurs en fonction du STATUT (et rouge si date dépassée et non publié)
     function getStatusColorClass(post) {
       if (isPostOverdue(post)) return "st-retard";
       switch (post?.statut) {
@@ -1947,6 +2361,23 @@
         stickers: Array.isArray(stickers) ? structuredClone(stickers) : []
       };
     }
+
+    const defaultProjects = [
+      {
+        id: "proj_1",
+        title: "Les aventures de Lilou le lapin de Pâques",
+        status: "en_cours",
+        progress: 65,
+        notes: ""
+      },
+      {
+        id: "proj_2",
+        title: "Les aventures de Lilou le lapin de Pâques (Tome 2)",
+        status: "a_demarrer",
+        progress: 0,
+        notes: ""
+      }
+    ];
 
     const defaultData = {
       posts: [
@@ -2012,6 +2443,7 @@
         }
       ],
       ideas: [],
+      projects: defaultProjects,
       media: [
         {
           id: "m1",
@@ -2039,11 +2471,12 @@
 
     let state = loadState();
     let editingPostId = state.posts[0]?.id || null;
+    let editingProjectId = null;
     let currentEditorSlides = [createEmptySlide()];
     let currentSlideIndex = 0;
-    let calendarViewMode = "month"; // "cards" | "month"
-    let previewViewMode = "fil"; // "fil" | "feed"
-    let currentCalendarDate = new Date(2026, 10, 1); // Novembre 2026
+    let calendarViewMode = "month";
+    let previewViewMode = "fil";
+    let currentCalendarDate = new Date(2026, 10, 1);
 
     function normalizeStats(s) {
       return {
@@ -2081,6 +2514,18 @@
       ];
     }
 
+    function normalizeProjects(list) {
+      if (!Array.isArray(list)) return structuredClone(defaultProjects);
+      const validKeys = PROJECT_STATUSES.map((s) => s.key);
+      return list.map((pr, idx) => ({
+        id: pr.id || `proj_${Date.now()}_${idx}`,
+        title: pr.title || "Projet sans titre",
+        status: validKeys.includes(pr.status) ? pr.status : "a_demarrer",
+        progress: Math.min(100, Math.max(0, Number(pr.progress) || 0)),
+        notes: pr.notes || ""
+      }));
+    }
+
     function normalizeState(parsed) {
       return {
         posts: Array.isArray(parsed?.posts)
@@ -2102,6 +2547,7 @@
             })
           : structuredClone(defaultData.posts),
         ideas: Array.isArray(parsed?.ideas) ? parsed.ideas : [],
+        projects: normalizeProjects(parsed?.projects),
         media: Array.isArray(parsed?.media) ? parsed.media : structuredClone(defaultData.media)
       };
     }
@@ -2117,16 +2563,14 @@
     }
 
     function saveState() {
-      // Sauvegarde locale de secours
       localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
 
-      // Envoi vers Firebase Cloud
       dbFirestore.collection(FIRESTORE_COLLECTION).doc(FIRESTORE_DOC).set(state)
         .then(() => console.log("Sauvegarde Cloud réussie !"))
         .catch((error) => console.error("Erreur de sauvegarde Cloud :", error));
     }
 
-    // Récupération des données depuis Firebase (Cloud) au démarrage
+    // Chargement Cloud au démarrage
     dbFirestore.collection(FIRESTORE_COLLECTION).doc(FIRESTORE_DOC).get().then((doc) => {
       if (doc.exists) {
         state = normalizeState(doc.data());
@@ -2165,7 +2609,184 @@
     }
 
     /* ============================================================
-       FILTRE MULTI-SÉLECTION DE FORMATS
+       NAVIGATION PRINCIPALE (TABLEAU DE BORD / INSTAGRAM / PROJETS)
+       ============================================================ */
+    window.switchMainSection = function (sectionKey) {
+      document.querySelectorAll(".main-nav-btn").forEach((btn) => {
+        btn.classList.toggle("active", btn.dataset.main === sectionKey);
+      });
+      document.querySelectorAll(".main-view").forEach((view) => {
+        view.classList.toggle("active", view.id === "main-" + sectionKey);
+      });
+      if (sectionKey === "tableau") renderDashboard();
+      if (sectionKey === "projets") renderProjectsSection();
+      if (sectionKey === "instagram") renderInstagramAll();
+    };
+
+    document.querySelectorAll(".main-nav-btn").forEach((btn) => {
+      btn.addEventListener("click", () => switchMainSection(btn.dataset.main));
+    });
+
+    /* ============================================================
+       TABLEAU DE BORD
+       ============================================================ */
+    function renderDashboard() {
+      const now = new Date();
+      document.getElementById("dashDayNumber").textContent = now.getDate();
+      const monthYear = now.toLocaleDateString("fr-FR", { month: "long", year: "numeric" });
+      document.getElementById("dashMonthYear").textContent =
+        monthYear.charAt(0).toUpperCase() + monthYear.slice(1);
+    }
+
+    /* ============================================================
+       GESTION DES PROJETS
+       ============================================================ */
+    function renderProjectsSection() {
+      const projects = state.projects || [];
+
+      // 5 KPIs
+      const kpiContainer = document.getElementById("projectsKpiGrid");
+      kpiContainer.innerHTML = PROJECT_STATUSES.map((st) => {
+        const count = projects.filter((p) => p.status === st.key).length;
+        return `
+          <div class="project-kpi-col">
+            <div class="project-kpi-box ${st.kpiClass}">${count}</div>
+            <div class="project-kpi-label">${escapeHtml(st.label)}</div>
+          </div>
+        `;
+      }).join("");
+
+      // Groupes par statut
+      const groupsContainer = document.getElementById("projectsGroupsContainer");
+      let html = "";
+
+      PROJECT_GROUP_ORDER.forEach((statusKey) => {
+        const meta = PROJECT_STATUSES.find((s) => s.key === statusKey);
+        const items = projects.filter((p) => p.status === statusKey);
+        if (!items.length) return;
+
+        html += `
+          <div class="project-group">
+            <div class="project-group-header group-${statusKey}">${escapeHtml(meta.label)}</div>
+            <div class="project-list">
+              ${items
+                .map(
+                  (pr) => `
+                  <div class="project-row" onclick="openProjectModal('${pr.id}')">
+                    <div class="project-row-info">
+                      <div class="project-row-title">${escapeHtml(pr.title)}</div>
+                      ${pr.notes ? `<div class="project-row-meta">${escapeHtml(pr.notes)}</div>` : ""}
+                    </div>
+                    <div class="project-progress-wrap">
+                      <div class="project-progress-track">
+                        <div class="project-progress-fill fill-${statusKey}" style="width: ${pr.progress}%;"></div>
+                      </div>
+                      <span class="project-progress-pct">${pr.progress}%</span>
+                    </div>
+                  </div>
+                `
+                )
+                .join("")}
+            </div>
+          </div>
+        `;
+      });
+
+      if (!html) {
+        html = `<div class="panel">Aucun projet enregistré. Cliquez sur <strong>+ nouveau projet</strong> pour en ajouter un.</div>`;
+      }
+
+      groupsContainer.innerHTML = html;
+    }
+
+    window.openProjectModal = function (projectId = null) {
+      const proj = projectId ? (state.projects || []).find((p) => p.id === projectId) : null;
+      editingProjectId = proj ? proj.id : null;
+
+      document.getElementById("projectModalTitle").textContent = proj ? "Modifier le projet" : "Nouveau projet";
+      document.getElementById("projTitle").value = proj?.title || "";
+      document.getElementById("projStatus").value = proj?.status || "a_demarrer";
+      const prog = proj ? proj.progress : 0;
+      document.getElementById("projProgress").value = prog;
+      document.getElementById("projProgressVal").textContent = prog + "%";
+      document.getElementById("projNotes").value = proj?.notes || "";
+      document.getElementById("btnDeleteProject").style.display = proj ? "inline-block" : "none";
+
+      document.getElementById("projectModal").classList.add("open");
+    };
+
+    function closeProjectModal() {
+      document.getElementById("projectModal").classList.remove("open");
+    }
+
+    document.getElementById("btnNewProject").addEventListener("click", () => openProjectModal(null));
+    document.getElementById("btnCloseProjectModal").addEventListener("click", closeProjectModal);
+    document.getElementById("btnCancelProject").addEventListener("click", closeProjectModal);
+
+    document.getElementById("projectModal").addEventListener("click", (e) => {
+      if (e.target.id === "projectModal") closeProjectModal();
+    });
+
+    document.getElementById("projProgress").addEventListener("input", (e) => {
+      document.getElementById("projProgressVal").textContent = e.target.value + "%";
+    });
+
+    document.getElementById("projStatus").addEventListener("change", (e) => {
+      const st = e.target.value;
+      const range = document.getElementById("projProgress");
+      if (st === "a_demarrer" && Number(range.value) === 100) {
+        range.value = 0;
+      } else if ((st === "finalise" || st === "envoye" || st === "edite") && Number(range.value) < 100) {
+        range.value = 100;
+      }
+      document.getElementById("projProgressVal").textContent = range.value + "%";
+    });
+
+    document.getElementById("btnSaveProject").addEventListener("click", () => {
+      const title = document.getElementById("projTitle").value.trim();
+      if (!title) {
+        showToast("Veuillez renseigner le nom du projet");
+        return;
+      }
+      const status = document.getElementById("projStatus").value;
+      const progress = Number(document.getElementById("projProgress").value) || 0;
+      const notes = document.getElementById("projNotes").value.trim();
+
+      if (!Array.isArray(state.projects)) state.projects = [];
+
+      if (editingProjectId) {
+        const idx = state.projects.findIndex((p) => p.id === editingProjectId);
+        if (idx !== -1) {
+          state.projects[idx] = { ...state.projects[idx], title, status, progress, notes };
+        }
+      } else {
+        state.projects.push({
+          id: "proj_" + Date.now(),
+          title,
+          status,
+          progress,
+          notes
+        });
+      }
+
+      saveState();
+      renderProjectsSection();
+      closeProjectModal();
+      showToast("Projet enregistré !");
+    });
+
+    document.getElementById("btnDeleteProject").addEventListener("click", () => {
+      if (!editingProjectId) return;
+      state.projects = (state.projects || []).filter((p) => p.id !== editingProjectId);
+      editingProjectId = null;
+      saveState();
+      renderProjectsSection();
+      closeProjectModal();
+      showToast("Projet supprimé");
+    });
+
+    /* ============================================================
+       FILTRE MULTI-SÉLECTION DE FORMATS (INSTAGRAM)
        ============================================================ */
     function getSelectedFormats() {
       return Array.from(document.querySelectorAll(".fmt-checkbox:checked")).map((cb) => cb.value);
@@ -2461,7 +3082,7 @@
     });
     document.getElementById("importExcelInput").addEventListener("change", handleExcelImport);
 
-    /* Navigation Onglets */
+    /* Navigation Onglets Instagram */
     function switchToTab(tabName) {
       document.querySelectorAll(".tab-btn").forEach((b) => {
         b.classList.toggle("active", b.dataset.tab === tabName);
@@ -2469,7 +3090,7 @@
       document.querySelectorAll(".section").forEach((s) => s.classList.remove("active"));
       const target = document.getElementById("tab-" + tabName);
       if (target) target.classList.add("active");
-      renderAll();
+      renderInstagramAll();
     }
 
     document.querySelectorAll(".tab-btn").forEach((btn) => {
@@ -2895,7 +3516,7 @@
     });
 
     /* ============================================================
-       IMPORT VISUEL(S) (multi-fichiers + compression pour Firebase)
+       IMPORT VISUEL(S)
        ============================================================ */
     function updateVisualIndicator() {
       const slide = getCurrentSlide();
@@ -3132,7 +3753,6 @@
       const totalSlides = currentEditorSlides.length;
 
       if (format === "Story") {
-        // Barres de progression Story en haut
         const segContainer = document.getElementById("storyProgressSegments");
         segContainer.innerHTML = currentEditorSlides
           .map((_, idx) => {
@@ -3141,7 +3761,6 @@
           })
           .join("");
 
-        // Flèches & barre de navigation si plusieurs photos
         const hasMultiple = totalSlides > 1;
         document.getElementById("storyPrevArrow").style.display = hasMultiple ? "flex" : "none";
         document.getElementById("storyNextArrow").style.display = hasMultiple ? "flex" : "none";
@@ -3175,7 +3794,6 @@
         return;
       }
 
-      // Mode Fil (Carrousel / Reel)
       const caption = document.getElementById("postCaption").value;
       const len = caption.length;
       document.getElementById("charCounter").textContent = `${len} / 2 200 caractères`;
@@ -3279,7 +3897,7 @@
 
       saveState();
       loadPostIntoEditor(editingPostId);
-      renderAll();
+      renderInstagramAll();
       showToast("Publication enregistrée");
     }
 
@@ -3438,12 +4056,18 @@
         .replace(/"/g, "&quot;");
     }
 
-    function renderAll() {
+    function renderInstagramAll() {
       updateFormatFilterLabel();
       renderPostsGrid();
       applyCalendarViewMode();
       updateEditorForFormat();
       renderStatisticsSection();
+    }
+
+    function renderAll() {
+      renderDashboard();
+      renderInstagramAll();
+      renderProjectsSection();
     }
 
     loadPostIntoEditor(editingPostId);
