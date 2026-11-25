@@ -373,3 +373,1120 @@
       padding: 18px;
       box-shadow: var(--shadow);
     }
+
+    .calendar-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      margin-bottom: 16px;
+    }
+
+    .calendar-header h2 {
+      margin: 0;
+      font-size: 17px;
+      text-transform: capitalize;
+    }
+
+    .calendar-weekdays, .calendar-days {
+      display: grid;
+      grid-template-columns: repeat(7, minmax(0, 1fr));
+      gap: 8px;
+    }
+
+    .weekday-label {
+      text-align: center;
+      font-size: 12px;
+      font-weight: 700;
+      color: var(--muted);
+      padding: 6px 0;
+    }
+
+    .cal-day {
+      min-height: 118px;
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 8px;
+      background: #fff;
+      display: flex;
+      flex-direction: column;
+      gap: 5px;
+    }
+
+    .cal-day.muted-day {
+      background: var(--surface-alt);
+      opacity: 0.65;
+    }
+
+    .cal-day.today {
+      border-color: var(--primary);
+      background: #faf9ff;
+    }
+
+    .cal-day-num {
+      font-size: 12px;
+      font-weight: 700;
+      color: var(--muted);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .cal-event {
+      font-size: 11px;
+      padding: 4px 7px;
+      border-radius: 6px;
+      background: var(--primary-soft);
+      color: var(--primary);
+      font-weight: 600;
+      cursor: pointer;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      border: none;
+      text-align: left;
+    }
+
+    .cal-event:hover {
+      filter: brightness(0.96);
+    }
+
+    @media (max-width: 780px) {
+      .calendar-weekdays, .calendar-days {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+      .weekday-label {
+        display: none;
+      }
+    }
+
+    /* Studio Préparation */
+    .studio-layout {
+      display: grid;
+      grid-template-columns: 1.25fr 0.95fr;
+      gap: 20px;
+      align-items: start;
+    }
+
+    @media (max-width: 980px) {
+      .studio-layout {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    .panel {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 20px;
+      box-shadow: var(--shadow);
+      margin-bottom: 18px;
+    }
+
+    .panel h2, .panel h3 {
+      margin-top: 0;
+      font-size: 16px;
+    }
+
+    .form-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(175px, 1fr));
+      gap: 12px;
+      margin-bottom: 12px;
+    }
+
+    .field label {
+      display: block;
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--muted);
+      margin-bottom: 5px;
+    }
+
+    .field input, .field select {
+      width: 100%;
+    }
+
+    .helper-bar {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+      font-size: 12px;
+      color: var(--muted);
+      margin-top: 6px;
+    }
+
+    .snippet-chips {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+      margin-top: 10px;
+    }
+
+    /* Aperçu Instagram & Grille */
+    .ig-card {
+      max-width: 380px;
+      margin: 0 auto 22px;
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      overflow: hidden;
+      background: #fff;
+    }
+
+    .ig-header {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 10px 12px;
+      font-size: 13px;
+      font-weight: 700;
+    }
+
+    .ig-avatar {
+      width: 30px;
+      height: 30px;
+      border-radius: 50%;
+      background: var(--accent-ig);
+    }
+
+    .ig-media {
+      aspect-ratio: 4 / 5;
+      background: var(--surface-alt);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--muted);
+      overflow: hidden;
+    }
+
+    .ig-media img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+
+    .ig-caption {
+      padding: 12px;
+      font-size: 13px;
+      white-space: pre-line;
+    }
+
+    .feed-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 4px;
+      max-width: 380px;
+      margin: 0 auto;
+    }
+
+    .feed-cell {
+      aspect-ratio: 4 / 5;
+      background: var(--surface-alt);
+      position: relative;
+      overflow: hidden;
+      font-size: 11px;
+      color: var(--muted);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      padding: 4px;
+    }
+
+    .feed-cell img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+
+    .feed-cell.draft-ring {
+      outline: 3px solid var(--primary);
+      outline-offset: -3px;
+    }
+
+    /* Statistiques */
+    .table-wrap {
+      overflow-x: auto;
+    }
+
+    table.stats-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 13px;
+    }
+
+    table.stats-table th, table.stats-table td {
+      padding: 10px 12px;
+      border-bottom: 1px solid var(--border);
+      text-align: left;
+      white-space: nowrap;
+    }
+
+    table.stats-table th {
+      background: var(--surface-alt);
+      font-size: 12px;
+      color: var(--muted);
+      font-weight: 700;
+    }
+
+    table.stats-table input[type="number"] {
+      width: 82px;
+      padding: 5px 7px;
+      font-size: 12px;
+    }
+
+    .toast {
+      position: fixed;
+      bottom: 20px;
+      right: 20px;
+      background: var(--text);
+      color: #fff;
+      padding: 11px 16px;
+      border-radius: 10px;
+      font-size: 13px;
+      font-weight: 600;
+      opacity: 0;
+      transform: translateY(10px);
+      transition: all 0.2s ease;
+      pointer-events: none;
+      z-index: 50;
+    }
+
+    .toast.show {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="header-inner">
+      <div class="brand">
+        <h1>Studio éditorial Instagram</h1>
+      </div>
+
+      <nav class="tabs" role="tablist">
+        <button class="tab-btn active" data-tab="calendrier">Calendrier éditorial</button>
+        <button class="tab-btn" data-tab="statistiques">Statistiques</button>
+      </nav>
+
+      <div class="header-actions">
+        <button class="primary" id="btnNewPost">+ Nouveau post</button>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    <!-- ONGLET 1 : CALENDRIER ÉDITORIAL (CARTES + VUE CALENDRIER MENSUEL) -->
+    <section id="tab-calendrier" class="section active">
+      <div class="toolbar">
+        <div class="filters">
+          <div class="view-switch">
+            <button type="button" id="viewModeCards" class="active">Vue cartes</button>
+            <button type="button" id="viewModeMonth">Vue calendrier</button>
+          </div>
+
+          <select id="filterStatut">
+            <option value="">Tous les statuts</option>
+            <option value="Idée">Idée</option>
+            <option value="Préparation">Préparation</option>
+            <option value="Validé">Validé</option>
+            <option value="Programmé">Programmé</option>
+            <option value="Publié">Publié</option>
+          </select>
+
+          <select id="filterFormat">
+            <option value="">Tous les formats</option>
+            <option value="Post">Post</option>
+            <option value="Carrousel">Carrousel</option>
+            <option value="Reel">Reel</option>
+            <option value="Story">Story</option>
+          </select>
+
+          <select id="filterPilier">
+            <option value="">Tous les piliers</option>
+            <option value="Pédagogie">Pédagogie</option>
+            <option value="Coulisses">Coulisses</option>
+            <option value="Offre / Produit">Offre / Produit</option>
+            <option value="Preuve sociale">Preuve sociale</option>
+          </select>
+
+          <input type="text" id="filterSearch" placeholder="Rechercher un titre ou légende..." />
+        </div>
+      </div>
+
+      <div class="posts-grid" id="postsGrid"></div>
+
+      <div class="calendar-wrapper" id="calendarMonthView" style="display: none;">
+        <div class="calendar-header">
+          <button type="button" class="sm" id="btnPrevMonth">← Mois précédent</button>
+          <h2 id="calendarMonthLabel"></h2>
+          <button type="button" class="sm" id="btnNextMonth">Mois suivant →</button>
+        </div>
+        <div class="calendar-weekdays">
+          <div class="weekday-label">Lun</div>
+          <div class="weekday-label">Mar</div>
+          <div class="weekday-label">Mer</div>
+          <div class="weekday-label">Jeu</div>
+          <div class="weekday-label">Ven</div>
+          <div class="weekday-label">Sam</div>
+          <div class="weekday-label">Dim</div>
+        </div>
+        <div class="calendar-days" id="calendarDaysGrid"></div>
+      </div>
+    </section>
+
+    <!-- VUE ÉDITION / CRÉATION DE POST (accessible via "+ Nouveau post" ou clic sur un post) -->
+    <section id="tab-preparation" class="section">
+      <div style="margin-bottom: 14px;">
+        <button type="button" class="sm" onclick="switchToTab('calendrier')">← Retour au calendrier</button>
+      </div>
+      <div class="studio-layout">
+        <div>
+          <div class="panel">
+            <h2 id="editorHeading">Préparer une publication</h2>
+
+            <div class="form-grid">
+              <div class="field">
+                <label for="postTitle">Titre interne</label>
+                <input type="text" id="postTitle" placeholder="Ex. 3 erreurs à éviter sur Reels" />
+              </div>
+
+              <div class="field">
+                <label for="postDate">Date prévue</label>
+                <input type="date" id="postDate" />
+              </div>
+
+              <div class="field">
+                <label for="postTime">Heure prévue</label>
+                <input type="time" id="postTime" value="18:00" />
+              </div>
+            </div>
+
+            <div class="form-grid">
+              <div class="field">
+                <label for="postFormat">Format</label>
+                <select id="postFormat">
+                  <option value="Post">Post</option>
+                  <option value="Carrousel">Carrousel</option>
+                  <option value="Reel">Reel</option>
+                  <option value="Story">Story</option>
+                </select>
+              </div>
+
+              <div class="field">
+                <label for="postPilier">Pilier éditorial</label>
+                <select id="postPilier">
+                  <option value="Pédagogie">Pédagogie</option>
+                  <option value="Coulisses">Coulisses</option>
+                  <option value="Offre / Produit">Offre / Produit</option>
+                  <option value="Preuve sociale">Preuve sociale</option>
+                </select>
+              </div>
+
+              <div class="field">
+                <label for="postStatut">Statut</label>
+                <select id="postStatut">
+                  <option value="Idée">Idée</option>
+                  <option value="Préparation">Préparation</option>
+                  <option value="Validé">Validé</option>
+                  <option value="Programmé">Programmé</option>
+                  <option value="Publié">Publié</option>
+                </select>
+              </div>
+            </div>
+
+            <div class="form-grid">
+              <div class="field">
+                <label for="postMediaSelect">Visuel</label>
+                <select id="postMediaSelect"></select>
+              </div>
+
+              <div class="field">
+                <label for="postCta">Objectif / CTA principal</label>
+                <input type="text" id="postCta" placeholder="Ex. Enregistre ce post pour plus tard" />
+              </div>
+            </div>
+
+            <div class="field">
+              <label for="postCaption">Légende Instagram</label>
+              <textarea id="postCaption" placeholder="Écrivez votre accroche, le corps de texte, votre appel à l'action et vos hashtags..."></textarea>
+              <div class="helper-bar">
+                <span id="charCounter">0 / 2 200 caractères</span>
+                <span id="foldWarning">Accroche visible avant « … plus » : ~125 premiers caractères</span>
+              </div>
+            </div>
+
+            <div class="snippet-chips">
+              <button type="button" class="sm" data-insert="\n\n👉 Enregistre ce post pour le relire et partage-le en Story !">+ CTA Enregistrement</button>
+              <button type="button" class="sm" data-insert="\n\n💬 Et toi, quel est ton avis en commentaire ?">+ Question engagement</button>
+              <button type="button" class="sm" data-insert="\n\n#instagram #creationdecontenu #strategie #communitymanagement #marketingdigital">+ Pack hashtags</button>
+            </div>
+
+            <div style="margin-top: 18px; display: flex; gap: 10px; flex-wrap: wrap;">
+              <button class="primary" id="btnSavePost">Enregistrer la publication</button>
+              <button id="btnCopyCaption">Copier la légende</button>
+              <button class="danger" id="btnDeleteCurrentPost" style="display: none;">Supprimer</button>
+            </div>
+          </div>
+        </div>
+
+        <div>
+          <div class="panel">
+            <h3>Aperçu du post</h3>
+            <div class="ig-card">
+              <div class="ig-header">
+                <div class="ig-avatar"></div>
+                <span>@votre_compte</span>
+              </div>
+              <div class="ig-media" id="previewMediaBox">Aucun visuel sélectionné</div>
+              <div class="ig-caption" id="previewCaptionBox">Votre légende apparaîtra ici en temps réel.</div>
+            </div>
+
+            <h3>Simulateur de grille (Feed)</h3>
+            <p style="font-size: 12px; color: var(--muted); margin-top: -6px;">
+              Aperçu des publications triées chronologiquement (le post en cours d'édition est encadré en violet).
+            </p>
+            <div class="feed-grid" id="feedPreviewGrid"></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ONGLET 2 : SUIVI DES STATISTIQUES -->
+    <section id="tab-statistiques" class="section">
+      <div class="kpis" id="statsKpis"></div>
+
+      <div class="panel">
+        <h2>Suivi des performances par publication</h2>
+        <p style="font-size: 13px; color: var(--muted); margin-top: -6px; margin-bottom: 16px;">
+          Renseignez vos métriques Instagram (portée, likes, commentaires, enregistrements, partages, clics) pour suivre vos meilleurs formats et piliers.
+        </p>
+
+        <div class="table-wrap">
+          <table class="stats-table">
+            <thead>
+              <tr>
+                <th>Publication</th>
+                <th>Date</th>
+                <th>Format</th>
+                <th>Pilier</th>
+                <th>Portée</th>
+                <th>Likes</th>
+                <th>Commentaires</th>
+                <th>Enreg.</th>
+                <th>Partages</th>
+                <th>Clics</th>
+                <th>Eng. / Portée</th>
+                <th>Action</th>
+              </tr>
+            </thead>
+            <tbody id="statsTableBody"></tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <div class="toast" id="toast"></div>
+
+  <script>
+    // --- CONFIGURATION FIREBASE ---
+    const firebaseConfig = {
+      apiKey: "AIzaSyAW2-LNY0BwYGLL4QtVyx-GDgehNGwanrk",
+      authDomain: "my-budget-7f064.firebaseapp.com",
+      projectId: "my-budget-7f064",
+      storageBucket: "my-budget-7f064.firebasestorage.app",
+      messagingSenderId: "920185528208",
+      appId: "1:920185528208:web:5144375fdb938bbc2ddd15"
+    };
+
+    firebase.initializeApp(firebaseConfig);
+    const dbFirestore = firebase.firestore();
+    const FIRESTORE_COLLECTION = "instagram_studio";
+    const FIRESTORE_DOC = "mon_compte";
+    // ------------------------------
+
+    const STORAGE_KEY = "ig_studio_data_v2";
+
+    const defaultData = {
+      posts: [
+        {
+          id: "p1",
+          title: "Checklist calendrier éditorial mensuel",
+          date: "2026-11-25",
+          time: "18:00",
+          format: "Carrousel",
+          pilier: "Pédagogie",
+          statut: "Validé",
+          mediaId: "m1",
+          cta: "Enregistre le carrousel pour ta prochaine planification",
+          caption: "Tu publies au feeling et tu manques de régularité ?\n\nVoici les 4 étapes simples pour bâtir ton calendrier éditorial en 45 minutes.\n\n👉 Enregistre ce post pour le relire et partage-le en Story !\n\n#instagram #creationdecontenu #strategie #communitymanagement",
+          stats: { reach: 2450, likes: 185, comments: 24, saves: 92, shares: 31, clicks: 48 }
+        },
+        {
+          id: "p2",
+          title: "Coulisses préparation du lancement",
+          date: "2026-11-27",
+          time: "12:15",
+          format: "Reel",
+          pilier: "Coulisses",
+          statut: "Préparation",
+          mediaId: "m2",
+          cta: "Active le rappel en commentaire",
+          caption: "Ce qui se passe vraiment en coulisses avant la sortie d'un nouveau format.\n\n💬 Et toi, quel est ton avis en commentaire ?",
+          stats: { reach: 3820, likes: 260, comments: 19, saves: 34, shares: 44, clicks: 27 }
+        },
+        {
+          id: "p3",
+          title: "Retour d'expérience client",
+          date: "2026-11-29",
+          time: "09:30",
+          format: "Post",
+          pilier: "Preuve sociale",
+          statut: "Publié",
+          mediaId: "m3",
+          cta: "Découvre l'étude de cas complète",
+          caption: "Comment structurer ses visuels et sa légende a permis de gagner du temps chaque semaine.",
+          stats: { reach: 1590, likes: 118, comments: 11, saves: 29, shares: 9, clicks: 63 }
+        }
+      ],
+      ideas: [],
+      media: [
+        {
+          id: "m1",
+          name: "carrousel-strategie-4-5.svg",
+          tags: ["carrousel", "pédagogie", "4:5"],
+          ratioNote: "Ratio conseillé 4:5",
+          src: "data:image/svg+xml;utf8," + encodeURIComponent(`<svg xmlns="http://www.w3.org/2000/svg" width="800" height="1000"><rect width="800" height="1000" fill="#5b4ce6"/><text x="50%" y="46%" dominant-baseline="middle" text-anchor="middle" fill="#ffffff" font-family="sans-serif" font-size="42" font-weight="bold">CARROUSEL</text><text x="50%" y="54%" dominant-baseline="middle" text-anchor="middle" fill="#e0dcff" font-family="sans-serif" font-size="26">Calendrier Éditorial</text></svg>`)
+        },
+        {
+          id: "m2",
+          name: "reel-coulisses-studio.svg",
+          tags: ["reel", "coulisses"],
+          ratioNote: "Format vertical 9:16",
+          src: "data:image/svg+xml;utf8," + encodeURIComponent(`<svg xmlns="http://www.w3.org/2000/svg" width="800" height="1000"><rect width="800" height="1000" fill="#1e293b"/><text x="50%" y="46%" dominant-baseline="middle" text-anchor="middle" fill="#38bdf8" font-family="sans-serif" font-size="42" font-weight="bold">REEL COULISSES</text><text x="50%" y="54%" dominant-baseline="middle" text-anchor="middle" fill="#cbd5e1" font-family="sans-serif" font-size="26">Préparation & Script</text></svg>`)
+        },
+        {
+          id: "m3",
+          name: "temoignage-client.svg",
+          tags: ["preuve sociale", "post"],
+          ratioNote: "Ratio conseillé 4:5",
+          src: "data:image/svg+xml;utf8," + encodeURIComponent(`<svg xmlns="http://www.w3.org/2000/svg" width="800" height="1000"><rect width="800" height="1000" fill="#0f766e"/><text x="50%" y="46%" dominant-baseline="middle" text-anchor="middle" fill="#ffffff" font-family="sans-serif" font-size="42" font-weight="bold">PREUVE SOCIALE</text><text x="50%" y="54%" dominant-baseline="middle" text-anchor="middle" fill="#ccfbf1" font-family="sans-serif" font-size="26">Résultats & Retours</text></svg>`)
+        }
+      ]
+    };
+
+    let state = loadState();
+    let editingPostId = state.posts[0]?.id || null;
+    let calendarViewMode = "month"; // "cards" | "month"
+    let currentCalendarDate = new Date(2026, 10, 1); // Novembre 2026
+
+    function normalizeStats(s) {
+      return {
+        reach: Number(s?.reach) || 0,
+        likes: Number(s?.likes) || 0,
+        comments: Number(s?.comments) || 0,
+        saves: Number(s?.saves) || 0,
+        shares: Number(s?.shares) || 0,
+        clicks: Number(s?.clicks) || 0
+      };
+    }
+
+    function normalizeState(parsed) {
+      return {
+        posts: Array.isArray(parsed?.posts)
+          ? parsed.posts.map((p) => ({ ...p, stats: normalizeStats(p.stats) }))
+          : structuredClone(defaultData.posts),
+        ideas: Array.isArray(parsed?.ideas) ? parsed.ideas : [],
+        media: Array.isArray(parsed?.media) ? parsed.media : structuredClone(defaultData.media)
+      };
+    }
+
+    function loadState() {
+      try {
+        const raw = localStorage.getItem(STORAGE_KEY);
+        if (!raw) return structuredClone(defaultData);
+        return normalizeState(JSON.parse(raw));
+      } catch {
+        return structuredClone(defaultData);
+      }
+    }
+
+    function saveState() {
+      // Sauvegarde locale de secours
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+
+      // Envoi vers Firebase Cloud
+      dbFirestore.collection(FIRESTORE_COLLECTION).doc(FIRESTORE_DOC).set(state)
+        .then(() => console.log("Sauvegarde Cloud réussie !"))
+        .catch((error) => console.error("Erreur de sauvegarde Cloud :", error));
+    }
+
+    // Récupération des données depuis Firebase (Cloud) au démarrage
+    dbFirestore.collection(FIRESTORE_COLLECTION).doc(FIRESTORE_DOC).get().then((doc) => {
+      if (doc.exists) {
+        state = normalizeState(doc.data());
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+        if (!state.posts.some((p) => p.id === editingPostId)) {
+          editingPostId = state.posts[0]?.id || null;
+        }
+        loadPostIntoEditor(editingPostId);
+        renderAll();
+      } else {
+        saveState();
+      }
+    }).catch((error) => {
+      console.error("Erreur de connexion à Firestore (mode hors-ligne probable) :", error);
+    });
+
+    function showToast(msg) {
+      const el = document.getElementById("toast");
+      el.textContent = msg;
+      el.classList.add("show");
+      setTimeout(() => el.classList.remove("show"), 2400);
+    }
+
+    function getMediaById(id) {
+      return state.media.find((m) => m.id === id) || null;
+    }
+
+    /* Navigation Onglets */
+    function switchToTab(tabName) {
+      document.querySelectorAll(".tab-btn").forEach((b) => {
+        b.classList.toggle("active", b.dataset.tab === tabName);
+      });
+      document.querySelectorAll(".section").forEach((s) => s.classList.remove("active"));
+      const target = document.getElementById("tab-" + tabName);
+      if (target) target.classList.add("active");
+      renderAll();
+    }
+
+    document.querySelectorAll(".tab-btn").forEach((btn) => {
+      btn.addEventListener("click", () => switchToTab(btn.dataset.tab));
+    });
+
+    /* Filtres publications */
+    function getFilteredPosts() {
+      const statut = document.getElementById("filterStatut").value;
+      const format = document.getElementById("filterFormat").value;
+      const pilier = document.getElementById("filterPilier").value;
+      const q = document.getElementById("filterSearch").value.trim().toLowerCase();
+
+      return state.posts
+        .filter((p) => !statut || p.statut === statut)
+        .filter((p) => !format || p.format === format)
+        .filter((p) => !pilier || p.pilier === pilier)
+        .filter((p) => {
+          if (!q) return true;
+          return (
+            (p.title || "").toLowerCase().includes(q) ||
+            (p.caption || "").toLowerCase().includes(q) ||
+            (p.pilier || "").toLowerCase().includes(q)
+          );
+        })
+        .sort((a, b) => ((a.date || "") + (a.time || "")).localeCompare((b.date || "") + (b.time || "")));
+    }
+
+    function renderPostsGrid() {
+      const filtered = getFilteredPosts();
+      const grid = document.getElementById("postsGrid");
+
+      if (!filtered.length) {
+        grid.innerHTML = `<div class="panel" style="grid-column: 1 / -1;">Aucune publication ne correspond aux filtres sélectionnés.</div>`;
+        return;
+      }
+
+      grid.innerHTML = filtered
+        .map((post) => {
+          const media = getMediaById(post.mediaId);
+          const statusClass = "st-" + post.statut.toLowerCase().replace(/\s+/g, "-");
+          return `
+            <article class="post-card">
+              <div class="post-thumb">
+                <span class="format-pill">${post.format}</span>
+                ${media ? `<img src="${media.src}" alt="${escapeHtml(post.title)}" />` : `<span>Sans visuel</span>`}
+              </div>
+              <div class="post-body">
+                <div class="post-meta-top">
+                  <span>${post.date || "Date à définir"} • ${post.time || "--:--"}</span>
+                  <span class="status-badge ${statusClass}">${post.statut}</span>
+                </div>
+                <h3 class="post-title">${escapeHtml(post.title || "Sans titre")}</h3>
+                <div class="post-caption-preview">${escapeHtml(post.caption || "")}</div>
+                <div class="tag-row">
+                  <span class="mini-tag">${post.pilier}</span>
+                  ${media ? `<span class="mini-tag">${escapeHtml(media.name)}</span>` : ""}
+                </div>
+                <div class="post-actions">
+                  <button class="sm primary" onclick="editPost('${post.id}')">Préparer / Éditer</button>
+                  <button class="sm danger" onclick="deletePost('${post.id}')">Supprimer</button>
+                </div>
+              </div>
+            </article>
+          `;
+        })
+        .join("");
+    }
+
+    /* Vue Calendrier Mensuel */
+    function toIsoDate(year, monthIndex, day) {
+      const m = String(monthIndex + 1).padStart(2, "0");
+      const d = String(day).padStart(2, "0");
+      return `${year}-${m}-${d}`;
+    }
+
+    function renderCalendarMonthView() {
+      const year = currentCalendarDate.getFullYear();
+      const month = currentCalendarDate.getMonth();
+      const label = currentCalendarDate.toLocaleDateString("fr-FR", { month: "long", year: "numeric" });
+      document.getElementById("calendarMonthLabel").textContent = label;
+
+      const firstDay = new Date(year, month, 1);
+      const startOffset = (firstDay.getDay() + 6) % 7;
+      const daysInMonth = new Date(year, month + 1, 0).getDate();
+      const daysInPrevMonth = new Date(year, month, 0).getDate();
+
+      const filteredPosts = getFilteredPosts();
+      const todayIso = new Date().toISOString().slice(0, 10);
+
+      const cells = [];
+
+      for (let i = startOffset - 1; i >= 0; i--) {
+        const d = daysInPrevMonth - i;
+        const prevMonthDate = new Date(year, month - 1, d);
+        const iso = toIsoDate(prevMonthDate.getFullYear(), prevMonthDate.getMonth(), d);
+        cells.push({ day: d, iso, muted: true });
+      }
+
+      for (let d = 1; d <= daysInMonth; d++) {
+        const iso = toIsoDate(year, month, d);
+        cells.push({ day: d, iso, muted: false });
+      }
+
+      while (cells.length % 7 !== 0) {
+        const nextIndex = cells.length - (startOffset + daysInMonth) + 1;
+        const nextMonthDate = new Date(year, month + 1, nextIndex);
+        const iso = toIsoDate(nextMonthDate.getFullYear(), nextMonthDate.getMonth(), nextIndex);
+        cells.push({ day: nextIndex, iso, muted: true });
+      }
+
+      document.getElementById("calendarDaysGrid").innerHTML = cells
+        .map((c) => {
+          const dayPosts = filteredPosts.filter((p) => p.date === c.iso);
+          const isToday = c.iso === todayIso;
+          return `
+            <div class="cal-day ${c.muted ? "muted-day" : ""} ${isToday ? "today" : ""}">
+              <div class="cal-day-num">
+                <span>${c.day}</span>
+                ${dayPosts.length ? `<span>${dayPosts.length}</span>` : ""}
+              </div>
+              ${dayPosts
+                .map(
+                  (p) =>
+                    `<button type="button" class="cal-event" title="${escapeHtml(p.time || "")} — ${escapeHtml(p.title)}" onclick="editPost('${p.id}')">${escapeHtml((p.time ? p.time + " " : "") + (p.title || p.format))}</button>`
+                )
+                .join("")}
+            </div>
+          `;
+        })
+        .join("");
+    }
+
+    function applyCalendarViewMode() {
+      const showMonth = calendarViewMode === "month";
+      document.getElementById("postsGrid").style.display = showMonth ? "none" : "grid";
+      document.getElementById("calendarMonthView").style.display = showMonth ? "block" : "none";
+      document.getElementById("viewModeCards").classList.toggle("active", !showMonth);
+      document.getElementById("viewModeMonth").classList.toggle("active", showMonth);
+      if (showMonth) renderCalendarMonthView();
+    }
+
+    document.getElementById("viewModeCards").addEventListener("click", () => {
+      calendarViewMode = "cards";
+      applyCalendarViewMode();
+    });
+
+    document.getElementById("viewModeMonth").addEventListener("click", () => {
+      calendarViewMode = "month";
+      applyCalendarViewMode();
+    });
+
+    document.getElementById("btnPrevMonth").addEventListener("click", () => {
+      currentCalendarDate = new Date(currentCalendarDate.getFullYear(), currentCalendarDate.getMonth() - 1, 1);
+      renderCalendarMonthView();
+    });
+
+    document.getElementById("btnNextMonth").addEventListener("click", () => {
+      currentCalendarDate = new Date(currentCalendarDate.getFullYear(), currentCalendarDate.getMonth() + 1, 1);
+      renderCalendarMonthView();
+    });
+
+    /* Préparation & Aperçu */
+    function populateMediaSelect(selectedId) {
+      const sel = document.getElementById("postMediaSelect");
+      const options = [`<option value="">— Aucun visuel —</option>`].concat(
+        state.media.map((m) => `<option value="${m.id}" ${m.id === selectedId ? "selected" : ""}>${escapeHtml(m.name)}</option>`)
+      );
+      sel.innerHTML = options.join("");
+    }
+
+    function loadPostIntoEditor(postId) {
+      const post = state.posts.find((p) => p.id === postId);
+      editingPostId = post ? post.id : null;
+
+      document.getElementById("editorHeading").textContent = post
+        ? "Préparer la publication : " + (post.title || "Sans titre")
+        : "Créer une nouvelle publication";
+
+      document.getElementById("postTitle").value = post?.title || "";
+      document.getElementById("postDate").value = post?.date || new Date().toISOString().slice(0, 10);
+      document.getElementById("postTime").value = post?.time || "18:00";
+      document.getElementById("postFormat").value = post?.format || "Post";
+      document.getElementById("postPilier").value = post?.pilier || "Pédagogie";
+      document.getElementById("postStatut").value = post?.statut || "Idée";
+      document.getElementById("postCta").value = post?.cta || "";
+      document.getElementById("postCaption").value = post?.caption || "";
+      document.getElementById("btnDeleteCurrentPost").style.display = post ? "inline-block" : "none";
+
+      populateMediaSelect(post?.mediaId || "");
+      updateLivePreview();
+    }
+
+    function updateLivePreview() {
+      const caption = document.getElementById("postCaption").value;
+      const mediaId = document.getElementById("postMediaSelect").value;
+      const media = getMediaById(mediaId);
+
+      const len = caption.length;
+      document.getElementById("charCounter").textContent = `${len} / 2 200 caractères`;
+      document.getElementById("charCounter").style.color = len > 2200 ? "#b42318" : "";
+
+      const firstLine = caption.split("\n")[0] || "";
+      document.getElementById("foldWarning").textContent =
+        firstLine.length > 125
+          ? "⚠️ Première ligne longue : risque de troncature avant « … plus »"
+          : "Accroche visible avant « … plus » : OK";
+
+      const mediaBox = document.getElementById("previewMediaBox");
+      mediaBox.innerHTML = media
+        ? `<img src="${media.src}" alt="${escapeHtml(media.name)}" />`
+        : `<span>Aucun visuel sélectionné</span>`;
+
+      document.getElementById("previewCaptionBox").textContent =
+        caption.trim() || "Votre légende apparaîtra ici en temps réel.";
+
+      renderFeedPreviewGrid();
+    }
+
+    function renderFeedPreviewGrid() {
+      const grid = document.getElementById("feedPreviewGrid");
+      const sorted = [...state.posts].sort((a, b) => ((b.date || "") + (b.time || "")).localeCompare((a.date || "") + (a.time || ""))).slice(0, 9);
+
+      if (!sorted.length) {
+        grid.innerHTML = `<div class="feed-cell" style="grid-column: 1 / -1;">Grille vide</div>`;
+        return;
+      }
+
+      grid.innerHTML = sorted
+        .map((p) => {
+          const isCurrent = p.id === editingPostId;
+          const m = getMediaById(p.mediaId);
+          return `
+            <div class="feed-cell ${isCurrent ? "draft-ring" : ""}" title="${escapeHtml(p.title)}">
+              ${m ? `<img src="${m.src}" alt="${escapeHtml(p.title)}" />` : `<span>${escapeHtml(p.title || p.format)}</span>`}
+            </div>
+          `;
+        })
+        .join("");
+    }
+
+    function saveCurrentPost() {
+      const title = document.getElementById("postTitle").value.trim() || "Publication sans titre";
+      const date = document.getElementById("postDate").value;
+      const time = document.getElementById("postTime").value;
+      const format = document.getElementById("postFormat").value;
+      const pilier = document.getElementById("postPilier").value;
+      const statut = document.getElementById("postStatut").value;
+      const mediaId = document.getElementById("postMediaSelect").value;
+      const cta = document.getElementById("postCta").value.trim();
+      const caption = document.getElementById("postCaption").value;
+
+      if (editingPostId) {
+        const idx = state.posts.findIndex((p) => p.id === editingPostId);
+        if (idx !== -1) {
+          state.posts[idx] = { ...state.posts[idx], title, date, time, format, pilier, statut, mediaId, cta, caption };
+        }
+      } else {
+        const newId = "p_" + Date.now();
+        state.posts.push({ id: newId, title, date, time, format, pilier, statut, mediaId, cta, caption, stats: normalizeStats({}) });
+        editingPostId = newId;
+      }
+
+      saveState();
+      renderAll();
+      showToast("Publication enregistrée");
+    }
+
+    window.editPost = function (id) {
+      loadPostIntoEditor(id);
+      switchToTab("preparation");
+    };
+
+    window.deletePost = function (id) {
+      state.posts = state.posts.filter((p) => p.id !== id);
+      if (editingPostId === id) {
+        editingPostId = state.posts[0]?.id || null;
+      }
+      saveState();
+      switchToTab("calendrier");
+      showToast("Publication supprimée");
+    };
+
+    /* Suivi des Statistiques */
+    function computeEngagementRate(st) {
+      const reach = Number(st.reach) || 0;
+      if (reach <= 0) return "0.0%";
+      const interactions = (Number(st.likes) || 0) + (Number(st.comments) || 0) + (Number(st.saves) || 0) + (Number(st.shares) || 0);
+      return ((interactions / reach) * 100).toFixed(1) + "%";
+    }
+
+    function renderStatisticsSection() {
+      let totalReach = 0;
+      let totalInteractions = 0;
+      let totalSaves = 0;
+      let totalClicks = 0;
+
+      state.posts.forEach((p) => {
+        const st = normalizeStats(p.stats);
+        totalReach += st.reach;
+        totalInteractions += st.likes + st.comments + st.saves + st.shares;
+        totalSaves += st.saves;
+        totalClicks += st.clicks;
+      });
+
+      const avgEng = totalReach > 0 ? ((totalInteractions / totalReach) * 100).toFixed(1) + "%" : "0.0%";
+
+      document.getElementById("statsKpis").innerHTML = `
+        <div class="kpi"><div class="label">Portée cumulée</div><div class="value">${totalReach.toLocaleString("fr-FR")}</div></div>
+        <div class="kpi"><div class="label">Interactions totales</div><div class="value">${totalInteractions.toLocaleString("fr-FR")}</div></div>
+        <div class="kpi"><div class="label">Enregistrements totaux</div><div class="value">${totalSaves.toLocaleString("fr-FR")}</div></div>
+        <div class="kpi"><div class="label">Clics totaux</div><div class="value">${totalClicks.toLocaleString("fr-FR")}</div></div>
+        <div class="kpi"><div class="label">Engagement moyen / portée</div><div class="value">${avgEng}</div></div>
+      `;
+
+      const tbody = document.getElementById("statsTableBody");
+      if (!state.posts.length) {
+        tbody.innerHTML = `<tr><td colspan="12">Aucune publication à afficher.</td></tr>`;
+        return;
+      }
+
+      tbody.innerHTML = state.posts
+        .map((p) => {
+          const st = normalizeStats(p.stats);
+          return `
+            <tr>
+              <td><strong>${escapeHtml(p.title || "Sans titre")}</strong></td>
+              <td>${escapeHtml(p.date || "—")}</td>
+              <td>${escapeHtml(p.format)}</td>
+              <td>${escapeHtml(p.pilier)}</td>
+              <td><input type="number" min="0" id="st-reach-${p.id}" value="${st.reach}" /></td>
+              <td><input type="number" min="0" id="st-likes-${p.id}" value="${st.likes}" /></td>
+              <td><input type="number" min="0" id="st-comments-${p.id}" value="${st.comments}" /></td>
+              <td><input type="number" min="0" id="st-saves-${p.id}" value="${st.saves}" /></td>
+              <td><input type="number" min="0" id="st-shares-${p.id}" value="${st.shares}" /></td>
+              <td><input type="number" min="0" id="st-clicks-${p.id}" value="${st.clicks}" /></td>
+              <td><strong>${computeEngagementRate(st)}</strong></td>
+              <td><button class="sm primary" onclick="savePostStats('${p.id}')">Enregistrer</button></td>
+            </tr>
+          `;
+        })
+        .join("");
+    }
+
+    window.savePostStats = function (postId) {
+      const idx = state.posts.findIndex((p) => p.id === postId);
+      if (idx === -1) return;
+
+      state.posts[idx].stats = {
+        reach: Number(document.getElementById(`st-reach-${postId}`).value) || 0,
+        likes: Number(document.getElementById(`st-likes-${postId}`).value) || 0,
+        comments: Number(document.getElementById(`st-comments-${postId}`).value) || 0,
+        saves: Number(document.getElementById(`st-saves-${postId}`).value) || 0,
+        shares: Number(document.getElementById(`st-shares-${postId}`).value) || 0,
+        clicks: Number(document.getElementById(`st-clicks-${postId}`).value) || 0
+      };
+
+      saveState();
+      renderStatisticsSection();
+      showToast("Statistiques mises à jour");
+    };
+
+    /* Événements divers */
+    document.getElementById("btnNewPost").addEventListener("click", () => {
+      loadPostIntoEditor(null);
+      switchToTab("preparation");
+    });
+
+    document.getElementById("btnSavePost").addEventListener("click", saveCurrentPost);
+    document.getElementById("btnDeleteCurrentPost").addEventListener("click", () => {
+      if (editingPostId) deletePost(editingPostId);
+    });
+
+    document.getElementById("btnCopyCaption").addEventListener("click", async () => {
+      const text = document.getElementById("postCaption").value;
+      try {
+        await navigator.clipboard.writeText(text);
+        showToast("Légende copiée dans le presse-papiers");
+      } catch {
+        showToast("Sélectionnez et copiez la légende manuellement");
+      }
+    });
+
+    document.querySelectorAll("[data-insert]").forEach((btn) => {
+      btn.addEventListener("click", () => {
+        const ta = document.getElementById("postCaption");
+        ta.value += btn.dataset.insert;
+        updateLivePreview();
+      });
+    });
+
+    ["postCaption", "postMediaSelect"].forEach((id) => {
+      document.getElementById(id).addEventListener("input", updateLivePreview);
+      document.getElementById(id).addEventListener("change", updateLivePreview);
+    });
+
+    ["filterStatut", "filterFormat", "filterPilier", "filterSearch"].forEach((id) => {
+      document.getElementById(id).addEventListener("input", () => {
+        renderPostsGrid();
+        if (calendarViewMode === "month") renderCalendarMonthView();
+      });
+      document.getElementById(id).addEventListener("change", () => {
+        renderPostsGrid();
+        if (calendarViewMode === "month") renderCalendarMonthView();
+      });
+    });
+
+    function escapeHtml(str) {
+      return String(str)
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/"/g, "&quot;");
+    }
+
+    function renderAll() {
+      renderPostsGrid();
+      applyCalendarViewMode();
+      populateMediaSelect(document.getElementById("postMediaSelect").value || (state.posts.find((p) => p.id === editingPostId)?.mediaId ?? ""));
+      renderStatisticsSection();
+      updateLivePreview();
+    }
+
+    loadPostIntoEditor(editingPostId);
+    renderAll();
+  </script>
+</body>
+</html>
