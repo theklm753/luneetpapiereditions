@@ -649,6 +649,73 @@
       text-overflow: ellipsis;
     }
 
+    /* Barre de slides / photos multiples */
+    .slides-strip {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-top: 10px;
+    }
+
+    .slide-chip {
+      display: inline-flex;
+      align-items: center;
+      gap: 7px;
+      padding: 4px 8px 4px 4px;
+      border-radius: 10px;
+      border: 1px solid var(--border);
+      background: var(--surface-alt);
+      font-size: 12px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.15s ease;
+    }
+
+    .slide-chip:hover {
+      border-color: var(--primary);
+    }
+
+    .slide-chip.active {
+      background: var(--primary-soft);
+      border-color: var(--primary);
+      color: var(--primary);
+    }
+
+    .slide-chip-thumb {
+      width: 28px;
+      height: 36px;
+      border-radius: 6px;
+      overflow: hidden;
+      background: #dce0ec;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 11px;
+      color: var(--muted);
+      flex-shrink: 0;
+    }
+
+    .slide-chip-thumb img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+
+    .slide-chip-del {
+      border: none;
+      background: transparent;
+      color: #b42318;
+      padding: 0 3px;
+      font-size: 12px;
+      line-height: 1;
+      cursor: pointer;
+    }
+
+    .slide-chip-del:hover {
+      background: #fee2e2;
+      border-radius: 4px;
+    }
+
     .link-input-group {
       display: flex;
       gap: 6px;
@@ -802,6 +869,7 @@
       justify-content: center;
       color: var(--muted);
       overflow: hidden;
+      position: relative;
     }
 
     .ig-media img {
@@ -814,6 +882,57 @@
       padding: 12px;
       font-size: 13px;
       white-space: pre-line;
+    }
+
+    .preview-nav-arrow {
+      position: absolute;
+      top: 50%;
+      transform: translateY(-50%);
+      z-index: 4;
+      width: 30px;
+      height: 30px;
+      border-radius: 50%;
+      border: none;
+      background: rgba(24, 26, 32, 0.58);
+      color: #fff;
+      font-size: 16px;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 0;
+      cursor: pointer;
+    }
+
+    .preview-nav-arrow:hover {
+      background: rgba(24, 26, 32, 0.82);
+    }
+
+    .preview-nav-arrow.prev { left: 8px; }
+    .preview-nav-arrow.next { right: 8px; }
+
+    .preview-slide-counter {
+      position: absolute;
+      top: 10px;
+      right: 10px;
+      z-index: 4;
+      background: rgba(24, 26, 32, 0.68);
+      color: #fff;
+      font-size: 11px;
+      font-weight: 700;
+      padding: 3px 8px;
+      border-radius: 999px;
+    }
+
+    .preview-nav-bar {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      margin-top: 12px;
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--muted);
     }
 
     .feed-grid {
@@ -899,23 +1018,33 @@
 
     .story-top {
       position: relative;
-      z-index: 2;
+      z-index: 3;
       padding: 10px 12px 0;
     }
 
-    .story-progress {
-      height: 2.5px;
-      border-radius: 999px;
-      background: rgba(255, 255, 255, 0.35);
-      overflow: hidden;
+    .story-progress-segments {
+      display: flex;
+      gap: 4px;
       margin-bottom: 10px;
     }
 
-    .story-progress-fill {
-      width: 65%;
+    .story-progress-seg {
+      flex: 1;
+      height: 3px;
+      border-radius: 999px;
+      background: rgba(255, 255, 255, 0.35);
+      overflow: hidden;
+      cursor: pointer;
+    }
+
+    .story-progress-seg-fill {
       height: 100%;
       background: #fff;
+      width: 0%;
     }
+
+    .story-progress-seg.done .story-progress-seg-fill { width: 100%; }
+    .story-progress-seg.current .story-progress-seg-fill { width: 100%; }
 
     .story-header {
       display: flex;
@@ -947,7 +1076,7 @@
       position: relative;
       z-index: 2;
       flex: 1;
-      padding: 14px 16px;
+      padding: 14px 36px;
       display: flex;
       flex-direction: column;
       align-items: center;
@@ -1039,7 +1168,7 @@
       color: #181a20;
       border-radius: 12px;
       overflow: hidden;
-      width: 88%;
+      width: 94%;
       box-shadow: 0 4px 14px rgba(0, 0, 0, 0.24);
     }
 
@@ -1074,7 +1203,7 @@
       color: #181a20;
       border-radius: 12px;
       padding: 9px 12px;
-      width: 88%;
+      width: 94%;
       box-shadow: 0 4px 14px rgba(0, 0, 0, 0.24);
       text-align: center;
     }
@@ -1112,7 +1241,7 @@
       color: #fff;
       border-radius: 12px;
       padding: 9px 12px;
-      width: 88%;
+      width: 94%;
       text-align: center;
       box-shadow: 0 4px 14px rgba(0, 0, 0, 0.24);
     }
@@ -1351,15 +1480,17 @@
               </div>
             </div>
 
-            <!-- Visuel (Bouton import) + Liens Canva & Meta -->
+            <!-- Visuel(s) (Import multiple + sélection de slide) -->
             <div class="field" style="margin-bottom: 12px;">
-              <label>Visuel de la publication</label>
+              <label id="visualSectionLabel">Visuel(s) de la publication</label>
               <div class="upload-box">
-                <button type="button" id="btnUploadVisual">🖼️ Importer un visuel</button>
-                <input type="file" id="postMediaFileInput" accept="image/*" hidden />
+                <button type="button" id="btnUploadVisual">🖼️ Importer une ou plusieurs photos</button>
+                <input type="file" id="postMediaFileInput" accept="image/*" multiple hidden />
+                <button type="button" class="sm" id="btnAddEmptySlide" style="display: none;">+ Slide vide</button>
                 <span class="upload-filename" id="currentVisualName">Aucun visuel importé</span>
-                <button type="button" class="sm danger" id="btnRemoveVisual" style="display: none;">Retirer</button>
+                <button type="button" class="sm danger" id="btnRemoveVisual" style="display: none;">Retirer la photo</button>
               </div>
+              <div id="slidesStrip" class="slides-strip" style="display: none;"></div>
             </div>
 
             <div class="form-grid">
@@ -1397,15 +1528,15 @@
               </div>
             </div>
 
-            <!-- BLOC STORY : Ajout de texte + Stickers interactifs -->
+            <!-- BLOC STORY : Ajout de texte + Stickers interactifs (par photo/slide) -->
             <div id="storyEditorBlock" style="display: none;">
               <div class="field" style="margin-bottom: 12px;">
-                <label for="storyText">Ajout de texte sur la Story</label>
-                <textarea id="storyText" style="min-height: 84px;" placeholder="Écrivez le texte affiché directement sur votre Story..."></textarea>
+                <label for="storyText" id="storyTextLabel">Ajout de texte sur la Story (Slide 1)</label>
+                <textarea id="storyText" style="min-height: 84px;" placeholder="Écrivez le texte affiché sur cette photo de votre Story..."></textarea>
               </div>
 
               <div class="field">
-                <label>Stickers & éléments interactifs de la Story</label>
+                <label id="storyStickersLabel">Stickers & éléments interactifs (Slide 1)</label>
                 <div class="story-stickers-toolbar">
                   <button type="button" class="sticker-add-btn" onclick="addStorySticker('lieu')">📍 Lieu</button>
                   <button type="button" class="sticker-add-btn" onclick="addStorySticker('mention')">@ Mention</button>
@@ -1420,8 +1551,8 @@
               </div>
             </div>
 
-            <!-- Champs séparés : Objectif et CTA -->
-            <div class="form-grid">
+            <!-- Champs séparés : Objectif et CTA (masqués en mode Story) -->
+            <div id="objectifCtaBlock" class="form-grid">
               <div class="field">
                 <label for="postObjectif">Objectif du post</label>
                 <input type="text" id="postObjectif" placeholder="Ex. Créer de la proximité, gagner des abonnés..." />
@@ -1522,8 +1653,11 @@
                 <div class="story-scrim-top"></div>
                 <div class="story-scrim-bottom"></div>
 
+                <button type="button" class="preview-nav-arrow prev" id="storyPrevArrow" style="display: none;" onclick="navigateSlide(-1)" title="Photo précédente">‹</button>
+                <button type="button" class="preview-nav-arrow next" id="storyNextArrow" style="display: none;" onclick="navigateSlide(1)" title="Photo suivante">›</button>
+
                 <div class="story-top">
-                  <div class="story-progress"><div class="story-progress-fill"></div></div>
+                  <div class="story-progress-segments" id="storyProgressSegments"></div>
                   <div class="story-header">
                     <div class="story-user">
                       <div class="ig-avatar"></div>
@@ -1535,7 +1669,7 @@
                 </div>
 
                 <div class="story-stage" id="storyPreviewStage">
-                  <div class="story-empty-hint">Importez un visuel, ajoutez du texte ou un sticker pour prévisualiser votre Story</div>
+                  <div class="story-empty-hint">Importez une ou plusieurs photos, ajoutez du texte ou un sticker pour prévisualiser votre Story</div>
                 </div>
 
                 <div class="story-bottom">
@@ -1543,6 +1677,12 @@
                   <span>🤍</span>
                   <span>➤</span>
                 </div>
+              </div>
+
+              <div class="preview-nav-bar" id="storyPreviewNavBar" style="display: none;">
+                <button type="button" class="sm" onclick="navigateSlide(-1)">← Précédente</button>
+                <span id="storySlideIndicator">Photo 1 / 1</span>
+                <button type="button" class="sm" onclick="navigateSlide(1)">Suivante →</button>
               </div>
             </div>
           </div>
@@ -1640,6 +1780,15 @@
       return "fmt-carrousel";
     }
 
+    function createEmptySlide(mediaId = "", text = "", stickers = []) {
+      return {
+        id: "sl_" + Date.now() + "_" + Math.floor(Math.random() * 10000),
+        mediaId: mediaId || "",
+        text: text || "",
+        stickers: Array.isArray(stickers) ? structuredClone(stickers) : []
+      };
+    }
+
     const defaultData = {
       posts: [
         {
@@ -1656,8 +1805,7 @@
           canvaUrl: "",
           metaUrl: "",
           caption: "Tu publies au feeling et tu manques de régularité ?\n\nVoici les 4 étapes simples pour bâtir ton calendrier éditorial en 45 minutes.\n\n👉 Enregistre ce post pour le relire et partage-le en Story !\n\n#instagram #creationdecontenu #strategie #communitymanagement",
-          storyText: "",
-          storyStickers: [],
+          slides: [{ id: "sl_p1_1", mediaId: "m1", text: "", stickers: [] }],
           stats: { reach: 2450, likes: 185, comments: 24, saves: 92, shares: 31, clicks: 48 }
         },
         {
@@ -1674,8 +1822,7 @@
           canvaUrl: "",
           metaUrl: "",
           caption: "Ce qui se passe vraiment en coulisses avant la sortie d'un nouveau format.\n\n💬 Et toi, quel est ton avis en commentaire ?",
-          storyText: "",
-          storyStickers: [],
+          slides: [{ id: "sl_p2_1", mediaId: "m2", text: "", stickers: [] }],
           stats: { reach: 3820, likes: 260, comments: 19, saves: 34, shares: 44, clicks: 27 }
         },
         {
@@ -1687,14 +1834,20 @@
           pilier: "Preuve sociale",
           statut: "Publié",
           mediaId: "m3",
-          objectif: "Rassurer et montrer les résultats obtenus",
-          cta: "Découvre l'étude de cas complète",
+          objectif: "",
+          cta: "",
           canvaUrl: "",
           metaUrl: "",
           caption: "",
-          storyText: "Merci pour vos adorables retours cette semaine ✨",
-          storyStickers: [
-            { id: "st_1", type: "sondage", value: "Tu préfères quelle couverture ?", value2: "Bleue 💙", value3: "Rose 🌸" }
+          slides: [
+            {
+              id: "sl_p3_1",
+              mediaId: "m3",
+              text: "Merci pour vos adorables retours cette semaine ✨",
+              stickers: [
+                { id: "st_1", type: "sondage", value: "Tu préfères quelle couverture ?", value2: "Bleue 💙", value3: "Rose 🌸" }
+              ]
+            }
           ],
           stats: { reach: 1590, likes: 118, comments: 11, saves: 29, shares: 9, clicks: 63 }
         }
@@ -1727,8 +1880,8 @@
 
     let state = loadState();
     let editingPostId = state.posts[0]?.id || null;
-    let currentEditorMediaId = state.posts[0]?.mediaId || "";
-    let currentEditorStoryStickers = [];
+    let currentEditorSlides = [createEmptySlide()];
+    let currentSlideIndex = 0;
     let calendarViewMode = "month"; // "cards" | "month"
     let previewViewMode = "fil"; // "fil" | "feed"
     let currentCalendarDate = new Date(2026, 10, 1); // Novembre 2026
@@ -1748,20 +1901,46 @@
       return VALID_FORMATS.includes(fmt) ? fmt : "Carrousel";
     }
 
+    function normalizeSlides(p) {
+      if (Array.isArray(p?.slides) && p.slides.length > 0) {
+        return p.slides.map((sl, idx) => ({
+          id: sl.id || `sl_${p.id || "x"}_${idx}`,
+          mediaId: sl.mediaId || "",
+          text: sl.text || "",
+          stickers: Array.isArray(sl.stickers) ? sl.stickers : []
+        }));
+      }
+      const fallbackText = p?.storyText !== undefined ? p.storyText : (p?.format === "Story" ? (p?.caption || "") : "");
+      const fallbackStickers = Array.isArray(p?.storyStickers) ? p.storyStickers : [];
+      return [
+        {
+          id: `sl_${p?.id || "x"}_0`,
+          mediaId: p?.mediaId || "",
+          text: fallbackText,
+          stickers: fallbackStickers
+        }
+      ];
+    }
+
     function normalizeState(parsed) {
       return {
         posts: Array.isArray(parsed?.posts)
-          ? parsed.posts.map((p) => ({
-              ...p,
-              format: normalizeFormat(p.format),
-              objectif: p.objectif || "",
-              cta: p.cta || "",
-              canvaUrl: p.canvaUrl || "",
-              metaUrl: p.metaUrl || "",
-              storyText: p.storyText !== undefined ? p.storyText : (p.format === "Story" ? (p.caption || "") : ""),
-              storyStickers: Array.isArray(p.storyStickers) ? p.storyStickers : [],
-              stats: normalizeStats(p.stats)
-            }))
+          ? parsed.posts.map((p) => {
+              const slides = normalizeSlides(p);
+              return {
+                ...p,
+                format: normalizeFormat(p.format),
+                objectif: p.objectif || "",
+                cta: p.cta || "",
+                canvaUrl: p.canvaUrl || "",
+                metaUrl: p.metaUrl || "",
+                mediaId: slides[0]?.mediaId || p.mediaId || "",
+                slides,
+                storyText: slides[0]?.text || "",
+                storyStickers: slides[0]?.stickers || [],
+                stats: normalizeStats(p.stats)
+              };
+            })
           : structuredClone(defaultData.posts),
         ideas: Array.isArray(parsed?.ideas) ? parsed.ideas : [],
         media: Array.isArray(parsed?.media) ? parsed.media : structuredClone(defaultData.media)
@@ -1816,6 +1995,16 @@
       return state.media.find((m) => m.id === id) || null;
     }
 
+    function getCurrentSlide() {
+      if (!currentEditorSlides.length) {
+        currentEditorSlides = [createEmptySlide()];
+        currentSlideIndex = 0;
+      }
+      if (currentSlideIndex < 0) currentSlideIndex = 0;
+      if (currentSlideIndex >= currentEditorSlides.length) currentSlideIndex = currentEditorSlides.length - 1;
+      return currentEditorSlides[currentSlideIndex];
+    }
+
     /* ============================================================
        EXPORT MODÈLE EXCEL (.xlsx) & IMPORT EXCEL (.xlsx/.xls/.csv)
        ============================================================ */
@@ -1863,8 +2052,8 @@
         ["Format", "Oui", "Carrousel | Reel | Story"],
         ["Pilier", "Oui", "Pédagogie | Coulisses | Offre / Produit | Preuve sociale"],
         ["Statut", "Oui", "Idée | Préparation | Validé | Programmé | Publié"],
-        ["Objectif", "Non", "Objectif principal de la publication"],
-        ["CTA", "Non", "Appel à l'action demandé à l'audience"],
+        ["Objectif", "Non", "Objectif principal (Carrousel / Reel)"],
+        ["CTA", "Non", "Appel à l'action (Carrousel / Reel)"],
         ["Légende Instagram", "Oui", "Légende complète (ou texte principal si le format est Story)"],
         ["", "", ""],
         ["Consigne pour Gemini :", "", "Remplis l'onglet 'Calendrier_Posts' en remplaçant la ligne d'exemple par les publications du calendrier éditorial, tout en conservant exactement les titres de colonnes en ligne 1."]
@@ -2007,11 +2196,12 @@
               pilier: matchAllowedValue(rawPilier, VALID_PILIERS, "Pédagogie"),
               statut: matchAllowedValue(rawStatut, VALID_STATUTS, "Préparation"),
               mediaId: "",
-              objectif: rawObjectif,
-              cta: rawCta,
+              objectif: isStory ? "" : rawObjectif,
+              cta: isStory ? "" : rawCta,
               canvaUrl: "",
               metaUrl: "",
               caption: isStory ? "" : rawCaption,
+              slides: [createEmptySlide("", isStory ? rawCaption : "", [])],
               storyText: isStory ? rawCaption : "",
               storyStickers: [],
               stats: normalizeStats({})
@@ -2081,10 +2271,11 @@
         .filter((p) => !pilier || p.pilier === pilier)
         .filter((p) => {
           if (!q) return true;
+          const allSlidesText = (p.slides || []).map((s) => s.text || "").join(" ").toLowerCase();
           return (
             (p.title || "").toLowerCase().includes(q) ||
             (p.caption || "").toLowerCase().includes(q) ||
-            (p.storyText || "").toLowerCase().includes(q) ||
+            allSlidesText.includes(q) ||
             (p.pilier || "").toLowerCase().includes(q)
           );
         })
@@ -2102,12 +2293,16 @@
 
       grid.innerHTML = filtered
         .map((post) => {
-          const media = getMediaById(post.mediaId);
+          const slides = normalizeSlides(post);
+          const firstMediaId = slides.find((s) => s.mediaId)?.mediaId || post.mediaId;
+          const media = getMediaById(firstMediaId);
           const statusClass = "st-" + post.statut.toLowerCase().replace(/\s+/g, "-");
           const fmtClass = getFormatClass(post.format);
           const emoji = getStatusEmoji(post.statut);
-          const previewText = post.format === "Story" ? (post.storyText || post.caption || "") : (post.caption || "");
-          const stickersCount = Array.isArray(post.storyStickers) ? post.storyStickers.length : 0;
+          const previewText = post.format === "Story"
+            ? (slides.find((s) => s.text)?.text || post.storyText || "")
+            : (post.caption || "");
+          const totalStickers = slides.reduce((acc, s) => acc + (s.stickers?.length || 0), 0);
           return `
             <article class="post-card card-${fmtClass}">
               <div class="post-thumb">
@@ -2123,8 +2318,8 @@
                 <div class="post-caption-preview">${escapeHtml(previewText)}</div>
                 <div class="tag-row">
                   <span class="mini-tag">${post.pilier}</span>
-                  ${post.format === "Story" && stickersCount ? `<span class="mini-tag">✨ ${stickersCount} sticker(s)</span>` : ""}
-                  ${media ? `<span class="mini-tag">${escapeHtml(media.name)}</span>` : ""}
+                  ${slides.length > 1 ? `<span class="mini-tag">🖼️ ${slides.length} photos</span>` : ""}
+                  ${post.format === "Story" && totalStickers ? `<span class="mini-tag">✨ ${totalStickers} sticker(s)</span>` : ""}
                 </div>
                 <div class="post-actions">
                   <button class="sm primary" onclick="editPost('${post.id}')">Préparer / Éditer</button>
@@ -2234,9 +2429,90 @@
     });
 
     /* ============================================================
-       GESTION DES STICKERS STORY & ADAPTATION FORMAT
+       GESTION MULTI-PHOTOS / SLIDES & STICKERS STORY
        ============================================================ */
+    window.selectSlide = function (idx) {
+      if (idx < 0 || idx >= currentEditorSlides.length) return;
+      currentSlideIndex = idx;
+      syncEditorToCurrentSlide();
+    };
+
+    window.navigateSlide = function (delta) {
+      if (currentEditorSlides.length <= 1) return;
+      currentSlideIndex = (currentSlideIndex + delta + currentEditorSlides.length) % currentEditorSlides.length;
+      syncEditorToCurrentSlide();
+    };
+
+    window.deleteSlide = function (idx, ev) {
+      if (ev) ev.stopPropagation();
+      if (currentEditorSlides.length <= 1) {
+        currentEditorSlides[0].mediaId = "";
+        currentEditorSlides[0].text = "";
+        currentEditorSlides[0].stickers = [];
+      } else {
+        currentEditorSlides.splice(idx, 1);
+        if (currentSlideIndex >= currentEditorSlides.length) {
+          currentSlideIndex = currentEditorSlides.length - 1;
+        }
+      }
+      syncEditorToCurrentSlide();
+    };
+
+    document.getElementById("btnAddEmptySlide").addEventListener("click", () => {
+      currentEditorSlides.push(createEmptySlide());
+      currentSlideIndex = currentEditorSlides.length - 1;
+      syncEditorToCurrentSlide();
+    });
+
+    function renderSlidesStrip() {
+      const strip = document.getElementById("slidesStrip");
+      const format = document.getElementById("postFormat").value;
+      const showMulti = format === "Story" || format === "Carrousel" || currentEditorSlides.length > 1;
+
+      if (!showMulti || (currentEditorSlides.length === 1 && !currentEditorSlides[0].mediaId && format !== "Story")) {
+        strip.style.display = "none";
+        return;
+      }
+
+      strip.style.display = "flex";
+      strip.innerHTML = currentEditorSlides
+        .map((sl, idx) => {
+          const media = getMediaById(sl.mediaId);
+          const isActive = idx === currentSlideIndex;
+          const delBtn = currentEditorSlides.length > 1
+            ? `<button type="button" class="slide-chip-del" onclick="deleteSlide(${idx}, event)" title="Supprimer cette photo">✕</button>`
+            : "";
+          return `
+            <div class="slide-chip ${isActive ? "active" : ""}" onclick="selectSlide(${idx})">
+              <div class="slide-chip-thumb">
+                ${media ? `<img src="${media.src}" alt="Photo ${idx + 1}" />` : `<span>${idx + 1}</span>`}
+              </div>
+              <span>Photo ${idx + 1}</span>
+              ${delBtn}
+            </div>
+          `;
+        })
+        .join("");
+    }
+
+    function syncEditorToCurrentSlide() {
+      const slide = getCurrentSlide();
+      const slideNum = currentSlideIndex + 1;
+      const total = currentEditorSlides.length;
+      const suffix = total > 1 ? ` (Photo ${slideNum} / ${total})` : "";
+
+      document.getElementById("storyText").value = slide.text || "";
+      document.getElementById("storyTextLabel").textContent = `Ajout de texte sur la Story${suffix}`;
+      document.getElementById("storyStickersLabel").textContent = `Stickers & éléments interactifs${suffix}`;
+
+      renderSlidesStrip();
+      updateVisualIndicator();
+      renderStoryStickersEditor();
+      updateLivePreview();
+    }
+
     window.addStorySticker = function (type) {
+      const slide = getCurrentSlide();
       const defaults = {
         lieu: { value: "" },
         mention: { value: "@" },
@@ -2247,7 +2523,7 @@
         curseur: { value: "", value2: "😍" },
         compte_a_rebours: { value: "", value2: "" }
       };
-      currentEditorStoryStickers.push({
+      slide.stickers.push({
         id: "st_" + Date.now() + "_" + Math.floor(Math.random() * 1000),
         type,
         ...(defaults[type] || { value: "" })
@@ -2257,13 +2533,15 @@
     };
 
     window.removeStorySticker = function (stickerId) {
-      currentEditorStoryStickers = currentEditorStoryStickers.filter((s) => s.id !== stickerId);
+      const slide = getCurrentSlide();
+      slide.stickers = slide.stickers.filter((s) => s.id !== stickerId);
       renderStoryStickersEditor();
       updateLivePreview();
     };
 
     window.updateStoryStickerField = function (stickerId, field, newVal) {
-      const st = currentEditorStoryStickers.find((s) => s.id === stickerId);
+      const slide = getCurrentSlide();
+      const st = slide.stickers.find((s) => s.id === stickerId);
       if (st) {
         st[field] = newVal;
         updateLivePreview();
@@ -2271,13 +2549,14 @@
     };
 
     function renderStoryStickersEditor() {
+      const slide = getCurrentSlide();
       const container = document.getElementById("storyStickersEditorList");
-      if (!currentEditorStoryStickers.length) {
-        container.innerHTML = `<div style="font-size: 12px; color: var(--muted);">Aucun sticker ajouté. Cliquez sur un bouton ci-dessus pour enrichir votre Story.</div>`;
+      if (!slide.stickers.length) {
+        container.innerHTML = `<div style="font-size: 12px; color: var(--muted);">Aucun sticker sur cette photo. Cliquez sur un bouton ci-dessus pour l'enrichir.</div>`;
         return;
       }
 
-      container.innerHTML = currentEditorStoryStickers
+      container.innerHTML = slide.stickers
         .map((st) => {
           const meta = STICKER_META[st.type] || { label: st.type, placeholder: "Texte" };
           let fieldsHtml = `<input type="text" value="${escapeHtml(st.value || "")}" placeholder="${escapeHtml(meta.placeholder)}" oninput="updateStoryStickerField('${st.id}', 'value', this.value)" />`;
@@ -2355,12 +2634,19 @@
     }
 
     function updateEditorForFormat() {
-      const isStory = document.getElementById("postFormat").value === "Story";
+      const format = document.getElementById("postFormat").value;
+      const isStory = format === "Story";
+      const isMulti = isStory || format === "Carrousel";
 
       document.getElementById("standardCaptionBlock").style.display = isStory ? "none" : "block";
       document.getElementById("storyEditorBlock").style.display = isStory ? "block" : "none";
+      document.getElementById("objectifCtaBlock").style.display = isStory ? "none" : "grid";
       document.getElementById("previewViewSwitch").style.display = isStory ? "none" : "inline-flex";
+      document.getElementById("btnAddEmptySlide").style.display = isStory ? "inline-block" : "none";
       document.getElementById("btnCopyCaption").textContent = isStory ? "Copier le texte" : "Copier la légende";
+      document.getElementById("btnUploadVisual").textContent = isMulti
+        ? "🖼️ Importer une ou plusieurs photos"
+        : "🖼️ Importer un visuel";
 
       if (isStory) {
         document.getElementById("previewFilContainer").style.display = "none";
@@ -2372,28 +2658,29 @@
         applyPreviewViewMode();
       }
 
-      updateLivePreview();
+      syncEditorToCurrentSlide();
     }
 
     document.getElementById("postFormat").addEventListener("change", updateEditorForFormat);
 
     /* ============================================================
-       IMPORT VISUEL (avec compression légère pour Firebase)
+       IMPORT VISUEL(S) (multi-fichiers + compression pour Firebase)
        ============================================================ */
     function updateVisualIndicator() {
-      const media = getMediaById(currentEditorMediaId);
+      const slide = getCurrentSlide();
+      const media = getMediaById(slide.mediaId);
       const nameEl = document.getElementById("currentVisualName");
       const removeBtn = document.getElementById("btnRemoveVisual");
       if (media) {
         nameEl.textContent = media.name || "Visuel importé";
         removeBtn.style.display = "inline-block";
       } else {
-        nameEl.textContent = "Aucun visuel importé";
+        nameEl.textContent = "Aucun visuel sur cette photo";
         removeBtn.style.display = "none";
       }
     }
 
-    function compressImageDataUrl(dataUrl, maxDim = 800, quality = 0.78) {
+    function compressImageDataUrl(dataUrl, maxDim = 720, quality = 0.72) {
       return new Promise((resolve) => {
         const img = new Image();
         img.onload = () => {
@@ -2424,37 +2711,73 @@
       });
     }
 
+    function readFileAsDataUrl(file) {
+      return new Promise((resolve, reject) => {
+        const reader = new FileReader();
+        reader.onload = (ev) => resolve(ev.target.result);
+        reader.onerror = reject;
+        reader.readAsDataURL(file);
+      });
+    }
+
     document.getElementById("btnUploadVisual").addEventListener("click", () => {
       document.getElementById("postMediaFileInput").click();
     });
 
-    document.getElementById("postMediaFileInput").addEventListener("change", (e) => {
-      const file = e.target.files?.[0];
-      if (!file) return;
-      const reader = new FileReader();
-      reader.onload = async (ev) => {
-        const compressedSrc = await compressImageDataUrl(ev.target.result);
-        const newMediaId = "m_" + Date.now();
-        state.media.unshift({
-          id: newMediaId,
-          name: file.name,
-          tags: [],
-          ratioNote: "Visuel importé",
-          src: compressedSrc
-        });
-        currentEditorMediaId = newMediaId;
-        updateVisualIndicator();
-        updateLivePreview();
-        showToast("Visuel importé (pensez à enregistrer la publication)");
-      };
-      reader.readAsDataURL(file);
+    document.getElementById("postMediaFileInput").addEventListener("change", async (e) => {
+      const files = Array.from(e.target.files || []);
+      if (!files.length) return;
+
+      const format = document.getElementById("postFormat").value;
+      const allowMultiple = format === "Story" || format === "Carrousel";
+      const filesToProcess = allowMultiple ? files : [files[0]];
+
+      let firstNewIdx = currentSlideIndex;
+
+      for (let i = 0; i < filesToProcess.length; i++) {
+        const file = filesToProcess[i];
+        try {
+          const rawUrl = await readFileAsDataUrl(file);
+          const compressedSrc = await compressImageDataUrl(rawUrl);
+          const newMediaId = `m_${Date.now()}_${i}`;
+          state.media.unshift({
+            id: newMediaId,
+            name: file.name,
+            tags: [],
+            ratioNote: "Visuel importé",
+            src: compressedSrc
+          });
+
+          const activeSlide = getCurrentSlide();
+          if (i === 0 && !activeSlide.mediaId) {
+            activeSlide.mediaId = newMediaId;
+            firstNewIdx = currentSlideIndex;
+          } else if (!allowMultiple) {
+            activeSlide.mediaId = newMediaId;
+            firstNewIdx = currentSlideIndex;
+          } else {
+            currentEditorSlides.push(createEmptySlide(newMediaId, "", []));
+            if (i === 0) firstNewIdx = currentEditorSlides.length - 1;
+          }
+        } catch (err) {
+          console.error("Erreur import image :", err);
+        }
+      }
+
+      currentSlideIndex = firstNewIdx;
+      syncEditorToCurrentSlide();
+      showToast(
+        filesToProcess.length > 1
+          ? `${filesToProcess.length} photos importées (pensez à enregistrer)`
+          : "Photo importée (pensez à enregistrer)"
+      );
       e.target.value = "";
     });
 
     document.getElementById("btnRemoveVisual").addEventListener("click", () => {
-      currentEditorMediaId = "";
-      updateVisualIndicator();
-      updateLivePreview();
+      const slide = getCurrentSlide();
+      slide.mediaId = "";
+      syncEditorToCurrentSlide();
     });
 
     /* Liens Canva & Meta */
@@ -2538,10 +2861,8 @@
     function loadPostIntoEditor(postId) {
       const post = state.posts.find((p) => p.id === postId);
       editingPostId = post ? post.id : null;
-      currentEditorMediaId = post?.mediaId || "";
-      currentEditorStoryStickers = Array.isArray(post?.storyStickers)
-        ? structuredClone(post.storyStickers)
-        : [];
+      currentEditorSlides = post ? structuredClone(normalizeSlides(post)) : [createEmptySlide()];
+      currentSlideIndex = 0;
 
       document.getElementById("editorHeading").textContent = post
         ? `Préparer la publication : ${getStatusEmoji(post.statut)} ${post.title || "Sans titre"}`
@@ -2558,7 +2879,6 @@
       document.getElementById("postObjectif").value = post?.objectif || "";
       document.getElementById("postCta").value = post?.cta || "";
       document.getElementById("postCaption").value = post?.caption || "";
-      document.getElementById("storyText").value = post?.storyText || (post?.format === "Story" ? (post?.caption || "") : "");
       document.getElementById("btnDeleteCurrentPost").style.display = post ? "inline-block" : "none";
 
       const st = normalizeStats(post?.stats);
@@ -2570,16 +2890,32 @@
       document.getElementById("perfClicks").value = st.clicks;
       updatePerfSummaryPreview();
 
-      renderStoryStickersEditor();
-      updateVisualIndicator();
       updateEditorForFormat();
     }
 
     function updateLivePreview() {
       const format = document.getElementById("postFormat").value;
-      const media = getMediaById(currentEditorMediaId);
+      const slide = getCurrentSlide();
+      const media = getMediaById(slide.mediaId);
+      const totalSlides = currentEditorSlides.length;
 
       if (format === "Story") {
+        // Barres de progression Story en haut
+        const segContainer = document.getElementById("storyProgressSegments");
+        segContainer.innerHTML = currentEditorSlides
+          .map((_, idx) => {
+            const cls = idx < currentSlideIndex ? "done" : idx === currentSlideIndex ? "current" : "";
+            return `<div class="story-progress-seg ${cls}" onclick="selectSlide(${idx})" title="Photo ${idx + 1}"><div class="story-progress-seg-fill"></div></div>`;
+          })
+          .join("");
+
+        // Flèches & barre de navigation si plusieurs photos
+        const hasMultiple = totalSlides > 1;
+        document.getElementById("storyPrevArrow").style.display = hasMultiple ? "flex" : "none";
+        document.getElementById("storyNextArrow").style.display = hasMultiple ? "flex" : "none";
+        document.getElementById("storyPreviewNavBar").style.display = hasMultiple ? "flex" : "none";
+        document.getElementById("storySlideIndicator").textContent = `Photo ${currentSlideIndex + 1} / ${totalSlides}`;
+
         const bgImg = document.getElementById("storyPreviewBgImg");
         if (media) {
           bgImg.src = media.src;
@@ -2589,33 +2925,43 @@
           bgImg.removeAttribute("src");
         }
 
-        const storyTextVal = document.getElementById("storyText").value.trim();
+        const storyTextVal = (slide.text || "").trim();
         const stage = document.getElementById("storyPreviewStage");
         let html = "";
 
         if (storyTextVal) {
           html += `<div class="story-text-overlay">${escapeHtml(storyTextVal)}</div>`;
         }
-        if (currentEditorStoryStickers.length) {
-          html += currentEditorStoryStickers.map(renderStoryStickerPreview).join("");
+        if (slide.stickers && slide.stickers.length) {
+          html += slide.stickers.map(renderStoryStickerPreview).join("");
         }
         if (!html && !media) {
-          html = `<div class="story-empty-hint">Importez un visuel, ajoutez du texte ou un sticker pour prévisualiser votre Story</div>`;
+          html = `<div class="story-empty-hint">Importez une ou plusieurs photos, ajoutez du texte ou un sticker pour prévisualiser votre Story</div>`;
         }
 
         stage.innerHTML = html;
         return;
       }
 
+      // Mode Fil (Carrousel / Reel)
       const caption = document.getElementById("postCaption").value;
       const len = caption.length;
       document.getElementById("charCounter").textContent = `${len} / 2 200 caractères`;
       document.getElementById("charCounter").style.color = len > 2200 ? "#b42318" : "";
 
       const mediaBox = document.getElementById("previewMediaBox");
-      mediaBox.innerHTML = media
+      let mediaHtml = media
         ? `<img src="${media.src}" alt="${escapeHtml(media.name)}" />`
         : `<span>Aucun visuel sélectionné</span>`;
+
+      if (totalSlides > 1) {
+        mediaHtml += `
+          <span class="preview-slide-counter">${currentSlideIndex + 1} / ${totalSlides}</span>
+          <button type="button" class="preview-nav-arrow prev" onclick="navigateSlide(-1)" title="Photo précédente">‹</button>
+          <button type="button" class="preview-nav-arrow next" onclick="navigateSlide(1)" title="Photo suivante">›</button>
+        `;
+      }
+      mediaBox.innerHTML = mediaHtml;
 
       document.getElementById("previewCaptionBox").textContent =
         caption.trim() || "Votre légende apparaîtra ici en temps réel.";
@@ -2638,7 +2984,9 @@
       grid.innerHTML = sorted
         .map((p) => {
           const isCurrent = p.id === editingPostId;
-          const mediaIdToShow = isCurrent ? currentEditorMediaId : p.mediaId;
+          const mediaIdToShow = isCurrent
+            ? (currentEditorSlides.find((s) => s.mediaId)?.mediaId || "")
+            : (normalizeSlides(p).find((s) => s.mediaId)?.mediaId || p.mediaId);
           const m = getMediaById(mediaIdToShow);
           return `
             <div class="feed-cell ${isCurrent ? "draft-ring" : ""}" title="${getStatusEmoji(p.statut)} ${escapeHtml(p.title)}">
@@ -2656,58 +3004,43 @@
       const format = normalizeFormat(document.getElementById("postFormat").value);
       const pilier = document.getElementById("postPilier").value;
       const statut = document.getElementById("postStatut").value;
-      const mediaId = currentEditorMediaId;
       const canvaUrl = document.getElementById("postCanvaUrl").value.trim();
       const metaUrl = document.getElementById("postMetaUrl").value.trim();
-      const objectif = document.getElementById("postObjectif").value.trim();
-      const cta = document.getElementById("postCta").value.trim();
+      const objectif = format === "Story" ? "" : document.getElementById("postObjectif").value.trim();
+      const cta = format === "Story" ? "" : document.getElementById("postCta").value.trim();
       const caption = document.getElementById("postCaption").value;
-      const storyText = document.getElementById("storyText").value;
-      const storyStickers = structuredClone(currentEditorStoryStickers);
+
+      const slides = structuredClone(currentEditorSlides);
+      const firstMediaId = slides.find((s) => s.mediaId)?.mediaId || "";
       const stats = getEditorStatsFromInputs();
+
+      const payload = {
+        title,
+        date,
+        time,
+        format,
+        pilier,
+        statut,
+        mediaId: firstMediaId,
+        canvaUrl,
+        metaUrl,
+        objectif,
+        cta,
+        caption,
+        slides,
+        storyText: slides[0]?.text || "",
+        storyStickers: slides[0]?.stickers || [],
+        stats
+      };
 
       if (editingPostId) {
         const idx = state.posts.findIndex((p) => p.id === editingPostId);
         if (idx !== -1) {
-          state.posts[idx] = {
-            ...state.posts[idx],
-            title,
-            date,
-            time,
-            format,
-            pilier,
-            statut,
-            mediaId,
-            canvaUrl,
-            metaUrl,
-            objectif,
-            cta,
-            caption,
-            storyText,
-            storyStickers,
-            stats
-          };
+          state.posts[idx] = { ...state.posts[idx], ...payload };
         }
       } else {
         const newId = "p_" + Date.now();
-        state.posts.push({
-          id: newId,
-          title,
-          date,
-          time,
-          format,
-          pilier,
-          statut,
-          mediaId,
-          canvaUrl,
-          metaUrl,
-          objectif,
-          cta,
-          caption,
-          storyText,
-          storyStickers,
-          stats
-        });
+        state.posts.push({ id: newId, ...payload });
         editingPostId = newId;
       }
 
@@ -2827,11 +3160,11 @@
     document.getElementById("btnCopyCaption").addEventListener("click", async () => {
       const isStory = document.getElementById("postFormat").value === "Story";
       const text = isStory
-        ? document.getElementById("storyText").value
+        ? (getCurrentSlide().text || "")
         : document.getElementById("postCaption").value;
       try {
         await navigator.clipboard.writeText(text);
-        showToast(isStory ? "Texte de Story copié dans le presse-papiers" : "Légende copiée dans le presse-papiers");
+        showToast(isStory ? "Texte de cette photo copié dans le presse-papiers" : "Légende copiée dans le presse-papiers");
       } catch {
         showToast("Sélectionnez et copiez le texte manuellement");
       }
@@ -2846,7 +3179,10 @@
     });
 
     document.getElementById("postCaption").addEventListener("input", updateLivePreview);
-    document.getElementById("storyText").addEventListener("input", updateLivePreview);
+    document.getElementById("storyText").addEventListener("input", (e) => {
+      getCurrentSlide().text = e.target.value;
+      updateLivePreview();
+    });
 
     ["filterStatut", "filterFormat", "filterPilier", "filterSearch"].forEach((id) => {
       document.getElementById(id).addEventListener("input", () => {
