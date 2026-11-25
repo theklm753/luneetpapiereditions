@@ -27,6 +27,16 @@
       --warn-bg: #fff5e5;
       --info: #1d5fd6;
       --info-bg: #e8f0fe;
+      /* Couleurs par format */
+      --fmt-carrousel: #5b4ce6;
+      --fmt-carrousel-bg: #eeecfd;
+      --fmt-carrousel-border: #c9c3fa;
+      --fmt-reel: #db2777;
+      --fmt-reel-bg: #fce7f3;
+      --fmt-reel-border: #f9a8d4;
+      --fmt-story: #d97706;
+      --fmt-story-bg: #fef3c7;
+      --fmt-story-border: #fcd34d;
       --radius: 12px;
       --shadow: 0 4px 18px rgba(24, 26, 32, 0.05);
     }
@@ -171,6 +181,33 @@
       align-items: center;
     }
 
+    .format-legend {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      align-items: center;
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--muted);
+    }
+
+    .legend-item {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+    }
+
+    .legend-dot {
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      display: inline-block;
+    }
+
+    .dot-carrousel { background: var(--fmt-carrousel); }
+    .dot-reel { background: var(--fmt-reel); }
+    .dot-story { background: var(--fmt-story); }
+
     .view-switch {
       display: inline-flex;
       background: var(--surface-alt);
@@ -277,7 +314,12 @@
       box-shadow: var(--shadow);
       display: flex;
       flex-direction: column;
+      border-top: 4px solid var(--border);
     }
+
+    .post-card.card-fmt-carrousel { border-top-color: var(--fmt-carrousel); }
+    .post-card.card-fmt-reel { border-top-color: var(--fmt-reel); }
+    .post-card.card-fmt-story { border-top-color: var(--fmt-story); }
 
     .post-thumb {
       height: 175px;
@@ -301,13 +343,30 @@
       position: absolute;
       top: 10px;
       left: 10px;
-      background: rgba(24, 26, 32, 0.78);
+      background: rgba(24, 26, 32, 0.82);
       color: #fff;
       font-size: 11px;
-      font-weight: 600;
+      font-weight: 700;
+      padding: 3px 10px;
+      border-radius: 999px;
+      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
+    }
+
+    .format-pill.fmt-carrousel { background: var(--fmt-carrousel); }
+    .format-pill.fmt-reel { background: var(--fmt-reel); }
+    .format-pill.fmt-story { background: var(--fmt-story); }
+
+    .format-badge {
+      display: inline-block;
       padding: 3px 9px;
       border-radius: 999px;
+      font-size: 11px;
+      font-weight: 700;
     }
+
+    .format-badge.fmt-carrousel { background: var(--fmt-carrousel-bg); color: var(--fmt-carrousel); }
+    .format-badge.fmt-reel { background: var(--fmt-reel-bg); color: var(--fmt-reel); }
+    .format-badge.fmt-story { background: var(--fmt-story-bg); color: var(--fmt-story); }
 
     .post-body {
       padding: 15px;
@@ -451,17 +510,38 @@
       border-radius: 6px;
       background: var(--primary-soft);
       color: var(--primary);
+      border-left: 3px solid var(--primary);
       font-weight: 600;
       cursor: pointer;
       white-space: nowrap;
       overflow: hidden;
       text-overflow: ellipsis;
-      border: none;
+      border-top: none;
+      border-right: none;
+      border-bottom: none;
       text-align: left;
     }
 
+    .cal-event.fmt-carrousel {
+      background: var(--fmt-carrousel-bg);
+      color: var(--fmt-carrousel);
+      border-left-color: var(--fmt-carrousel);
+    }
+
+    .cal-event.fmt-reel {
+      background: var(--fmt-reel-bg);
+      color: var(--fmt-reel);
+      border-left-color: var(--fmt-reel);
+    }
+
+    .cal-event.fmt-story {
+      background: var(--fmt-story-bg);
+      color: var(--fmt-story);
+      border-left-color: var(--fmt-story);
+    }
+
     .cal-event:hover {
-      filter: brightness(0.96);
+      filter: brightness(0.95);
     }
 
     @media (max-width: 780px) {
@@ -706,16 +786,15 @@
 
           <select id="filterStatut">
             <option value="">Tous les statuts</option>
-            <option value="Idée">Idée</option>
-            <option value="Préparation">Préparation</option>
-            <option value="Validé">Validé</option>
-            <option value="Programmé">Programmé</option>
-            <option value="Publié">Publié</option>
+            <option value="Idée">💡 Idée</option>
+            <option value="Préparation">📝 Préparation</option>
+            <option value="Validé">✅ Validé</option>
+            <option value="Programmé">📅 Programmé</option>
+            <option value="Publié">🚀 Publié</option>
           </select>
 
           <select id="filterFormat">
             <option value="">Tous les formats</option>
-            <option value="Post">Post</option>
             <option value="Carrousel">Carrousel</option>
             <option value="Reel">Reel</option>
             <option value="Story">Story</option>
@@ -730,6 +809,12 @@
           </select>
 
           <input type="text" id="filterSearch" placeholder="Rechercher un titre ou légende..." />
+        </div>
+
+        <div class="format-legend">
+          <span class="legend-item"><span class="legend-dot dot-carrousel"></span> Carrousel</span>
+          <span class="legend-item"><span class="legend-dot dot-reel"></span> Reel</span>
+          <span class="legend-item"><span class="legend-dot dot-story"></span> Story</span>
         </div>
       </div>
 
@@ -785,7 +870,6 @@
               <div class="field">
                 <label for="postFormat">Format</label>
                 <select id="postFormat">
-                  <option value="Post">Post</option>
                   <option value="Carrousel">Carrousel</option>
                   <option value="Reel">Reel</option>
                   <option value="Story">Story</option>
@@ -805,11 +889,11 @@
               <div class="field">
                 <label for="postStatut">Statut</label>
                 <select id="postStatut">
-                  <option value="Idée">Idée</option>
-                  <option value="Préparation">Préparation</option>
-                  <option value="Validé">Validé</option>
-                  <option value="Programmé">Programmé</option>
-                  <option value="Publié">Publié</option>
+                  <option value="Idée">💡 Idée</option>
+                  <option value="Préparation">📝 Préparation</option>
+                  <option value="Validé">✅ Validé</option>
+                  <option value="Programmé">📅 Programmé</option>
+                  <option value="Publié">🚀 Publié</option>
                 </select>
               </div>
             </div>
@@ -927,9 +1011,28 @@
 
     const STORAGE_KEY = "ig_studio_data_v2";
 
-    const VALID_FORMATS = ["Post", "Carrousel", "Reel", "Story"];
+    const VALID_FORMATS = ["Carrousel", "Reel", "Story"];
     const VALID_PILIERS = ["Pédagogie", "Coulisses", "Offre / Produit", "Preuve sociale"];
     const VALID_STATUTS = ["Idée", "Préparation", "Validé", "Programmé", "Publié"];
+
+    const STATUS_EMOJI = {
+      "Idée": "💡",
+      "Préparation": "📝",
+      "Validé": "✅",
+      "Programmé": "📅",
+      "Publié": "🚀"
+    };
+
+    function getStatusEmoji(statut) {
+      return STATUS_EMOJI[statut] || "💡";
+    }
+
+    function getFormatClass(format) {
+      const f = String(format || "").toLowerCase();
+      if (f === "reel") return "fmt-reel";
+      if (f === "story") return "fmt-story";
+      return "fmt-carrousel";
+    }
 
     const defaultData = {
       posts: [
@@ -964,7 +1067,7 @@
           title: "Retour d'expérience client",
           date: "2026-11-29",
           time: "09:30",
-          format: "Post",
+          format: "Story",
           pilier: "Preuve sociale",
           statut: "Publié",
           mediaId: "m3",
@@ -992,8 +1095,8 @@
         {
           id: "m3",
           name: "temoignage-client.svg",
-          tags: ["preuve sociale", "post"],
-          ratioNote: "Ratio conseillé 4:5",
+          tags: ["preuve sociale", "story"],
+          ratioNote: "Format vertical 9:16",
           src: "data:image/svg+xml;utf8," + encodeURIComponent(`<svg xmlns="http://www.w3.org/2000/svg" width="800" height="1000"><rect width="800" height="1000" fill="#0f766e"/><text x="50%" y="46%" dominant-baseline="middle" text-anchor="middle" fill="#ffffff" font-family="sans-serif" font-size="42" font-weight="bold">PREUVE SOCIALE</text><text x="50%" y="54%" dominant-baseline="middle" text-anchor="middle" fill="#ccfbf1" font-family="sans-serif" font-size="26">Résultats & Retours</text></svg>`)
         }
       ]
@@ -1015,10 +1118,18 @@
       };
     }
 
+    function normalizeFormat(fmt) {
+      return VALID_FORMATS.includes(fmt) ? fmt : "Carrousel";
+    }
+
     function normalizeState(parsed) {
       return {
         posts: Array.isArray(parsed?.posts)
-          ? parsed.posts.map((p) => ({ ...p, stats: normalizeStats(p.stats) }))
+          ? parsed.posts.map((p) => ({
+              ...p,
+              format: normalizeFormat(p.format),
+              stats: normalizeStats(p.stats)
+            }))
           : structuredClone(defaultData.posts),
         ideas: Array.isArray(parsed?.ideas) ? parsed.ideas : [],
         media: Array.isArray(parsed?.media) ? parsed.media : structuredClone(defaultData.media)
@@ -1118,16 +1229,16 @@
 
       const instructions = [
         ["Colonne", "Obligatoire", "Format / Valeurs acceptées"],
-        ["Titre", "Oui", "Texte libre (titre interne du post)"],
+        ["Titre", "Oui", "Texte libre (titre interne de la publication)"],
         ["Date (AAAA-MM-JJ)", "Oui", "Format AAAA-MM-JJ (ex : 2026-12-05) ou date Excel standard"],
         ["Heure (HH:MM)", "Non", "Format HH:MM (ex : 18:00). Par défaut : 18:00"],
-        ["Format", "Oui", "Post | Carrousel | Reel | Story"],
+        ["Format", "Oui", "Carrousel | Reel | Story"],
         ["Pilier", "Oui", "Pédagogie | Coulisses | Offre / Produit | Preuve sociale"],
         ["Statut", "Oui", "Idée | Préparation | Validé | Programmé | Publié"],
-        ["Objectif / CTA", "Non", "Appel à l'action ou objectif principal du post"],
+        ["Objectif / CTA", "Non", "Appel à l'action ou objectif principal"],
         ["Légende Instagram", "Oui", "Texte complet de la légende avec accroche, sauts de ligne et hashtags"],
         ["", "", ""],
-        ["Consigne pour Gemini :", "", "Remplis l'onglet 'Calendrier_Posts' en remplaçant la ligne d'exemple par les posts du calendrier éditorial, tout en conservant exactement les titres de colonnes en ligne 1."]
+        ["Consigne pour Gemini :", "", "Remplis l'onglet 'Calendrier_Posts' en remplaçant la ligne d'exemple par les publications du calendrier éditorial, tout en conservant exactement les titres de colonnes en ligne 1."]
       ];
 
       const wsGuide = XLSX.utils.aoa_to_sheet(instructions);
@@ -1169,12 +1280,10 @@
         }
       }
       const str = String(val).trim();
-      // Format YYYY-MM-DD ou YYYY/MM/DD
       let m = str.match(/^(\d{4})[-/](\d{1,2})[-/](\d{1,2})/);
       if (m) {
         return `${m[1]}-${String(m[2]).padStart(2, "0")}-${String(m[3]).padStart(2, "0")}`;
       }
-      // Format DD/MM/YYYY ou DD-MM-YYYY
       m = str.match(/^(\d{1,2})[-/](\d{1,2})[-/](\d{4})/);
       if (m) {
         return `${m[3]}-${String(m[2]).padStart(2, "0")}-${String(m[1]).padStart(2, "0")}`;
@@ -1251,7 +1360,6 @@
             const rawStatut = getFieldFromRow(row, ["statut", "status", "etat"]);
             const rawCta = String(getFieldFromRow(row, ["cta", "objectif", "appel"]) || "").trim();
 
-            // Ignorer les lignes entièrement vides
             if (!rawTitle && !rawCaption && !rawDate) return;
 
             const parsedDate = parseExcelDate(rawDate) || new Date().toISOString().slice(0, 10);
@@ -1262,7 +1370,7 @@
               title: rawTitle || "Publication sans titre",
               date: parsedDate,
               time: parseExcelTime(rawTime),
-              format: matchAllowedValue(rawFormat, VALID_FORMATS, "Post"),
+              format: matchAllowedValue(rawFormat, VALID_FORMATS, "Carrousel"),
               pilier: matchAllowedValue(rawPilier, VALID_PILIERS, "Pédagogie"),
               statut: matchAllowedValue(rawStatut, VALID_STATUTS, "Préparation"),
               mediaId: "",
@@ -1280,7 +1388,6 @@
             return;
           }
 
-          // Positionner le calendrier sur le mois du premier post importé
           if (firstImportedDate) {
             const [y, m] = firstImportedDate.split("-").map(Number);
             if (y && m) {
@@ -1290,7 +1397,7 @@
 
           saveState();
           switchToTab("calendrier");
-          showToast(`${importedCount} post(s) importé(s) et enregistré(s) !`);
+          showToast(`${importedCount} publication(s) importée(s) et enregistrée(s) !`);
         } catch (err) {
           console.error("Erreur import Excel :", err);
           showToast("Impossible de lire ce fichier Excel.");
@@ -1358,18 +1465,20 @@
         .map((post) => {
           const media = getMediaById(post.mediaId);
           const statusClass = "st-" + post.statut.toLowerCase().replace(/\s+/g, "-");
+          const fmtClass = getFormatClass(post.format);
+          const emoji = getStatusEmoji(post.statut);
           return `
-            <article class="post-card">
+            <article class="post-card card-${fmtClass}">
               <div class="post-thumb">
-                <span class="format-pill">${post.format}</span>
+                <span class="format-pill ${fmtClass}">${post.format}</span>
                 ${media ? `<img src="${media.src}" alt="${escapeHtml(post.title)}" />` : `<span>Sans visuel</span>`}
               </div>
               <div class="post-body">
                 <div class="post-meta-top">
                   <span>${post.date || "Date à définir"} • ${post.time || "--:--"}</span>
-                  <span class="status-badge ${statusClass}">${post.statut}</span>
+                  <span class="status-badge ${statusClass}">${emoji} ${post.statut}</span>
                 </div>
-                <h3 class="post-title">${escapeHtml(post.title || "Sans titre")}</h3>
+                <h3 class="post-title">${emoji} ${escapeHtml(post.title || "Sans titre")}</h3>
                 <div class="post-caption-preview">${escapeHtml(post.caption || "")}</div>
                 <div class="tag-row">
                   <span class="mini-tag">${post.pilier}</span>
@@ -1439,10 +1548,13 @@
                 ${dayPosts.length ? `<span>${dayPosts.length}</span>` : ""}
               </div>
               ${dayPosts
-                .map(
-                  (p) =>
-                    `<button type="button" class="cal-event" title="${escapeHtml(p.time || "")} — ${escapeHtml(p.title)}" onclick="editPost('${p.id}')">${escapeHtml((p.time ? p.time + " " : "") + (p.title || p.format))}</button>`
-                )
+                .map((p) => {
+                  const fmtClass = getFormatClass(p.format);
+                  const emoji = getStatusEmoji(p.statut);
+                  const tooltip = `${emoji} [${p.format} • ${p.statut}] ${p.time ? p.time + " — " : ""}${p.title || ""}`;
+                  const labelText = `${emoji} ${p.time ? p.time + " " : ""}${p.title || p.format}`;
+                  return `<button type="button" class="cal-event ${fmtClass}" title="${escapeHtml(tooltip)}" onclick="editPost('${p.id}')">${escapeHtml(labelText)}</button>`;
+                })
                 .join("")}
             </div>
           `;
@@ -1493,13 +1605,13 @@
       editingPostId = post ? post.id : null;
 
       document.getElementById("editorHeading").textContent = post
-        ? "Préparer la publication : " + (post.title || "Sans titre")
+        ? `Préparer la publication : ${getStatusEmoji(post.statut)} ${post.title || "Sans titre"}`
         : "Créer une nouvelle publication";
 
       document.getElementById("postTitle").value = post?.title || "";
       document.getElementById("postDate").value = post?.date || new Date().toISOString().slice(0, 10);
       document.getElementById("postTime").value = post?.time || "18:00";
-      document.getElementById("postFormat").value = post?.format || "Post";
+      document.getElementById("postFormat").value = normalizeFormat(post?.format);
       document.getElementById("postPilier").value = post?.pilier || "Pédagogie";
       document.getElementById("postStatut").value = post?.statut || "Idée";
       document.getElementById("postCta").value = post?.cta || "";
@@ -1550,8 +1662,8 @@
           const isCurrent = p.id === editingPostId;
           const m = getMediaById(p.mediaId);
           return `
-            <div class="feed-cell ${isCurrent ? "draft-ring" : ""}" title="${escapeHtml(p.title)}">
-              ${m ? `<img src="${m.src}" alt="${escapeHtml(p.title)}" />` : `<span>${escapeHtml(p.title || p.format)}</span>`}
+            <div class="feed-cell ${isCurrent ? "draft-ring" : ""}" title="${getStatusEmoji(p.statut)} ${escapeHtml(p.title)}">
+              ${m ? `<img src="${m.src}" alt="${escapeHtml(p.title)}" />` : `<span>${getStatusEmoji(p.statut)} ${escapeHtml(p.title || p.format)}</span>`}
             </div>
           `;
         })
@@ -1562,7 +1674,7 @@
       const title = document.getElementById("postTitle").value.trim() || "Publication sans titre";
       const date = document.getElementById("postDate").value;
       const time = document.getElementById("postTime").value;
-      const format = document.getElementById("postFormat").value;
+      const format = normalizeFormat(document.getElementById("postFormat").value);
       const pilier = document.getElementById("postPilier").value;
       const statut = document.getElementById("postStatut").value;
       const mediaId = document.getElementById("postMediaSelect").value;
@@ -1581,6 +1693,7 @@
       }
 
       saveState();
+      loadPostIntoEditor(editingPostId);
       renderAll();
       showToast("Publication enregistrée");
     }
@@ -1641,11 +1754,13 @@
       tbody.innerHTML = state.posts
         .map((p) => {
           const st = normalizeStats(p.stats);
+          const fmtClass = getFormatClass(p.format);
+          const emoji = getStatusEmoji(p.statut);
           return `
             <tr>
-              <td><strong>${escapeHtml(p.title || "Sans titre")}</strong></td>
+              <td><strong>${emoji} ${escapeHtml(p.title || "Sans titre")}</strong></td>
               <td>${escapeHtml(p.date || "—")}</td>
-              <td>${escapeHtml(p.format)}</td>
+              <td><span class="format-badge ${fmtClass}">${escapeHtml(p.format)}</span></td>
               <td>${escapeHtml(p.pilier)}</td>
               <td><input type="number" min="0" id="st-reach-${p.id}" value="${st.reach}" /></td>
               <td><input type="number" min="0" id="st-likes-${p.id}" value="${st.likes}" /></td>
