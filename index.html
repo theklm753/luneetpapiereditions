@@ -23,20 +23,31 @@
       --border: #e3e6ef;
       --success: #168a54;
       --success-bg: #e7f7ef;
-      --warn: #b4690e;
-      --warn-bg: #fff5e5;
-      --info: #1d5fd6;
-      --info-bg: #e8f0fe;
-      /* Couleurs par format */
-      --fmt-carrousel: #5b4ce6;
-      --fmt-carrousel-bg: #eeecfd;
-      --fmt-carrousel-border: #c9c3fa;
-      --fmt-reel: #db2777;
-      --fmt-reel-bg: #fce7f3;
-      --fmt-reel-border: #f9a8d4;
-      --fmt-story: #d97706;
-      --fmt-story-bg: #fef3c7;
-      --fmt-story-border: #fcd34d;
+      /* Couleurs par statut */
+      --st-idee: #db2777;
+      --st-idee-bg: #fce7f3;
+      --st-idee-border: #f9a8d4;
+
+      --st-prepa: #a16207;
+      --st-prepa-bg: #fef9c3;
+      --st-prepa-border: #facc15;
+
+      --st-valide: #1d4ed8;
+      --st-valide-bg: #dbeafe;
+      --st-valide-border: #93c5fd;
+
+      --st-programme: #15803d;
+      --st-programme-bg: #dcfce7;
+      --st-programme-border: #86efac;
+
+      --st-publie: #475467;
+      --st-publie-bg: #f1f5f9;
+      --st-publie-border: #cbd5e1;
+
+      --st-retard: #dc2626;
+      --st-retard-bg: #fee2e2;
+      --st-retard-border: #fca5a5;
+
       --radius: 12px;
       --shadow: 0 4px 18px rgba(24, 26, 32, 0.05);
     }
@@ -181,7 +192,92 @@
       align-items: center;
     }
 
-    .format-legend {
+    /* Multi-select Formats */
+    .multiselect-wrap {
+      position: relative;
+      display: inline-block;
+    }
+
+    .multiselect-trigger {
+      font-family: inherit;
+      font-size: 13px;
+      font-weight: 500;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 8px 11px;
+      background: #fff;
+      color: var(--text);
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      min-width: 155px;
+      justify-content: space-between;
+    }
+
+    .multiselect-trigger:hover {
+      background: var(--surface-alt);
+    }
+
+    .multiselect-menu {
+      position: absolute;
+      top: calc(100% + 6px);
+      left: 0;
+      min-width: 215px;
+      background: #fff;
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      box-shadow: 0 10px 26px rgba(24, 26, 32, 0.12);
+      padding: 8px;
+      z-index: 40;
+      display: none;
+      flex-direction: column;
+      gap: 4px;
+    }
+
+    .multiselect-menu.open {
+      display: flex;
+    }
+
+    .multiselect-option {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 6px 8px;
+      border-radius: 7px;
+      font-size: 13px;
+      cursor: pointer;
+      user-select: none;
+    }
+
+    .multiselect-option:hover {
+      background: var(--surface-alt);
+    }
+
+    .multiselect-option input[type="checkbox"] {
+      accent-color: var(--primary);
+      width: 15px;
+      height: 15px;
+      cursor: pointer;
+    }
+
+    .multiselect-actions {
+      display: flex;
+      justify-content: space-between;
+      gap: 6px;
+      border-top: 1px solid var(--border);
+      padding-top: 6px;
+      margin-top: 4px;
+    }
+
+    .multiselect-actions button {
+      flex: 1;
+      font-size: 11px;
+      padding: 4px 6px;
+    }
+
+    /* Légende des statuts */
+    .status-legend {
       display: flex;
       flex-wrap: wrap;
       gap: 10px;
@@ -204,9 +300,12 @@
       display: inline-block;
     }
 
-    .dot-carrousel { background: var(--fmt-carrousel); }
-    .dot-reel { background: var(--fmt-reel); }
-    .dot-story { background: var(--fmt-story); }
+    .dot-idee { background: var(--st-idee); }
+    .dot-prepa { background: #eab308; }
+    .dot-valide { background: var(--st-valide); }
+    .dot-programme { background: var(--st-programme); }
+    .dot-publie { background: #94a3b8; }
+    .dot-retard { background: var(--st-retard); }
 
     .view-switch {
       display: inline-flex;
@@ -337,9 +436,12 @@
       border-top: 4px solid var(--border);
     }
 
-    .post-card.card-fmt-carrousel { border-top-color: var(--fmt-carrousel); }
-    .post-card.card-fmt-reel { border-top-color: var(--fmt-reel); }
-    .post-card.card-fmt-story { border-top-color: var(--fmt-story); }
+    .post-card.card-st-idee { border-top-color: var(--st-idee); }
+    .post-card.card-st-prepa { border-top-color: #eab308; }
+    .post-card.card-st-valide { border-top-color: var(--st-valide); }
+    .post-card.card-st-programme { border-top-color: var(--st-programme); }
+    .post-card.card-st-publie { border-top-color: #94a3b8; }
+    .post-card.card-st-retard { border-top-color: var(--st-retard); }
 
     .post-thumb {
       height: 175px;
@@ -363,7 +465,7 @@
       position: absolute;
       top: 10px;
       left: 10px;
-      background: rgba(24, 26, 32, 0.82);
+      background: rgba(24, 26, 32, 0.78);
       color: #fff;
       font-size: 11px;
       font-weight: 700;
@@ -372,21 +474,15 @@
       box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
     }
 
-    .format-pill.fmt-carrousel { background: var(--fmt-carrousel); }
-    .format-pill.fmt-reel { background: var(--fmt-reel); }
-    .format-pill.fmt-story { background: var(--fmt-story); }
-
     .format-badge {
       display: inline-block;
       padding: 3px 9px;
       border-radius: 999px;
       font-size: 11px;
       font-weight: 700;
+      background: var(--surface-alt);
+      color: var(--text);
     }
-
-    .format-badge.fmt-carrousel { background: var(--fmt-carrousel-bg); color: var(--fmt-carrousel); }
-    .format-badge.fmt-reel { background: var(--fmt-reel-bg); color: var(--fmt-reel); }
-    .format-badge.fmt-story { background: var(--fmt-story-bg); color: var(--fmt-story); }
 
     .post-body {
       padding: 15px;
@@ -412,11 +508,12 @@
       font-weight: 700;
     }
 
-    .st-idée { background: var(--surface-alt); color: #475467; }
-    .st-préparation { background: var(--warn-bg); color: var(--warn); }
-    .st-validé { background: var(--info-bg); color: var(--info); }
-    .st-programmé { background: var(--primary-soft); color: var(--primary); }
-    .st-publié { background: var(--success-bg); color: var(--success); }
+    .st-idee { background: var(--st-idee-bg); color: var(--st-idee); }
+    .st-prepa { background: var(--st-prepa-bg); color: var(--st-prepa); }
+    .st-valide { background: var(--st-valide-bg); color: var(--st-valide); }
+    .st-programme { background: var(--st-programme-bg); color: var(--st-programme); }
+    .st-publie { background: var(--st-publie-bg); color: var(--st-publie); }
+    .st-retard { background: var(--st-retard-bg); color: var(--st-retard); }
 
     .post-title {
       margin: 0;
@@ -528,9 +625,9 @@
       font-size: 11px;
       padding: 4px 7px;
       border-radius: 6px;
-      background: var(--primary-soft);
-      color: var(--primary);
-      border-left: 3px solid var(--primary);
+      background: var(--surface-alt);
+      color: var(--text);
+      border-left: 3px solid var(--border);
       font-weight: 600;
       cursor: pointer;
       white-space: nowrap;
@@ -542,22 +639,40 @@
       text-align: left;
     }
 
-    .cal-event.fmt-carrousel {
-      background: var(--fmt-carrousel-bg);
-      color: var(--fmt-carrousel);
-      border-left-color: var(--fmt-carrousel);
+    .cal-event.st-idee {
+      background: var(--st-idee-bg);
+      color: var(--st-idee);
+      border-left-color: var(--st-idee);
     }
 
-    .cal-event.fmt-reel {
-      background: var(--fmt-reel-bg);
-      color: var(--fmt-reel);
-      border-left-color: var(--fmt-reel);
+    .cal-event.st-prepa {
+      background: var(--st-prepa-bg);
+      color: var(--st-prepa);
+      border-left-color: #eab308;
     }
 
-    .cal-event.fmt-story {
-      background: var(--fmt-story-bg);
-      color: var(--fmt-story);
-      border-left-color: var(--fmt-story);
+    .cal-event.st-valide {
+      background: var(--st-valide-bg);
+      color: var(--st-valide);
+      border-left-color: var(--st-valide);
+    }
+
+    .cal-event.st-programme {
+      background: var(--st-programme-bg);
+      color: var(--st-programme);
+      border-left-color: var(--st-programme);
+    }
+
+    .cal-event.st-publie {
+      background: var(--st-publie-bg);
+      color: var(--st-publie);
+      border-left-color: #94a3b8;
+    }
+
+    .cal-event.st-retard {
+      background: var(--st-retard-bg);
+      color: var(--st-retard);
+      border-left-color: var(--st-retard);
     }
 
     .cal-event:hover {
@@ -759,8 +874,8 @@
       font-size: 12px;
       padding: 6px 10px;
       border-radius: 999px;
-      background: var(--fmt-story-bg);
-      border: 1px solid var(--fmt-story-border);
+      background: #fef3c7;
+      border: 1px solid #fcd34d;
       color: #92400e;
     }
 
@@ -1367,19 +1482,39 @@
 
           <select id="filterStatut">
             <option value="">Tous les statuts</option>
-            <option value="Idée">💡 Idée</option>
-            <option value="Préparation">📝 Préparation</option>
-            <option value="Validé">✅ Validé</option>
-            <option value="Programmé">📅 Programmé</option>
-            <option value="Publié">🚀 Publié</option>
+            <option value="Idée">Idée</option>
+            <option value="Préparation">Préparation</option>
+            <option value="Validé">Validé</option>
+            <option value="Programmé">Programmé</option>
+            <option value="Publié">Publié</option>
+            <option value="__RETARD__">⚠️ Date dépassée (non publié)</option>
           </select>
 
-          <select id="filterFormat">
-            <option value="">Tous les formats</option>
-            <option value="Carrousel">Carrousel</option>
-            <option value="Reel">Reel</option>
-            <option value="Story">Story</option>
-          </select>
+          <!-- Filtre multi-sélection de formats -->
+          <div class="multiselect-wrap" id="formatMultiselect">
+            <button type="button" class="multiselect-trigger" id="formatFilterBtn">
+              <span id="formatFilterLabel">Tous les formats</span>
+              <span>▾</span>
+            </button>
+            <div class="multiselect-menu" id="formatFilterMenu">
+              <label class="multiselect-option">
+                <input type="checkbox" class="fmt-checkbox" value="Carrousel" checked />
+                <span>🎠 Carrousel</span>
+              </label>
+              <label class="multiselect-option">
+                <input type="checkbox" class="fmt-checkbox" value="Reel" checked />
+                <span>🎥 Reel</span>
+              </label>
+              <label class="multiselect-option">
+                <input type="checkbox" class="fmt-checkbox" value="Story" checked />
+                <span>✏️ Story</span>
+              </label>
+              <div class="multiselect-actions">
+                <button type="button" id="btnFmtSelectAll">Tout cocher</button>
+                <button type="button" id="btnFmtNoStory">Sans Story</button>
+              </div>
+            </div>
+          </div>
 
           <select id="filterPilier">
             <option value="">Tous les piliers</option>
@@ -1392,10 +1527,13 @@
           <input type="text" id="filterSearch" placeholder="Rechercher un titre ou légende..." />
         </div>
 
-        <div class="format-legend">
-          <span class="legend-item"><span class="legend-dot dot-carrousel"></span> Carrousel</span>
-          <span class="legend-item"><span class="legend-dot dot-reel"></span> Reel</span>
-          <span class="legend-item"><span class="legend-dot dot-story"></span> Story</span>
+        <div class="status-legend">
+          <span class="legend-item"><span class="legend-dot dot-idee"></span> Idée</span>
+          <span class="legend-item"><span class="legend-dot dot-prepa"></span> Préparation</span>
+          <span class="legend-item"><span class="legend-dot dot-valide"></span> Validé</span>
+          <span class="legend-item"><span class="legend-dot dot-programme"></span> Programmé</span>
+          <span class="legend-item"><span class="legend-dot dot-publie"></span> Publié</span>
+          <span class="legend-item"><span class="legend-dot dot-retard"></span> En retard</span>
         </div>
       </div>
 
@@ -1452,9 +1590,9 @@
               <div class="field">
                 <label for="postFormat">Format</label>
                 <select id="postFormat">
-                  <option value="Carrousel">Carrousel</option>
-                  <option value="Reel">Reel</option>
-                  <option value="Story">Story</option>
+                  <option value="Carrousel">🎠 Carrousel</option>
+                  <option value="Reel">🎥 Reel</option>
+                  <option value="Story">✏️ Story</option>
                 </select>
               </div>
 
@@ -1471,11 +1609,11 @@
               <div class="field">
                 <label for="postStatut">Statut</label>
                 <select id="postStatut">
-                  <option value="Idée">💡 Idée</option>
-                  <option value="Préparation">📝 Préparation</option>
-                  <option value="Validé">✅ Validé</option>
-                  <option value="Programmé">📅 Programmé</option>
-                  <option value="Publié">🚀 Publié</option>
+                  <option value="Idée">Idée (Rose)</option>
+                  <option value="Préparation">Préparation (Jaune)</option>
+                  <option value="Validé">Validé (Bleu)</option>
+                  <option value="Programmé">Programmé — publication auto (Vert)</option>
+                  <option value="Publié">Publié (Gris)</option>
                 </select>
               </div>
             </div>
@@ -1707,6 +1845,7 @@
                 <th>Publication</th>
                 <th>Date</th>
                 <th>Format</th>
+                <th>Statut</th>
                 <th>Pilier</th>
                 <th>Portée</th>
                 <th>Likes</th>
@@ -1750,12 +1889,11 @@
     const VALID_PILIERS = ["Pédagogie", "Coulisses", "Offre / Produit", "Preuve sociale"];
     const VALID_STATUTS = ["Idée", "Préparation", "Validé", "Programmé", "Publié"];
 
-    const STATUS_EMOJI = {
-      "Idée": "💡",
-      "Préparation": "📝",
-      "Validé": "✅",
-      "Programmé": "📅",
-      "Publié": "🚀"
+    // Emojis en fonction du FORMAT
+    const FORMAT_EMOJI = {
+      "Story": "✏️",
+      "Carrousel": "🎠",
+      "Reel": "🎥"
     };
 
     const STICKER_META = {
@@ -1769,15 +1907,36 @@
       compte_a_rebours: { label: "⏳ Compte à rebours", placeholder: "Nom de l'événement", placeholder2: "Date / heure (ex. 15/12 à 18h)" }
     };
 
-    function getStatusEmoji(statut) {
-      return STATUS_EMOJI[statut] || "💡";
+    function getFormatEmoji(format) {
+      return FORMAT_EMOJI[format] || "🎠";
     }
 
-    function getFormatClass(format) {
-      const f = String(format || "").toLowerCase();
-      if (f === "reel") return "fmt-reel";
-      if (f === "story") return "fmt-story";
-      return "fmt-carrousel";
+    function isPostOverdue(post) {
+      if (!post || post.statut === "Publié" || !post.date) return false;
+      const timeStr = post.time && /^\d{2}:\d{2}/.test(post.time) ? post.time.slice(0, 5) : "23:59";
+      const scheduled = new Date(`${post.date}T${timeStr}:00`);
+      if (Number.isNaN(scheduled.getTime())) return false;
+      return scheduled.getTime() < Date.now();
+    }
+
+    // Couleurs en fonction du STATUT (et rouge si date dépassée et non publié)
+    function getStatusColorClass(post) {
+      if (isPostOverdue(post)) return "st-retard";
+      switch (post?.statut) {
+        case "Idée": return "st-idee";
+        case "Préparation": return "st-prepa";
+        case "Validé": return "st-valide";
+        case "Programmé": return "st-programme";
+        case "Publié": return "st-publie";
+        default: return "st-idee";
+      }
+    }
+
+    function getStatusDisplayLabel(post) {
+      if (isPostOverdue(post)) {
+        return `En retard (${post.statut})`;
+      }
+      return post?.statut || "Idée";
     }
 
     function createEmptySlide(mediaId = "", text = "", stickers = []) {
@@ -2004,6 +2163,65 @@
       if (currentSlideIndex >= currentEditorSlides.length) currentSlideIndex = currentEditorSlides.length - 1;
       return currentEditorSlides[currentSlideIndex];
     }
+
+    /* ============================================================
+       FILTRE MULTI-SÉLECTION DE FORMATS
+       ============================================================ */
+    function getSelectedFormats() {
+      return Array.from(document.querySelectorAll(".fmt-checkbox:checked")).map((cb) => cb.value);
+    }
+
+    function updateFormatFilterLabel() {
+      const selected = getSelectedFormats();
+      const labelEl = document.getElementById("formatFilterLabel");
+      if (selected.length === VALID_FORMATS.length) {
+        labelEl.textContent = "Tous les formats";
+      } else if (selected.length === 0) {
+        labelEl.textContent = "Aucun format";
+      } else {
+        labelEl.textContent = selected.map((f) => `${getFormatEmoji(f)} ${f}`).join(" + ");
+      }
+    }
+
+    const formatFilterBtn = document.getElementById("formatFilterBtn");
+    const formatFilterMenu = document.getElementById("formatFilterMenu");
+
+    formatFilterBtn.addEventListener("click", (e) => {
+      e.stopPropagation();
+      formatFilterMenu.classList.toggle("open");
+    });
+
+    formatFilterMenu.addEventListener("click", (e) => {
+      e.stopPropagation();
+    });
+
+    document.addEventListener("click", () => {
+      formatFilterMenu.classList.remove("open");
+    });
+
+    document.querySelectorAll(".fmt-checkbox").forEach((cb) => {
+      cb.addEventListener("change", () => {
+        updateFormatFilterLabel();
+        renderPostsGrid();
+        if (calendarViewMode === "month") renderCalendarMonthView();
+      });
+    });
+
+    document.getElementById("btnFmtSelectAll").addEventListener("click", () => {
+      document.querySelectorAll(".fmt-checkbox").forEach((cb) => { cb.checked = true; });
+      updateFormatFilterLabel();
+      renderPostsGrid();
+      if (calendarViewMode === "month") renderCalendarMonthView();
+    });
+
+    document.getElementById("btnFmtNoStory").addEventListener("click", () => {
+      document.querySelectorAll(".fmt-checkbox").forEach((cb) => {
+        cb.checked = cb.value !== "Story";
+      });
+      updateFormatFilterLabel();
+      renderPostsGrid();
+      if (calendarViewMode === "month") renderCalendarMonthView();
+    });
 
     /* ============================================================
        EXPORT MODÈLE EXCEL (.xlsx) & IMPORT EXCEL (.xlsx/.xls/.csv)
@@ -2261,13 +2479,17 @@
     /* Filtres publications */
     function getFilteredPosts() {
       const statut = document.getElementById("filterStatut").value;
-      const format = document.getElementById("filterFormat").value;
+      const selectedFormats = getSelectedFormats();
       const pilier = document.getElementById("filterPilier").value;
       const q = document.getElementById("filterSearch").value.trim().toLowerCase();
 
       return state.posts
-        .filter((p) => !statut || p.statut === statut)
-        .filter((p) => !format || p.format === format)
+        .filter((p) => {
+          if (!statut) return true;
+          if (statut === "__RETARD__") return isPostOverdue(p);
+          return p.statut === statut;
+        })
+        .filter((p) => selectedFormats.includes(p.format))
         .filter((p) => !pilier || p.pilier === pilier)
         .filter((p) => {
           if (!q) return true;
@@ -2296,25 +2518,25 @@
           const slides = normalizeSlides(post);
           const firstMediaId = slides.find((s) => s.mediaId)?.mediaId || post.mediaId;
           const media = getMediaById(firstMediaId);
-          const statusClass = "st-" + post.statut.toLowerCase().replace(/\s+/g, "-");
-          const fmtClass = getFormatClass(post.format);
-          const emoji = getStatusEmoji(post.statut);
+          const statusClass = getStatusColorClass(post);
+          const statusLabel = getStatusDisplayLabel(post);
+          const fmtEmoji = getFormatEmoji(post.format);
           const previewText = post.format === "Story"
             ? (slides.find((s) => s.text)?.text || post.storyText || "")
             : (post.caption || "");
           const totalStickers = slides.reduce((acc, s) => acc + (s.stickers?.length || 0), 0);
           return `
-            <article class="post-card card-${fmtClass}">
+            <article class="post-card card-${statusClass}">
               <div class="post-thumb">
-                <span class="format-pill ${fmtClass}">${post.format}</span>
+                <span class="format-pill">${fmtEmoji} ${post.format}</span>
                 ${media ? `<img src="${media.src}" alt="${escapeHtml(post.title)}" />` : `<span>Sans visuel</span>`}
               </div>
               <div class="post-body">
                 <div class="post-meta-top">
                   <span>${post.date || "Date à définir"} • ${post.time || "--:--"}</span>
-                  <span class="status-badge ${statusClass}">${emoji} ${post.statut}</span>
+                  <span class="status-badge ${statusClass}">${escapeHtml(statusLabel)}</span>
                 </div>
-                <h3 class="post-title">${emoji} ${escapeHtml(post.title || "Sans titre")}</h3>
+                <h3 class="post-title">${fmtEmoji} ${escapeHtml(post.title || "Sans titre")}</h3>
                 <div class="post-caption-preview">${escapeHtml(previewText)}</div>
                 <div class="tag-row">
                   <span class="mini-tag">${post.pilier}</span>
@@ -2386,11 +2608,12 @@
               </div>
               ${dayPosts
                 .map((p) => {
-                  const fmtClass = getFormatClass(p.format);
-                  const emoji = getStatusEmoji(p.statut);
-                  const tooltip = `${emoji} [${p.format} • ${p.statut}] ${p.time ? p.time + " — " : ""}${p.title || ""}`;
-                  const labelText = `${emoji} ${p.time ? p.time + " " : ""}${p.title || p.format}`;
-                  return `<button type="button" class="cal-event ${fmtClass}" title="${escapeHtml(tooltip)}" onclick="editPost('${p.id}')">${escapeHtml(labelText)}</button>`;
+                  const statusClass = getStatusColorClass(p);
+                  const statusLabel = getStatusDisplayLabel(p);
+                  const fmtEmoji = getFormatEmoji(p.format);
+                  const tooltip = `${fmtEmoji} [${p.format} • ${statusLabel}] ${p.time ? p.time + " — " : ""}${p.title || ""}`;
+                  const labelText = `${fmtEmoji} ${p.time ? p.time + " " : ""}${p.title || p.format}`;
+                  return `<button type="button" class="cal-event ${statusClass}" title="${escapeHtml(tooltip)}" onclick="editPost('${p.id}')">${escapeHtml(labelText)}</button>`;
                 })
                 .join("")}
             </div>
@@ -2661,7 +2884,15 @@
       syncEditorToCurrentSlide();
     }
 
-    document.getElementById("postFormat").addEventListener("change", updateEditorForFormat);
+    document.getElementById("postFormat").addEventListener("change", () => {
+      const titleVal = document.getElementById("postTitle").value.trim();
+      const fmt = document.getElementById("postFormat").value;
+      if (editingPostId) {
+        document.getElementById("editorHeading").textContent =
+          `Préparer la publication : ${getFormatEmoji(fmt)} ${titleVal || "Sans titre"}`;
+      }
+      updateEditorForFormat();
+    });
 
     /* ============================================================
        IMPORT VISUEL(S) (multi-fichiers + compression pour Firebase)
@@ -2864,14 +3095,15 @@
       currentEditorSlides = post ? structuredClone(normalizeSlides(post)) : [createEmptySlide()];
       currentSlideIndex = 0;
 
+      const fmt = normalizeFormat(post?.format);
       document.getElementById("editorHeading").textContent = post
-        ? `Préparer la publication : ${getStatusEmoji(post.statut)} ${post.title || "Sans titre"}`
+        ? `Préparer la publication : ${getFormatEmoji(fmt)} ${post.title || "Sans titre"}`
         : "Créer une nouvelle publication";
 
       document.getElementById("postTitle").value = post?.title || "";
       document.getElementById("postDate").value = post?.date || new Date().toISOString().slice(0, 10);
       document.getElementById("postTime").value = post?.time || "18:00";
-      document.getElementById("postFormat").value = normalizeFormat(post?.format);
+      document.getElementById("postFormat").value = fmt;
       document.getElementById("postPilier").value = post?.pilier || "Pédagogie";
       document.getElementById("postStatut").value = post?.statut || "Idée";
       document.getElementById("postCanvaUrl").value = post?.canvaUrl || "";
@@ -2988,9 +3220,10 @@
             ? (currentEditorSlides.find((s) => s.mediaId)?.mediaId || "")
             : (normalizeSlides(p).find((s) => s.mediaId)?.mediaId || p.mediaId);
           const m = getMediaById(mediaIdToShow);
+          const fmtEmoji = getFormatEmoji(p.format);
           return `
-            <div class="feed-cell ${isCurrent ? "draft-ring" : ""}" title="${getStatusEmoji(p.statut)} ${escapeHtml(p.title)}">
-              ${m ? `<img src="${m.src}" alt="${escapeHtml(p.title)}" />` : `<span>${getStatusEmoji(p.statut)} ${escapeHtml(p.title || p.format)}</span>`}
+            <div class="feed-cell ${isCurrent ? "draft-ring" : ""}" title="${fmtEmoji} ${escapeHtml(p.title)}">
+              ${m ? `<img src="${m.src}" alt="${escapeHtml(p.title)}" />` : `<span>${fmtEmoji} ${escapeHtml(p.title || p.format)}</span>`}
             </div>
           `;
         })
@@ -3099,20 +3332,22 @@
 
       const tbody = document.getElementById("statsTableBody");
       if (!state.posts.length) {
-        tbody.innerHTML = `<tr><td colspan="12">Aucune publication à afficher.</td></tr>`;
+        tbody.innerHTML = `<tr><td colspan="13">Aucune publication à afficher.</td></tr>`;
         return;
       }
 
       tbody.innerHTML = state.posts
         .map((p) => {
           const st = normalizeStats(p.stats);
-          const fmtClass = getFormatClass(p.format);
-          const emoji = getStatusEmoji(p.statut);
+          const statusClass = getStatusColorClass(p);
+          const statusLabel = getStatusDisplayLabel(p);
+          const fmtEmoji = getFormatEmoji(p.format);
           return `
             <tr>
-              <td><strong>${emoji} ${escapeHtml(p.title || "Sans titre")}</strong></td>
+              <td><strong>${fmtEmoji} ${escapeHtml(p.title || "Sans titre")}</strong></td>
               <td>${escapeHtml(p.date || "—")}</td>
-              <td><span class="format-badge ${fmtClass}">${escapeHtml(p.format)}</span></td>
+              <td><span class="format-badge">${fmtEmoji} ${escapeHtml(p.format)}</span></td>
+              <td><span class="status-badge ${statusClass}">${escapeHtml(statusLabel)}</span></td>
               <td>${escapeHtml(p.pilier)}</td>
               <td><input type="number" min="0" id="st-reach-${p.id}" value="${st.reach}" /></td>
               <td><input type="number" min="0" id="st-likes-${p.id}" value="${st.likes}" /></td>
@@ -3184,7 +3419,7 @@
       updateLivePreview();
     });
 
-    ["filterStatut", "filterFormat", "filterPilier", "filterSearch"].forEach((id) => {
+    ["filterStatut", "filterPilier", "filterSearch"].forEach((id) => {
       document.getElementById(id).addEventListener("input", () => {
         renderPostsGrid();
         if (calendarViewMode === "month") renderCalendarMonthView();
@@ -3204,6 +3439,7 @@
     }
 
     function renderAll() {
+      updateFormatFilterLabel();
       renderPostsGrid();
       applyCalendarViewMode();
       updateEditorForFormat();
