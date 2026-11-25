@@ -7,6 +7,8 @@
   <!-- Firebase -->
   <script src="https://www.gstatic.com/firebasejs/10.14.0/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/10.14.0/firebase-firestore-compat.js"></script>
+  <!-- SheetJS (Export / Import Excel .xlsx) -->
+  <script src="https://cdn.sheetjs.com/xlsx-0.20.3/package/dist/xlsx.full.min.js"></script>
   <style>
     :root {
       --bg: #f6f7fb;
@@ -104,6 +106,7 @@
       display: flex;
       gap: 8px;
       flex-wrap: wrap;
+      align-items: center;
     }
 
     main {
@@ -236,6 +239,16 @@
 
     button.primary:hover {
       background: var(--primary-hover);
+    }
+
+    button.excel-btn {
+      color: var(--success);
+      border-color: #b7ebd1;
+      background: var(--success-bg);
+    }
+
+    button.excel-btn:hover {
+      background: #d5f2e3;
     }
 
     button.danger {
@@ -673,6 +686,9 @@
       </nav>
 
       <div class="header-actions">
+        <button class="excel-btn" id="btnDownloadExcelTemplate" title="Télécharger un modèle Excel prêt à faire remplir par Gemini">📥 Modèle Excel</button>
+        <button class="excel-btn" id="btnImportExcel" title="Importer un fichier Excel rempli dans le calendrier">📤 Importer Excel</button>
+        <input type="file" id="importExcelInput" accept=".xlsx,.xls,.csv" hidden />
         <button class="primary" id="btnNewPost">+ Nouveau post</button>
       </div>
     </div>
@@ -911,6 +927,10 @@
 
     const STORAGE_KEY = "ig_studio_data_v2";
 
+    const VALID_FORMATS = ["Post", "Carrousel", "Reel", "Story"];
+    const VALID_PILIERS = ["Pédagogie", "Coulisses", "Offre / Produit", "Preuve sociale"];
+    const VALID_STATUTS = ["Idée", "Préparation", "Validé", "Programmé", "Publié"];
+
     const defaultData = {
       posts: [
         {
@@ -1046,12 +1066,247 @@
       const el = document.getElementById("toast");
       el.textContent = msg;
       el.classList.add("show");
-      setTimeout(() => el.classList.remove("show"), 2400);
+      setTimeout(() => el.classList.remove("show"), 3000);
     }
 
     function getMediaById(id) {
       return state.media.find((m) => m.id === id) || null;
     }
+
+    /* ============================================================
+       EXPORT MODÈLE EXCEL (.xlsx) & IMPORT EXCEL (.xlsx/.xls/.csv)
+       ============================================================ */
+    function downloadExcelTemplate() {
+      if (typeof XLSX === "undefined") {
+        showToast("Bibliothèque Excel indisponible (vérifiez votre connexion internet)");
+        return;
+      }
+
+      const headers = [
+        "Titre",
+        "Date (AAAA-MM-JJ)",
+        "Heure (HH:MM)",
+        "Format",
+        "Pilier",
+        "Statut",
+        "Objectif / CTA",
+        "Légende Instagram"
+      ];
+
+      const exampleRow = [
+        "Exemple : Les coulisses de mon nouvel album",
+        "2026-12-01",
+        "18:00",
+        "Carrousel",
+        "Coulisses",
+        "Préparation",
+        "Enregistre ce post pour suivre la sortie",
+        "Voici comment naît une illustration étape par étape ✨\n\nDu premier croquis au crayon jusqu'à la mise en couleur finale.\n\n👉 Enregistre ce post pour ne pas manquer la sortie !\n\n#illustration #jeunesse #coulisses"
+      ];
+
+      const wsPosts = XLSX.utils.aoa_to_sheet([headers, exampleRow]);
+      wsPosts["!cols"] = [
+        { wch: 36 }, // Titre
+        { wch: 18 }, // Date
+        { wch: 14 }, // Heure
+        { wch: 15 }, // Format
+        { wch: 18 }, // Pilier
+        { wch: 15 }, // Statut
+        { wch: 36 }, // CTA
+        { wch: 65 }  // Légende
+      ];
+
+      const instructions = [
+        ["Colonne", "Obligatoire", "Format / Valeurs acceptées"],
+        ["Titre", "Oui", "Texte libre (titre interne du post)"],
+        ["Date (AAAA-MM-JJ)", "Oui", "Format AAAA-MM-JJ (ex : 2026-12-05) ou date Excel standard"],
+        ["Heure (HH:MM)", "Non", "Format HH:MM (ex : 18:00). Par défaut : 18:00"],
+        ["Format", "Oui", "Post | Carrousel | Reel | Story"],
+        ["Pilier", "Oui", "Pédagogie | Coulisses | Offre / Produit | Preuve sociale"],
+        ["Statut", "Oui", "Idée | Préparation | Validé | Programmé | Publié"],
+        ["Objectif / CTA", "Non", "Appel à l'action ou objectif principal du post"],
+        ["Légende Instagram", "Oui", "Texte complet de la légende avec accroche, sauts de ligne et hashtags"],
+        ["", "", ""],
+        ["Consigne pour Gemini :", "", "Remplis l'onglet 'Calendrier_Posts' en remplaçant la ligne d'exemple par les posts du calendrier éditorial, tout en conservant exactement les titres de colonnes en ligne 1."]
+      ];
+
+      const wsGuide = XLSX.utils.aoa_to_sheet(instructions);
+      wsGuide["!cols"] = [{ wch: 24 }, { wch: 14 }, { wch: 70 }];
+
+      const wb = XLSX.utils.book_new();
+      XLSX.utils.book_append_sheet(wb, wsPosts, "Calendrier_Posts");
+      XLSX.utils.book_append_sheet(wb, wsGuide, "Instructions_Gemini");
+
+      XLSX.writeFile(wb, "modele-calendrier-instagram.xlsx");
+      showToast("Modèle Excel téléchargé !");
+    }
+
+    function normalizeKey(str) {
+      return String(str || "")
+        .toLowerCase()
+        .normalize("NFD")
+        .replace(/[\u0300-\u036f]/g, "")
+        .trim();
+    }
+
+    function matchAllowedValue(rawVal, allowedList, fallback) {
+      const cleaned = normalizeKey(rawVal);
+      if (!cleaned) return fallback;
+      const exact = allowedList.find((item) => normalizeKey(item) === cleaned);
+      if (exact) return exact;
+      const partial = allowedList.find(
+        (item) => normalizeKey(item).includes(cleaned) || cleaned.includes(normalizeKey(item))
+      );
+      return partial || fallback;
+    }
+
+    function parseExcelDate(val) {
+      if (val === null || val === undefined || val === "") return "";
+      if (typeof val === "number" && typeof XLSX !== "undefined" && XLSX.SSF) {
+        const parsed = XLSX.SSF.parse_date_code(val);
+        if (parsed && parsed.y && parsed.m && parsed.d) {
+          return `${parsed.y}-${String(parsed.m).padStart(2, "0")}-${String(parsed.d).padStart(2, "0")}`;
+        }
+      }
+      const str = String(val).trim();
+      // Format YYYY-MM-DD ou YYYY/MM/DD
+      let m = str.match(/^(\d{4})[-/](\d{1,2})[-/](\d{1,2})/);
+      if (m) {
+        return `${m[1]}-${String(m[2]).padStart(2, "0")}-${String(m[3]).padStart(2, "0")}`;
+      }
+      // Format DD/MM/YYYY ou DD-MM-YYYY
+      m = str.match(/^(\d{1,2})[-/](\d{1,2})[-/](\d{4})/);
+      if (m) {
+        return `${m[3]}-${String(m[2]).padStart(2, "0")}-${String(m[1]).padStart(2, "0")}`;
+      }
+      return "";
+    }
+
+    function parseExcelTime(val) {
+      if (val === null || val === undefined || val === "") return "18:00";
+      if (typeof val === "number") {
+        const totalMinutes = Math.round((val % 1) * 24 * 60);
+        const h = Math.floor(totalMinutes / 60) % 24;
+        const min = totalMinutes % 60;
+        return `${String(h).padStart(2, "0")}:${String(min).padStart(2, "0")}`;
+      }
+      const str = String(val).trim();
+      const m = str.match(/(\d{1,2})\s*[:hH]\s*(\d{1,2})?/);
+      if (m) {
+        const h = Math.min(23, Math.max(0, Number(m[1])));
+        const min = Math.min(59, Math.max(0, Number(m[2] || 0)));
+        return `${String(h).padStart(2, "0")}:${String(min).padStart(2, "0")}`;
+      }
+      return "18:00";
+    }
+
+    function getFieldFromRow(row, possiblePrefixes) {
+      for (const [key, value] of Object.entries(row)) {
+        const nk = normalizeKey(key);
+        if (possiblePrefixes.some((p) => nk.includes(p))) {
+          return value;
+        }
+      }
+      return "";
+    }
+
+    function handleExcelImport(event) {
+      const file = event.target.files?.[0];
+      if (!file) return;
+
+      if (typeof XLSX === "undefined") {
+        showToast("Bibliothèque Excel indisponible (vérifiez votre connexion internet)");
+        event.target.value = "";
+        return;
+      }
+
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        try {
+          const data = new Uint8Array(e.target.result);
+          const workbook = XLSX.read(data, { type: "array" });
+
+          const sheetName = workbook.SheetNames.includes("Calendrier_Posts")
+            ? "Calendrier_Posts"
+            : workbook.SheetNames[0];
+          const sheet = workbook.Sheets[sheetName];
+          const rows = XLSX.utils.sheet_to_json(sheet, { defval: "" });
+
+          if (!rows.length) {
+            showToast("Le fichier Excel ne contient aucune ligne à importer.");
+            return;
+          }
+
+          let importedCount = 0;
+          let firstImportedDate = "";
+          const baseTs = Date.now();
+
+          rows.forEach((row, idx) => {
+            const rawTitle = String(getFieldFromRow(row, ["titre", "title", "sujet"]) || "").trim();
+            const rawCaption = String(getFieldFromRow(row, ["legende", "caption", "texte", "description"]) || "").trim();
+            const rawDate = getFieldFromRow(row, ["date"]);
+            const rawTime = getFieldFromRow(row, ["heure", "time", "horaire"]);
+            const rawFormat = getFieldFromRow(row, ["format", "type"]);
+            const rawPilier = getFieldFromRow(row, ["pilier", "theme", "categorie"]);
+            const rawStatut = getFieldFromRow(row, ["statut", "status", "etat"]);
+            const rawCta = String(getFieldFromRow(row, ["cta", "objectif", "appel"]) || "").trim();
+
+            // Ignorer les lignes entièrement vides
+            if (!rawTitle && !rawCaption && !rawDate) return;
+
+            const parsedDate = parseExcelDate(rawDate) || new Date().toISOString().slice(0, 10);
+            if (!firstImportedDate && parsedDate) firstImportedDate = parsedDate;
+
+            const newPost = {
+              id: `p_${baseTs}_${idx}`,
+              title: rawTitle || "Publication sans titre",
+              date: parsedDate,
+              time: parseExcelTime(rawTime),
+              format: matchAllowedValue(rawFormat, VALID_FORMATS, "Post"),
+              pilier: matchAllowedValue(rawPilier, VALID_PILIERS, "Pédagogie"),
+              statut: matchAllowedValue(rawStatut, VALID_STATUTS, "Préparation"),
+              mediaId: "",
+              cta: rawCta,
+              caption: rawCaption,
+              stats: normalizeStats({})
+            };
+
+            state.posts.push(newPost);
+            importedCount++;
+          });
+
+          if (importedCount === 0) {
+            showToast("Aucun post valide trouvé dans le fichier Excel.");
+            return;
+          }
+
+          // Positionner le calendrier sur le mois du premier post importé
+          if (firstImportedDate) {
+            const [y, m] = firstImportedDate.split("-").map(Number);
+            if (y && m) {
+              currentCalendarDate = new Date(y, m - 1, 1);
+            }
+          }
+
+          saveState();
+          switchToTab("calendrier");
+          showToast(`${importedCount} post(s) importé(s) et enregistré(s) !`);
+        } catch (err) {
+          console.error("Erreur import Excel :", err);
+          showToast("Impossible de lire ce fichier Excel.");
+        } finally {
+          event.target.value = "";
+        }
+      };
+
+      reader.readAsArrayBuffer(file);
+    }
+
+    document.getElementById("btnDownloadExcelTemplate").addEventListener("click", downloadExcelTemplate);
+    document.getElementById("btnImportExcel").addEventListener("click", () => {
+      document.getElementById("importExcelInput").click();
+    });
+    document.getElementById("importExcelInput").addEventListener("change", handleExcelImport);
 
     /* Navigation Onglets */
     function switchToTab(tabName) {
