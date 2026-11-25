@@ -230,7 +230,7 @@
       color: var(--primary);
     }
 
-    select, input[type="text"], input[type="number"], input[type="date"], input[type="time"], textarea {
+    select, input[type="text"], input[type="url"], input[type="number"], input[type="date"], input[type="time"], textarea {
       font-family: inherit;
       font-size: 13px;
       border: 1px solid var(--border);
@@ -286,6 +286,26 @@
 
     button.excel-btn:hover {
       background: #d5f2e3;
+    }
+
+    button.canva-btn {
+      color: #007799;
+      border-color: #b3e5f5;
+      background: #e6f7fc;
+    }
+
+    button.canva-btn:hover {
+      background: #d2f0fa;
+    }
+
+    button.meta-btn {
+      color: #1877f2;
+      border-color: #bfd9fc;
+      background: #eaf3ff;
+    }
+
+    button.meta-btn:hover {
+      background: #d8e9ff;
     }
 
     button.danger {
@@ -581,6 +601,19 @@
       font-size: 16px;
     }
 
+    .panel-header-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      flex-wrap: wrap;
+      margin-bottom: 14px;
+    }
+
+    .panel-header-row h3 {
+      margin: 0;
+    }
+
     .form-grid {
       display: grid;
       grid-template-columns: repeat(auto-fit, minmax(175px, 1fr));
@@ -600,6 +633,33 @@
       width: 100%;
     }
 
+    .upload-box {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+
+    .upload-filename {
+      font-size: 12px;
+      color: var(--muted);
+      max-width: 190px;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .link-input-group {
+      display: flex;
+      gap: 6px;
+      align-items: center;
+    }
+
+    .link-input-group input {
+      flex: 1;
+      min-width: 0;
+    }
+
     .helper-bar {
       display: flex;
       flex-wrap: wrap;
@@ -616,12 +676,40 @@
       flex-wrap: wrap;
       gap: 6px;
       margin-top: 10px;
+      margin-bottom: 14px;
+    }
+
+    /* Bloc Performance du post */
+    .perf-kpi-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+      gap: 10px;
+      margin-bottom: 14px;
+    }
+
+    .perf-summary {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 14px;
+      align-items: center;
+      justify-content: space-between;
+      background: var(--surface-alt);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 10px 14px;
+      font-size: 13px;
+    }
+
+    .perf-summary-metrics {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 16px;
     }
 
     /* Aperçu Instagram & Grille */
     .ig-card {
       max-width: 380px;
-      margin: 0 auto 22px;
+      margin: 0 auto;
       border: 1px solid var(--border);
       border-radius: 14px;
       overflow: hidden;
@@ -845,6 +933,7 @@
         <button type="button" class="sm" onclick="switchToTab('calendrier')">← Retour au calendrier</button>
       </div>
       <div class="studio-layout">
+        <!-- COLONNE GAUCHE : ÉDITEUR + BLOC PERFORMANCE -->
         <div>
           <div class="panel">
             <h2 id="editorHeading">Préparer une publication</h2>
@@ -898,15 +987,32 @@
               </div>
             </div>
 
+            <!-- Visuel (Bouton import) + Liens Canva & Meta -->
+            <div class="field" style="margin-bottom: 12px;">
+              <label>Visuel de la publication</label>
+              <div class="upload-box">
+                <button type="button" id="btnUploadVisual">🖼️ Importer un visuel</button>
+                <input type="file" id="postMediaFileInput" accept="image/*" hidden />
+                <span class="upload-filename" id="currentVisualName">Aucun visuel importé</span>
+                <button type="button" class="sm danger" id="btnRemoveVisual" style="display: none;">Retirer</button>
+              </div>
+            </div>
+
             <div class="form-grid">
               <div class="field">
-                <label for="postMediaSelect">Visuel</label>
-                <select id="postMediaSelect"></select>
+                <label for="postCanvaUrl">Lien Canva (création du visuel)</label>
+                <div class="link-input-group">
+                  <input type="url" id="postCanvaUrl" placeholder="https://www.canva.com/design/..." />
+                  <button type="button" class="sm canva-btn" id="btnOpenCanva" title="Ouvrir le lien Canva">Canva ↗</button>
+                </div>
               </div>
 
               <div class="field">
-                <label for="postCta">Objectif / CTA principal</label>
-                <input type="text" id="postCta" placeholder="Ex. Enregistre ce post pour plus tard" />
+                <label for="postMetaUrl">Lien Meta Business Suite (programmation)</label>
+                <div class="link-input-group">
+                  <input type="url" id="postMetaUrl" placeholder="https://business.facebook.com/..." />
+                  <button type="button" class="sm meta-btn" id="btnOpenMeta" title="Ouvrir Meta Business Suite">Meta ↗</button>
+                </div>
               </div>
             </div>
 
@@ -915,7 +1021,6 @@
               <textarea id="postCaption" placeholder="Écrivez votre accroche, le corps de texte, votre appel à l'action et vos hashtags..."></textarea>
               <div class="helper-bar">
                 <span id="charCounter">0 / 2 200 caractères</span>
-                <span id="foldWarning">Accroche visible avant « … plus » : ~125 premiers caractères</span>
               </div>
             </div>
 
@@ -925,31 +1030,100 @@
               <button type="button" class="sm" data-insert="\n\n#instagram #creationdecontenu #strategie #communitymanagement #marketingdigital">+ Pack hashtags</button>
             </div>
 
+            <!-- Champs séparés : Objectif et CTA -->
+            <div class="form-grid">
+              <div class="field">
+                <label for="postObjectif">Objectif du post</label>
+                <input type="text" id="postObjectif" placeholder="Ex. Créer de la proximité, gagner des abonnés..." />
+              </div>
+
+              <div class="field">
+                <label for="postCta">CTA (Appel à l'action)</label>
+                <input type="text" id="postCta" placeholder="Ex. Enregistre ce post pour plus tard" />
+              </div>
+            </div>
+
             <div style="margin-top: 18px; display: flex; gap: 10px; flex-wrap: wrap;">
               <button class="primary" id="btnSavePost">Enregistrer la publication</button>
               <button id="btnCopyCaption">Copier la légende</button>
               <button class="danger" id="btnDeleteCurrentPost" style="display: none;">Supprimer</button>
             </div>
           </div>
-        </div>
 
-        <div>
+          <!-- TROISIÈME BLOC : PERFORMANCE DU POST (KPIs) -->
           <div class="panel">
-            <h3>Aperçu du post</h3>
-            <div class="ig-card">
-              <div class="ig-header">
-                <div class="ig-avatar"></div>
-                <span>@votre_compte</span>
+            <h2>📊 Performance du post (KPIs)</h2>
+            <p style="font-size: 12px; color: var(--muted); margin-top: -6px; margin-bottom: 14px;">
+              Reportez les statistiques Instagram de cette publication (elles se synchronisent automatiquement avec l'onglet Statistiques).
+            </p>
+
+            <div class="perf-kpi-grid">
+              <div class="field">
+                <label for="perfReach">Portée</label>
+                <input type="number" min="0" id="perfReach" value="0" />
               </div>
-              <div class="ig-media" id="previewMediaBox">Aucun visuel sélectionné</div>
-              <div class="ig-caption" id="previewCaptionBox">Votre légende apparaîtra ici en temps réel.</div>
+              <div class="field">
+                <label for="perfLikes">Likes</label>
+                <input type="number" min="0" id="perfLikes" value="0" />
+              </div>
+              <div class="field">
+                <label for="perfComments">Commentaires</label>
+                <input type="number" min="0" id="perfComments" value="0" />
+              </div>
+              <div class="field">
+                <label for="perfSaves">Enregistrements</label>
+                <input type="number" min="0" id="perfSaves" value="0" />
+              </div>
+              <div class="field">
+                <label for="perfShares">Partages</label>
+                <input type="number" min="0" id="perfShares" value="0" />
+              </div>
+              <div class="field">
+                <label for="perfClicks">Clics</label>
+                <input type="number" min="0" id="perfClicks" value="0" />
+              </div>
             </div>
 
-            <h3>Simulateur de grille (Feed)</h3>
-            <p style="font-size: 12px; color: var(--muted); margin-top: -6px;">
-              Aperçu des publications triées chronologiquement (le post en cours d'édition est encadré en violet).
-            </p>
-            <div class="feed-grid" id="feedPreviewGrid"></div>
+            <div class="perf-summary">
+              <div class="perf-summary-metrics">
+                <span>Interactions totales : <strong id="perfTotalInteractions">0</strong></span>
+                <span>Engagement / Portée : <strong id="perfEngRate">0.0%</strong></span>
+              </div>
+              <button type="button" class="sm primary" id="btnSavePerf">Enregistrer les KPIs</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- COLONNE DROITE : APERÇU MODE FIL / MODE FEED -->
+        <div>
+          <div class="panel">
+            <div class="panel-header-row">
+              <h3 id="previewPanelTitle">Aperçu du post</h3>
+              <div class="view-switch">
+                <button type="button" id="previewModeFil" class="active">Mode Fil</button>
+                <button type="button" id="previewModeFeed">Mode Feed</button>
+              </div>
+            </div>
+
+            <!-- Mode Fil (post individuel) -->
+            <div id="previewFilContainer">
+              <div class="ig-card">
+                <div class="ig-header">
+                  <div class="ig-avatar"></div>
+                  <span>@votre_compte</span>
+                </div>
+                <div class="ig-media" id="previewMediaBox">Aucun visuel sélectionné</div>
+                <div class="ig-caption" id="previewCaptionBox">Votre légende apparaîtra ici en temps réel.</div>
+              </div>
+            </div>
+
+            <!-- Mode Feed (grille 3 colonnes) -->
+            <div id="previewFeedContainer" style="display: none;">
+              <p style="font-size: 12px; color: var(--muted); margin-top: 0;">
+                Aperçu des publications triées chronologiquement (le post en cours d'édition est encadré en violet).
+              </p>
+              <div class="feed-grid" id="feedPreviewGrid"></div>
+            </div>
           </div>
         </div>
       </div>
@@ -1045,7 +1219,10 @@
           pilier: "Pédagogie",
           statut: "Validé",
           mediaId: "m1",
+          objectif: "Apporter de la valeur et générer des enregistrements",
           cta: "Enregistre le carrousel pour ta prochaine planification",
+          canvaUrl: "",
+          metaUrl: "",
           caption: "Tu publies au feeling et tu manques de régularité ?\n\nVoici les 4 étapes simples pour bâtir ton calendrier éditorial en 45 minutes.\n\n👉 Enregistre ce post pour le relire et partage-le en Story !\n\n#instagram #creationdecontenu #strategie #communitymanagement",
           stats: { reach: 2450, likes: 185, comments: 24, saves: 92, shares: 31, clicks: 48 }
         },
@@ -1058,7 +1235,10 @@
           pilier: "Coulisses",
           statut: "Préparation",
           mediaId: "m2",
+          objectif: "Créer de la proximité avant le lancement",
           cta: "Active le rappel en commentaire",
+          canvaUrl: "",
+          metaUrl: "",
           caption: "Ce qui se passe vraiment en coulisses avant la sortie d'un nouveau format.\n\n💬 Et toi, quel est ton avis en commentaire ?",
           stats: { reach: 3820, likes: 260, comments: 19, saves: 34, shares: 44, clicks: 27 }
         },
@@ -1071,7 +1251,10 @@
           pilier: "Preuve sociale",
           statut: "Publié",
           mediaId: "m3",
+          objectif: "Rassurer et montrer les résultats obtenus",
           cta: "Découvre l'étude de cas complète",
+          canvaUrl: "",
+          metaUrl: "",
           caption: "Comment structurer ses visuels et sa légende a permis de gagner du temps chaque semaine.",
           stats: { reach: 1590, likes: 118, comments: 11, saves: 29, shares: 9, clicks: 63 }
         }
@@ -1104,7 +1287,9 @@
 
     let state = loadState();
     let editingPostId = state.posts[0]?.id || null;
+    let currentEditorMediaId = state.posts[0]?.mediaId || "";
     let calendarViewMode = "month"; // "cards" | "month"
+    let previewViewMode = "fil"; // "fil" | "feed"
     let currentCalendarDate = new Date(2026, 10, 1); // Novembre 2026
 
     function normalizeStats(s) {
@@ -1128,6 +1313,10 @@
           ? parsed.posts.map((p) => ({
               ...p,
               format: normalizeFormat(p.format),
+              objectif: p.objectif || "",
+              cta: p.cta || "",
+              canvaUrl: p.canvaUrl || "",
+              metaUrl: p.metaUrl || "",
               stats: normalizeStats(p.stats)
             }))
           : structuredClone(defaultData.posts),
@@ -1200,7 +1389,8 @@
         "Format",
         "Pilier",
         "Statut",
-        "Objectif / CTA",
+        "Objectif",
+        "CTA",
         "Légende Instagram"
       ];
 
@@ -1211,6 +1401,7 @@
         "Carrousel",
         "Coulisses",
         "Préparation",
+        "Créer de la proximité avant la sortie",
         "Enregistre ce post pour suivre la sortie",
         "Voici comment naît une illustration étape par étape ✨\n\nDu premier croquis au crayon jusqu'à la mise en couleur finale.\n\n👉 Enregistre ce post pour ne pas manquer la sortie !\n\n#illustration #jeunesse #coulisses"
       ];
@@ -1223,7 +1414,8 @@
         { wch: 15 }, // Format
         { wch: 18 }, // Pilier
         { wch: 15 }, // Statut
-        { wch: 36 }, // CTA
+        { wch: 32 }, // Objectif
+        { wch: 32 }, // CTA
         { wch: 65 }  // Légende
       ];
 
@@ -1235,7 +1427,8 @@
         ["Format", "Oui", "Carrousel | Reel | Story"],
         ["Pilier", "Oui", "Pédagogie | Coulisses | Offre / Produit | Preuve sociale"],
         ["Statut", "Oui", "Idée | Préparation | Validé | Programmé | Publié"],
-        ["Objectif / CTA", "Non", "Appel à l'action ou objectif principal"],
+        ["Objectif", "Non", "Objectif principal de la publication"],
+        ["CTA", "Non", "Appel à l'action demandé à l'audience"],
         ["Légende Instagram", "Oui", "Texte complet de la légende avec accroche, sauts de ligne et hashtags"],
         ["", "", ""],
         ["Consigne pour Gemini :", "", "Remplis l'onglet 'Calendrier_Posts' en remplaçant la ligne d'exemple par les publications du calendrier éditorial, tout en conservant exactement les titres de colonnes en ligne 1."]
@@ -1358,7 +1551,8 @@
             const rawFormat = getFieldFromRow(row, ["format", "type"]);
             const rawPilier = getFieldFromRow(row, ["pilier", "theme", "categorie"]);
             const rawStatut = getFieldFromRow(row, ["statut", "status", "etat"]);
-            const rawCta = String(getFieldFromRow(row, ["cta", "objectif", "appel"]) || "").trim();
+            const rawObjectif = String(getFieldFromRow(row, ["objectif"]) || "").trim();
+            const rawCta = String(getFieldFromRow(row, ["cta", "appel"]) || "").trim();
 
             if (!rawTitle && !rawCaption && !rawDate) return;
 
@@ -1374,7 +1568,10 @@
               pilier: matchAllowedValue(rawPilier, VALID_PILIERS, "Pédagogie"),
               statut: matchAllowedValue(rawStatut, VALID_STATUTS, "Préparation"),
               mediaId: "",
+              objectif: rawObjectif,
               cta: rawCta,
+              canvaUrl: "",
+              metaUrl: "",
               caption: rawCaption,
               stats: normalizeStats({})
             };
@@ -1591,18 +1788,167 @@
       renderCalendarMonthView();
     });
 
-    /* Préparation & Aperçu */
-    function populateMediaSelect(selectedId) {
-      const sel = document.getElementById("postMediaSelect");
-      const options = [`<option value="">— Aucun visuel —</option>`].concat(
-        state.media.map((m) => `<option value="${m.id}" ${m.id === selectedId ? "selected" : ""}>${escapeHtml(m.name)}</option>`)
-      );
-      sel.innerHTML = options.join("");
+    /* ============================================================
+       IMPORT VISUEL (avec compression légère pour Firebase)
+       ============================================================ */
+    function updateVisualIndicator() {
+      const media = getMediaById(currentEditorMediaId);
+      const nameEl = document.getElementById("currentVisualName");
+      const removeBtn = document.getElementById("btnRemoveVisual");
+      if (media) {
+        nameEl.textContent = media.name || "Visuel importé";
+        removeBtn.style.display = "inline-block";
+      } else {
+        nameEl.textContent = "Aucun visuel importé";
+        removeBtn.style.display = "none";
+      }
     }
 
+    function compressImageDataUrl(dataUrl, maxDim = 800, quality = 0.78) {
+      return new Promise((resolve) => {
+        const img = new Image();
+        img.onload = () => {
+          let w = img.width;
+          let h = img.height;
+          if (w > maxDim || h > maxDim) {
+            if (w >= h) {
+              h = Math.round((h * maxDim) / w);
+              w = maxDim;
+            } else {
+              w = Math.round((w * maxDim) / h);
+              h = maxDim;
+            }
+          }
+          const canvas = document.createElement("canvas");
+          canvas.width = w;
+          canvas.height = h;
+          const ctx = canvas.getContext("2d");
+          ctx.drawImage(img, 0, 0, w, h);
+          try {
+            resolve(canvas.toDataURL("image/jpeg", quality));
+          } catch {
+            resolve(dataUrl);
+          }
+        };
+        img.onerror = () => resolve(dataUrl);
+        img.src = dataUrl;
+      });
+    }
+
+    document.getElementById("btnUploadVisual").addEventListener("click", () => {
+      document.getElementById("postMediaFileInput").click();
+    });
+
+    document.getElementById("postMediaFileInput").addEventListener("change", (e) => {
+      const file = e.target.files?.[0];
+      if (!file) return;
+      const reader = new FileReader();
+      reader.onload = async (ev) => {
+        const compressedSrc = await compressImageDataUrl(ev.target.result);
+        const newMediaId = "m_" + Date.now();
+        state.media.unshift({
+          id: newMediaId,
+          name: file.name,
+          tags: [],
+          ratioNote: "Visuel importé",
+          src: compressedSrc
+        });
+        currentEditorMediaId = newMediaId;
+        updateVisualIndicator();
+        updateLivePreview();
+        showToast("Visuel importé (pensez à enregistrer la publication)");
+      };
+      reader.readAsDataURL(file);
+      e.target.value = "";
+    });
+
+    document.getElementById("btnRemoveVisual").addEventListener("click", () => {
+      currentEditorMediaId = "";
+      updateVisualIndicator();
+      updateLivePreview();
+    });
+
+    /* Liens Canva & Meta */
+    function openExternalUrl(inputId, defaultUrl) {
+      let url = document.getElementById(inputId).value.trim();
+      if (!url) {
+        url = defaultUrl;
+      } else if (!/^https?:\/\//i.test(url)) {
+        url = "https://" + url;
+      }
+      window.open(url, "_blank", "noopener,noreferrer");
+    }
+
+    document.getElementById("btnOpenCanva").addEventListener("click", () => {
+      openExternalUrl("postCanvaUrl", "https://www.canva.com/");
+    });
+
+    document.getElementById("btnOpenMeta").addEventListener("click", () => {
+      openExternalUrl("postMetaUrl", "https://business.facebook.com/");
+    });
+
+    /* Switch Mode Fil / Mode Feed */
+    function applyPreviewViewMode() {
+      const isFil = previewViewMode === "fil";
+      document.getElementById("previewFilContainer").style.display = isFil ? "block" : "none";
+      document.getElementById("previewFeedContainer").style.display = isFil ? "none" : "block";
+      document.getElementById("previewModeFil").classList.toggle("active", isFil);
+      document.getElementById("previewModeFeed").classList.toggle("active", !isFil);
+      document.getElementById("previewPanelTitle").textContent = isFil ? "Aperçu du post (Mode Fil)" : "Simulateur de grille (Mode Feed)";
+    }
+
+    document.getElementById("previewModeFil").addEventListener("click", () => {
+      previewViewMode = "fil";
+      applyPreviewViewMode();
+    });
+
+    document.getElementById("previewModeFeed").addEventListener("click", () => {
+      previewViewMode = "feed";
+      applyPreviewViewMode();
+    });
+
+    /* Bloc Performance du post (KPIs) */
+    function getEditorStatsFromInputs() {
+      return {
+        reach: Number(document.getElementById("perfReach").value) || 0,
+        likes: Number(document.getElementById("perfLikes").value) || 0,
+        comments: Number(document.getElementById("perfComments").value) || 0,
+        saves: Number(document.getElementById("perfSaves").value) || 0,
+        shares: Number(document.getElementById("perfShares").value) || 0,
+        clicks: Number(document.getElementById("perfClicks").value) || 0
+      };
+    }
+
+    function updatePerfSummaryPreview() {
+      const st = getEditorStatsFromInputs();
+      const interactions = st.likes + st.comments + st.saves + st.shares;
+      document.getElementById("perfTotalInteractions").textContent = interactions.toLocaleString("fr-FR");
+      document.getElementById("perfEngRate").textContent = computeEngagementRate(st);
+    }
+
+    ["perfReach", "perfLikes", "perfComments", "perfSaves", "perfShares", "perfClicks"].forEach((id) => {
+      document.getElementById(id).addEventListener("input", updatePerfSummaryPreview);
+    });
+
+    document.getElementById("btnSavePerf").addEventListener("click", () => {
+      if (!editingPostId) {
+        saveCurrentPost();
+        return;
+      }
+      const idx = state.posts.findIndex((p) => p.id === editingPostId);
+      if (idx !== -1) {
+        state.posts[idx].stats = getEditorStatsFromInputs();
+        saveState();
+        renderStatisticsSection();
+        showToast("KPIs du post enregistrés !");
+      }
+    });
+
+    /* Préparation & Aperçu */
     function loadPostIntoEditor(postId) {
       const post = state.posts.find((p) => p.id === postId);
       editingPostId = post ? post.id : null;
+      currentEditorMediaId = post?.mediaId || "";
 
       document.getElementById("editorHeading").textContent = post
         ? `Préparer la publication : ${getStatusEmoji(post.statut)} ${post.title || "Sans titre"}`
@@ -1614,28 +1960,33 @@
       document.getElementById("postFormat").value = normalizeFormat(post?.format);
       document.getElementById("postPilier").value = post?.pilier || "Pédagogie";
       document.getElementById("postStatut").value = post?.statut || "Idée";
+      document.getElementById("postCanvaUrl").value = post?.canvaUrl || "";
+      document.getElementById("postMetaUrl").value = post?.metaUrl || "";
+      document.getElementById("postObjectif").value = post?.objectif || "";
       document.getElementById("postCta").value = post?.cta || "";
       document.getElementById("postCaption").value = post?.caption || "";
       document.getElementById("btnDeleteCurrentPost").style.display = post ? "inline-block" : "none";
 
-      populateMediaSelect(post?.mediaId || "");
+      const st = normalizeStats(post?.stats);
+      document.getElementById("perfReach").value = st.reach;
+      document.getElementById("perfLikes").value = st.likes;
+      document.getElementById("perfComments").value = st.comments;
+      document.getElementById("perfSaves").value = st.saves;
+      document.getElementById("perfShares").value = st.shares;
+      document.getElementById("perfClicks").value = st.clicks;
+      updatePerfSummaryPreview();
+
+      updateVisualIndicator();
       updateLivePreview();
     }
 
     function updateLivePreview() {
       const caption = document.getElementById("postCaption").value;
-      const mediaId = document.getElementById("postMediaSelect").value;
-      const media = getMediaById(mediaId);
+      const media = getMediaById(currentEditorMediaId);
 
       const len = caption.length;
       document.getElementById("charCounter").textContent = `${len} / 2 200 caractères`;
       document.getElementById("charCounter").style.color = len > 2200 ? "#b42318" : "";
-
-      const firstLine = caption.split("\n")[0] || "";
-      document.getElementById("foldWarning").textContent =
-        firstLine.length > 125
-          ? "⚠️ Première ligne longue : risque de troncature avant « … plus »"
-          : "Accroche visible avant « … plus » : OK";
 
       const mediaBox = document.getElementById("previewMediaBox");
       mediaBox.innerHTML = media
@@ -1660,7 +2011,8 @@
       grid.innerHTML = sorted
         .map((p) => {
           const isCurrent = p.id === editingPostId;
-          const m = getMediaById(p.mediaId);
+          const mediaIdToShow = isCurrent ? currentEditorMediaId : p.mediaId;
+          const m = getMediaById(mediaIdToShow);
           return `
             <div class="feed-cell ${isCurrent ? "draft-ring" : ""}" title="${getStatusEmoji(p.statut)} ${escapeHtml(p.title)}">
               ${m ? `<img src="${m.src}" alt="${escapeHtml(p.title)}" />` : `<span>${getStatusEmoji(p.statut)} ${escapeHtml(p.title || p.format)}</span>`}
@@ -1677,18 +2029,52 @@
       const format = normalizeFormat(document.getElementById("postFormat").value);
       const pilier = document.getElementById("postPilier").value;
       const statut = document.getElementById("postStatut").value;
-      const mediaId = document.getElementById("postMediaSelect").value;
+      const mediaId = currentEditorMediaId;
+      const canvaUrl = document.getElementById("postCanvaUrl").value.trim();
+      const metaUrl = document.getElementById("postMetaUrl").value.trim();
+      const objectif = document.getElementById("postObjectif").value.trim();
       const cta = document.getElementById("postCta").value.trim();
       const caption = document.getElementById("postCaption").value;
+      const stats = getEditorStatsFromInputs();
 
       if (editingPostId) {
         const idx = state.posts.findIndex((p) => p.id === editingPostId);
         if (idx !== -1) {
-          state.posts[idx] = { ...state.posts[idx], title, date, time, format, pilier, statut, mediaId, cta, caption };
+          state.posts[idx] = {
+            ...state.posts[idx],
+            title,
+            date,
+            time,
+            format,
+            pilier,
+            statut,
+            mediaId,
+            canvaUrl,
+            metaUrl,
+            objectif,
+            cta,
+            caption,
+            stats
+          };
         }
       } else {
         const newId = "p_" + Date.now();
-        state.posts.push({ id: newId, title, date, time, format, pilier, statut, mediaId, cta, caption, stats: normalizeStats({}) });
+        state.posts.push({
+          id: newId,
+          title,
+          date,
+          time,
+          format,
+          pilier,
+          statut,
+          mediaId,
+          canvaUrl,
+          metaUrl,
+          objectif,
+          cta,
+          caption,
+          stats
+        });
         editingPostId = newId;
       }
 
@@ -1823,10 +2209,7 @@
       });
     });
 
-    ["postCaption", "postMediaSelect"].forEach((id) => {
-      document.getElementById(id).addEventListener("input", updateLivePreview);
-      document.getElementById(id).addEventListener("change", updateLivePreview);
-    });
+    document.getElementById("postCaption").addEventListener("input", updateLivePreview);
 
     ["filterStatut", "filterFormat", "filterPilier", "filterSearch"].forEach((id) => {
       document.getElementById(id).addEventListener("input", () => {
@@ -1850,7 +2233,7 @@
     function renderAll() {
       renderPostsGrid();
       applyCalendarViewMode();
-      populateMediaSelect(document.getElementById("postMediaSelect").value || (state.posts.find((p) => p.id === editingPostId)?.mediaId ?? ""));
+      applyPreviewViewMode();
       renderStatisticsSection();
       updateLivePreview();
     }
