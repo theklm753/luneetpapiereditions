@@ -4,6 +4,9 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Studio Gestion Instagram — Calendrier, Idées, Posts, Médiathèque & Stats</title>
+  <!-- Firebase -->
+  <script src="https://www.gstatic.com/firebasejs/10.14.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.14.0/firebase-firestore-compat.js"></script>
   <style>
     :root {
       --bg: #f6f7fb;
@@ -1077,6 +1080,22 @@
   <div class="toast" id="toast"></div>
 
   <script>
+    // --- CONFIGURATION FIREBASE ---
+    const firebaseConfig = {
+      apiKey: "AIzaSyAW2-LNY0BwYGLL4QtVyx-GDgehNGwanrk",
+      authDomain: "my-budget-7f064.firebaseapp.com",
+      projectId: "my-budget-7f064",
+      storageBucket: "my-budget-7f064.firebasestorage.app",
+      messagingSenderId: "920185528208",
+      appId: "1:920185528208:web:5144375fdb938bbc2ddd15"
+    };
+
+    firebase.initializeApp(firebaseConfig);
+    const dbFirestore = firebase.firestore();
+    const FIRESTORE_COLLECTION = "instagram_studio";
+    const FIRESTORE_DOC = "mon_compte";
+    // ------------------------------
+
     const STORAGE_KEY = "ig_studio_data_v2";
 
     const defaultData = {
@@ -1178,26 +1197,53 @@
       };
     }
 
+    function normalizeState(parsed) {
+      return {
+        posts: Array.isArray(parsed?.posts)
+          ? parsed.posts.map((p) => ({ ...p, stats: normalizeStats(p.stats) }))
+          : structuredClone(defaultData.posts),
+        ideas: Array.isArray(parsed?.ideas) ? parsed.ideas : structuredClone(defaultData.ideas),
+        media: Array.isArray(parsed?.media) ? parsed.media : structuredClone(defaultData.media)
+      };
+    }
+
     function loadState() {
       try {
         const raw = localStorage.getItem(STORAGE_KEY);
         if (!raw) return structuredClone(defaultData);
-        const parsed = JSON.parse(raw);
-        return {
-          posts: Array.isArray(parsed.posts)
-            ? parsed.posts.map((p) => ({ ...p, stats: normalizeStats(p.stats) }))
-            : structuredClone(defaultData.posts),
-          ideas: Array.isArray(parsed.ideas) ? parsed.ideas : structuredClone(defaultData.ideas),
-          media: Array.isArray(parsed.media) ? parsed.media : structuredClone(defaultData.media)
-        };
+        return normalizeState(JSON.parse(raw));
       } catch {
         return structuredClone(defaultData);
       }
     }
 
     function saveState() {
+      // Sauvegarde locale de secours
       localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+
+      // Envoi vers Firebase Cloud
+      dbFirestore.collection(FIRESTORE_COLLECTION).doc(FIRESTORE_DOC).set(state)
+        .then(() => console.log("Sauvegarde Cloud réussie !"))
+        .catch((error) => console.error("Erreur de sauvegarde Cloud :", error));
     }
+
+    // Récupération des données depuis Firebase (Cloud) au démarrage
+    dbFirestore.collection(FIRESTORE_COLLECTION).doc(FIRESTORE_DOC).get().then((doc) => {
+      if (doc.exists) {
+        state = normalizeState(doc.data());
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+        if (!state.posts.some((p) => p.id === editingPostId)) {
+          editingPostId = state.posts[0]?.id || null;
+        }
+        loadPostIntoEditor(editingPostId);
+        renderAll();
+      } else {
+        // Si pas encore de données dans le cloud, on pousse les données locales/par défaut
+        saveState();
+      }
+    }).catch((error) => {
+      console.error("Erreur de connexion à Firestore (mode hors-ligne probable) :", error);
+    });
 
     function showToast(msg) {
       const el = document.getElementById("toast");
