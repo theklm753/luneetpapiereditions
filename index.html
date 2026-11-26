@@ -447,7 +447,7 @@
     }
 
     /* ============================================================
-       GESTION DES PROJETS (LISTE + VUE DÉTAIL)
+       GESTION DES PROJETS (LISTE + DRAG & DROP + VUE DÉTAIL)
        ============================================================ */
     .projects-kpi-grid {
       display: grid;
@@ -496,7 +496,18 @@
     .kpi-darkgreen { color: var(--proj-edite); }
 
     .project-group {
-      margin-bottom: 22px;
+      margin-bottom: 18px;
+      padding: 8px;
+      margin-left: -8px;
+      margin-right: -8px;
+      border-radius: 16px;
+      border: 2px dashed transparent;
+      transition: background 0.15s ease, border-color 0.15s ease;
+    }
+
+    .project-group.drag-over {
+      background: rgba(91, 76, 230, 0.06);
+      border-color: var(--primary);
     }
 
     .project-group-header {
@@ -505,6 +516,15 @@
       font-weight: 700;
       border-radius: 4px;
       margin-bottom: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .project-group-count {
+      font-size: 12px;
+      font-weight: 700;
+      opacity: 0.78;
     }
 
     .group-en_cours { background: var(--proj-en-cours-bar); color: #8c6400; }
@@ -519,6 +539,24 @@
       gap: 10px;
     }
 
+    .project-empty-dropzone {
+      background: rgba(255, 255, 255, 0.65);
+      border: 1.5px dashed var(--border);
+      border-radius: 14px;
+      padding: 16px 20px;
+      text-align: center;
+      font-size: 13px;
+      color: var(--muted);
+      transition: border-color 0.15s ease, color 0.15s ease, background 0.15s ease;
+    }
+
+    .project-group.drag-over .project-empty-dropzone {
+      border-color: var(--primary);
+      color: var(--primary);
+      background: rgba(91, 76, 230, 0.06);
+      font-weight: 600;
+    }
+
     .project-row {
       background: var(--surface);
       border: 1px solid rgba(227, 230, 239, 0.85);
@@ -529,14 +567,39 @@
       flex-wrap: wrap;
       align-items: center;
       justify-content: space-between;
-      gap: 16px;
-      cursor: pointer;
-      transition: transform 0.12s ease, border-color 0.15s ease;
+      gap: 14px;
+      cursor: grab;
+      user-select: none;
+      transition: transform 0.12s ease, border-color 0.15s ease, opacity 0.15s ease;
+    }
+
+    .project-row:active {
+      cursor: grabbing;
     }
 
     .project-row:hover {
       border-color: var(--primary);
       transform: translateY(-1px);
+    }
+
+    .project-row.dragging {
+      opacity: 0.45;
+      transform: scale(0.99);
+    }
+
+    .project-drag-handle {
+      color: var(--muted);
+      font-size: 16px;
+      letter-spacing: -2px;
+      opacity: 0.55;
+      flex-shrink: 0;
+      padding-right: 4px;
+      line-height: 1;
+    }
+
+    .project-row:hover .project-drag-handle {
+      opacity: 1;
+      color: var(--primary);
     }
 
     .project-row-info {
@@ -3005,6 +3068,7 @@
     let editingPostId = state.posts[0]?.id || null;
     let editingProjectId = null;
     let activeProjectId = null;
+    let draggedProjectId = null;
     let pendingUploadItemId = null;
     let editingTaskId = null;
     let currentEditorSlides = [createEmptySlide()];
@@ -3218,7 +3282,6 @@
         const todayDay = Number(todayIso.split("-")[2]);
         return startDay === todayDay;
       }
-      // Ponctuelle : visible si prévue aujourd'hui, ou en retard non terminée
       if (task.date === todayIso) return true;
       return !(task.completedDates || []).length;
     }
@@ -3233,7 +3296,6 @@
 
     function getAutoInstagramTasks(todayIso) {
       const today = new Date(todayIso + "T00:00:00");
-      // Semaine en cours et semaine à venir (jusqu'à J+14) + retards non publiés
       const limit = new Date(today);
       limit.setDate(limit.getDate() + 14);
       const limitIso = `${limit.getFullYear()}-${String(limit.getMonth() + 1).padStart(2, "0")}-${String(limit.getDate()).padStart(2, "0")}`;
@@ -3438,7 +3500,7 @@
     });
 
     /* ============================================================
-       GESTION DES PROJETS (LISTE + VUE DÉTAIL ILLUSTRATIONS/TEXTES)
+       GESTION DES PROJETS (LISTE + DRAG & DROP + VUE DÉTAIL)
        ============================================================ */
     function renderProjectsSection() {
       document.getElementById("projectsListView").style.display = "block";
@@ -3463,18 +3525,22 @@
       PROJECT_GROUP_ORDER.forEach((statusKey) => {
         const meta = PROJECT_STATUSES.find((s) => s.key === statusKey);
         const items = projects.filter((p) => p.status === statusKey);
-        if (!items.length) return;
 
-        html += `
-          <div class="project-group">
-            <div class="project-group-header group-${statusKey}">${escapeHtml(meta.label)}</div>
-            <div class="project-list">
-              ${items
-                .map((pr) => {
-                  const pct = computeProjectProgress(pr);
-                  const countIllus = (pr.items || []).length;
-                  return `
-                  <div class="project-row" onclick="openProjectDetail('${pr.id}')">
+        const listContent = items.length
+          ? items
+              .map((pr) => {
+                const pct = computeProjectProgress(pr);
+                const countIllus = (pr.items || []).length;
+                return `
+                  <div
+                    class="project-row"
+                    draggable="true"
+                    data-project-id="${pr.id}"
+                    ondragstart="handleProjectDragStart(event, '${pr.id}')"
+                    ondragend="handleProjectDragEnd(event)"
+                    onclick="openProjectDetail('${pr.id}')"
+                  >
+                    <span class="project-drag-handle" title="Glisser pour déplacer dans une autre catégorie">⋮⋮</span>
                     <div class="project-row-info">
                       <div class="project-row-title">${escapeHtml(pr.title)}</div>
                       <div class="project-row-meta">
@@ -3490,19 +3556,80 @@
                     </div>
                   </div>
                 `;
-                })
-                .join("")}
+              })
+              .join("")
+          : `<div class="project-empty-dropzone">Aucun projet dans cette catégorie — glissez un projet ici</div>`;
+
+        html += `
+          <div
+            class="project-group"
+            data-status="${statusKey}"
+            ondragover="handleProjectDragOver(event)"
+            ondragleave="handleProjectDragLeave(event)"
+            ondrop="handleProjectDrop(event, '${statusKey}')"
+          >
+            <div class="project-group-header group-${statusKey}">
+              <span>${escapeHtml(meta.label)}</span>
+              <span class="project-group-count">${items.length}</span>
+            </div>
+            <div class="project-list">
+              ${listContent}
             </div>
           </div>
         `;
       });
 
-      if (!html) {
-        html = `<div class="panel">Aucun projet enregistré. Cliquez sur <strong>+ nouveau projet</strong> pour en ajouter un.</div>`;
-      }
-
       groupsContainer.innerHTML = html;
     }
+
+    window.handleProjectDragStart = function (event, projectId) {
+      draggedProjectId = projectId;
+      event.dataTransfer.effectAllowed = "move";
+      event.dataTransfer.setData("text/plain", projectId);
+      event.currentTarget.classList.add("dragging");
+    };
+
+    window.handleProjectDragEnd = function (event) {
+      draggedProjectId = null;
+      event.currentTarget.classList.remove("dragging");
+      document.querySelectorAll(".project-group.drag-over").forEach((el) => {
+        el.classList.remove("drag-over");
+      });
+    };
+
+    window.handleProjectDragOver = function (event) {
+      event.preventDefault();
+      event.dataTransfer.dropEffect = "move";
+      event.currentTarget.classList.add("drag-over");
+    };
+
+    window.handleProjectDragLeave = function (event) {
+      const groupEl = event.currentTarget;
+      if (!groupEl.contains(event.relatedTarget)) {
+        groupEl.classList.remove("drag-over");
+      }
+    };
+
+    window.handleProjectDrop = function (event, targetStatusKey) {
+      event.preventDefault();
+      document.querySelectorAll(".project-group.drag-over").forEach((el) => {
+        el.classList.remove("drag-over");
+      });
+
+      const projId = draggedProjectId || event.dataTransfer.getData("text/plain");
+      draggedProjectId = null;
+      if (!projId) return;
+
+      const project = (state.projects || []).find((p) => p.id === projId);
+      if (!project || project.status === targetStatusKey) return;
+
+      project.status = targetStatusKey;
+      saveState();
+      renderProjectsSection();
+
+      const meta = PROJECT_STATUSES.find((s) => s.key === targetStatusKey);
+      showToast(`Projet déplacé dans « ${meta ? meta.label : targetStatusKey} »`);
+    };
 
     window.openProjectDetail = function (projectId) {
       activeProjectId = projectId;
