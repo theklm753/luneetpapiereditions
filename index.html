@@ -2401,7 +2401,7 @@
       <!-- VUE ÉDITION / CRÉATION DE POST -->
       <section id="tab-preparation" class="section">
         <div style="margin-bottom: 14px;">
-          <button type="button" class="sm" onclick="switchToTab('calendrier')">← Retour au calendrier</button>
+          <button type="button" class="sm" id="btnBackToCalendar">← Retour au calendrier</button>
         </div>
         <div class="studio-layout">
           <div>
@@ -2538,7 +2538,6 @@
               </div>
 
               <div style="margin-top: 18px; display: flex; gap: 10px; flex-wrap: wrap;">
-                <button class="primary" id="btnSavePost">Enregistrer la publication</button>
                 <button id="btnCopyCaption">Copier la légende</button>
                 <button class="danger" id="btnDeleteCurrentPost" style="display: none;">Supprimer</button>
               </div>
@@ -3227,6 +3226,7 @@
       } catch (err) {
         console.error("Erreur sauvegarde tâche :", err);
         setSyncStatus("error", "⚠️ Erreur sync");
+        showToast("Erreur lors de la sauvegarde Cloud de la tâche");
       }
     }
 
@@ -3343,11 +3343,8 @@
     // ENVOI DES PHOTOS SUR CLOUDINARY (QUELLE QUE SOIT LEUR TAILLE)
     // ============================================================
     async function prepareFileForCloudinary(file) {
-      // Le forfait gratuit Cloudinary accepte jusqu'à 10 Mo par image.
-      // Si l'image fait <= 9,5 Mo, on l'envoie intacte en qualité d'origine !
       if (file.size <= 9.5 * 1024 * 1024) return file;
 
-      // Si l'image dépasse 9,5 Mo, on la redimensionne très proprement (2400px, qualité 88%)
       const dataUrl = await readFileAsDataUrl(file);
       const compressedUrl = await compressImageDataUrl(dataUrl, 2400, 0.88);
       const res = await fetch(compressedUrl);
@@ -3436,7 +3433,6 @@
           const tasks = Array.isArray(parsed.tasks) ? parsed.tasks.map(normalizeTask) : [];
           const media = Array.isArray(parsed.media) ? parsed.media.map(normalizeMediaItem) : [];
 
-          // Transfère vers Cloudinary toute ancienne photo en base64 présente dans le JSON
           for (const m of media) {
             if (isLargeBase64Image(m.src)) {
               try { m.src = await uploadDataUrlToCloudinary(m.src); } catch {}
@@ -3503,7 +3499,6 @@
         const oldTasks = Array.isArray(oldData.tasks) ? oldData.tasks.map(normalizeTask) : [];
         const oldMedia = Array.isArray(oldData.media) ? oldData.media.map(normalizeMediaItem) : [];
 
-        // 1. Transfert des anciens médias (upload Cloudinary si base64)
         for (const m of oldMedia) {
           if (isLargeBase64Image(m.src)) {
             try {
@@ -3515,7 +3510,6 @@
           await saveMediaToCloud(m);
         }
 
-        // 2. Transfert des anciens projets + illustrations vers Cloudinary
         for (const pr of oldProjects) {
           for (const it of pr.items || []) {
             if (isLargeBase64Image(it.imageSrc)) {
@@ -3529,7 +3523,6 @@
           await saveProjectToCloud(pr);
         }
 
-        // 3. Transfert des posts et tâches
         for (const p of oldPosts) {
           await savePostToCloud(p);
         }
@@ -3578,6 +3571,9 @@
        NAVIGATION PRINCIPALE (TABLEAU DE BORD / INSTAGRAM / PROJETS)
        ============================================================ */
     window.switchMainSection = function (sectionKey) {
+      if (document.getElementById("tab-preparation").classList.contains("active")) {
+        saveCurrentPost({ silent: true, reloadEditor: false });
+      }
       document.querySelectorAll(".main-nav-btn").forEach((btn) => {
         btn.classList.toggle("active", btn.dataset.main === sectionKey);
       });
@@ -4512,7 +4508,7 @@
           }
 
           await Promise.all(createdPosts.map((p) => savePostToCloud(p)));
-          switchToTab("calendrier");
+          switchToTab("calendrier", { skipAutoSave: true });
           renderDashboard();
           showToast(`${importedCount} publication(s) importée(s) et enregistrée(s) !`);
         } catch (err) {
@@ -4533,7 +4529,11 @@
     document.getElementById("importExcelInput").addEventListener("change", handleExcelImport);
 
     /* Navigation Onglets Instagram */
-    function switchToTab(tabName) {
+    function switchToTab(tabName, options = {}) {
+      const wasEditing = document.getElementById("tab-preparation").classList.contains("active");
+      if (wasEditing && tabName !== "preparation" && !options.skipAutoSave) {
+        saveCurrentPost({ silent: true, reloadEditor: false });
+      }
       document.querySelectorAll(".tab-btn").forEach((b) => {
         b.classList.toggle("active", b.dataset.tab === tabName);
       });
@@ -4545,6 +4545,12 @@
 
     document.querySelectorAll(".tab-btn").forEach((btn) => {
       btn.addEventListener("click", () => switchToTab(btn.dataset.tab));
+    });
+
+    document.getElementById("btnBackToCalendar").addEventListener("click", () => {
+      saveCurrentPost({ silent: true, reloadEditor: false });
+      switchToTab("calendrier", { skipAutoSave: true });
+      showToast("Modifications enregistrées automatiquement !");
     });
 
     /* Filtres publications */
@@ -5080,8 +5086,8 @@
       if (uploadedCount > 0) {
         showToast(
           uploadedCount > 1
-            ? `${uploadedCount} photos enregistrées (pensez à enregistrer le post)`
-            : "Photo enregistrée (pensez à enregistrer le post)"
+            ? `${uploadedCount} photos importées`
+            : "Photo importée"
         );
       }
       e.target.value = "";
@@ -5309,7 +5315,8 @@
         .join("");
     }
 
-    function saveCurrentPost() {
+    function saveCurrentPost(options = {}) {
+      const { silent = false, reloadEditor = true } = options;
       const title = document.getElementById("postTitle").value.trim() || "Publication sans titre";
       const date = document.getElementById("postDate").value;
       const time = document.getElementById("postTime").value;
@@ -5363,10 +5370,14 @@
       }
 
       savePostToCloud(savedPost);
-      loadPostIntoEditor(editingPostId);
-      renderInstagramAll();
+      if (reloadEditor) {
+        loadPostIntoEditor(editingPostId);
+        renderInstagramAll();
+      }
       renderDashboard();
-      showToast("Publication enregistrée !");
+      if (!silent) {
+        showToast("Publication enregistrée !");
+      }
     }
 
     window.editPost = function (id) {
@@ -5375,12 +5386,17 @@
     };
 
     window.deletePost = function (id) {
+      const targetPost = state.posts.find((p) => p.id === id);
+      const label = targetPost?.title ? ` « ${targetPost.title} »` : "";
+      if (!confirm(`Êtes-vous sûre de vouloir supprimer définitivement le post${label} ?`)) {
+        return;
+      }
       state.posts = state.posts.filter((p) => p.id !== id);
       if (editingPostId === id) {
         editingPostId = state.posts[0]?.id || null;
       }
       deletePostFromCloud(id);
-      switchToTab("calendrier");
+      switchToTab("calendrier", { skipAutoSave: true });
       renderDashboard();
       showToast("Publication supprimée");
     };
@@ -5474,7 +5490,6 @@
       switchToTab("preparation");
     });
 
-    document.getElementById("btnSavePost").addEventListener("click", saveCurrentPost);
     document.getElementById("btnDeleteCurrentPost").addEventListener("click", () => {
       if (editingPostId) deletePost(editingPostId);
     });
