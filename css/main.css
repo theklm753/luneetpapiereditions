@@ -1776,3 +1776,255 @@ button.sm {
   border-radius: 8px;
   font-size: 12px;
 }
+/* ============================================================
+   PARTIE 1 : LES 4 TRACKERS QUOTIDIENS (TABLEAU DE BORD)
+   ============================================================ */
+.trackers-section {
+  margin-top: 28px;
+}
+
+.trackers-header-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin-bottom: 14px;
+}
+
+.trackers-controls {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.trackers-grid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 16px;
+}
+
+@media (max-width: 1100px) {
+  .trackers-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 640px) {
+  .trackers-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+.tracker-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  padding: 16px;
+  box-shadow: var(--shadow);
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.tracker-card-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+}
+
+.tracker-card-title {
+  margin: 0;
+  font-size: 15px;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.tracker-status-pill {
+  font-size: 11px;
+  font-weight: 700;
+  padding: 3px 9px;
+  border-radius: 999px;
+}
+
+.tracker-status-pill.is-ok {
+  background: #dcfce7;
+  color: #15803d;
+}
+
+.tracker-status-pill.is-ko {
+  background: #fee2e2;
+  color: #dc2626;
+}
+
+.tracker-desc {
+  margin: 0;
+  font-size: 12px;
+  color: var(--muted);
+  line-height: 1.4;
+}
+
+.tracker-streak-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--text);
+  background: var(--surface-alt);
+  padding: 6px 10px;
+  border-radius: 10px;
+}
+
+.tracker-mini-cal {
+  display: grid;
+  grid-template-columns: repeat(7, minmax(0, 1fr));
+  gap: 4px;
+}
+
+.tracker-day-cell {
+  aspect-ratio: 1 / 1;
+  border-radius: 7px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 10px;
+  font-weight: 700;
+  cursor: pointer;
+  border: 1px solid transparent;
+  user-select: none;
+}
+
+.tracker-day-cell.cal-ok {
+  background: #dcfce7;
+  color: #15803d;
+  border-color: #86efac;
+}
+
+.tracker-day-cell.cal-ko {
+  background: #fee2e2;
+  color: #dc2626;
+  border-color: #fca5a5;
+}
+
+.tracker-day-cell.selected {
+  outline: 2px solid var(--primary);
+  outline-offset: 1px;
+}
+
+.tracker-note-input {
+  width: 100%;
+  font-family: inherit;
+  font-size: 12px;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 7px 10px;
+  background: #fff;
+}
+
+/* ============================================================
+   PARTIE 2 : GESTION ÉDITION & MAISONS D'ÉDITION (FICHE PROJET)
+   ============================================================ */
+.edition-panel {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  padding: 20px;
+  box-shadow: var(--shadow);
+  margin-top: 24px;
+}
+
+.edition-header-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin-bottom: 16px;
+}
+
+.edition-kpis {
+  display: grid;
+  grid-template-columns: repeat(6, minmax(0, 1fr));
+  gap: 10px;
+  margin-bottom: 16px;
+}
+
+@media (max-width: 1024px) {
+  .edition-kpis {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 560px) {
+  .edition-kpis {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+.edition-kpi-box {
+  background: var(--surface-alt);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 10px 12px;
+  text-align: center;
+}
+
+.edition-kpi-box .num {
+  font-size: 20px;
+  font-weight: 800;
+  color: var(--primary);
+}
+
+.edition-kpi-box .lbl {
+  font-size: 11px;
+  color: var(--muted);
+  font-weight: 600;
+  margin-top: 2px;
+}
+
+.edition-toolbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-bottom: 14px;
+}
+
+.ed-status-badge {
+  display: inline-block;
+  padding: 3px 9px;
+  border-radius: 999px;
+  font-size: 11px;
+  font-weight: 700;
+}
+
+.ed-st-attente {
+  background: #fef3c7;
+  color: #92400e;
+}
+
+.ed-st-refus {
+  background: #fee2e2;
+  color: #b91c1c;
+}
+
+.ed-st-echange {
+  background: #dbeafe;
+  color: #1d4ed8;
+}
+
+.ed-st-edite {
+  background: #dcfce7;
+  color: #15803d;
+}
+
+.ed-st-vision {
+  background: #ede9fe;
+  color: #5b21b6;
+}
