@@ -231,6 +231,7 @@ window.handleProjectDrop = function (event, targetStatusKey) {
   if (!project || project.status === targetStatusKey) return;
 
   project.status = targetStatusKey;
+  if (typeof recordTrackerAction === "function") recordTrackerAction("edit");
   saveProjectToCloud(project);
   renderProjectsSection();
 
@@ -330,6 +331,7 @@ document.getElementById("projectInspoFileInput").addEventListener("change", asyn
   }
 
   if (added > 0) {
+    if (typeof recordTrackerAction === "function") recordTrackerAction("creativ");
     await saveProjectToCloud(proj);
     inspoFolderOpen = true;
     renderProjectInspirations(proj);
@@ -343,6 +345,7 @@ window.deleteProjectInspiration = function (inspoId) {
   const proj = getActiveProject();
   if (!proj) return;
   proj.inspirations = (proj.inspirations || []).filter((i) => i.id !== inspoId);
+  if (typeof recordTrackerAction === "function") recordTrackerAction("creativ");
   saveProjectToCloud(proj);
   renderProjectInspirations(proj);
   showToast("Inspiration supprimée");
@@ -491,6 +494,11 @@ function renderProjectDetail() {
   `;
 
   grid.innerHTML = cardsHtml + addCardHtml;
+
+  if (typeof renderProjectEditionSection === "function") {
+    renderProjectEditionSection(proj);
+  }
+
   ensureTimerTicking();
 }
 
@@ -540,6 +548,7 @@ window.handleIllusDrop = function (event, targetItemId) {
   const [moved] = proj.items.splice(fromIdx, 1);
   proj.items.splice(toIdx, 0, moved);
 
+  if (typeof recordTrackerAction === "function") recordTrackerAction("creativ");
   saveProjectToCloud(proj);
   renderProjectDetail();
   showToast("Ordre des illustrations mis à jour !");
@@ -558,7 +567,6 @@ window.startIllusTimer = function (itemId) {
   const proj = getActiveProject();
   if (!proj) return;
 
-  // Si un autre chrono tourne déjà, on l'arrête et on l'enregistre d'abord
   if (activeTimer && (activeTimer.projectId !== proj.id || activeTimer.itemId !== itemId)) {
     stopActiveTimerAndSave();
   }
@@ -569,6 +577,7 @@ window.startIllusTimer = function (itemId) {
     startedAt: Date.now()
   });
 
+  if (typeof recordTrackerAction === "function") recordTrackerAction("creativ");
   ensureTimerTicking();
   renderProjectDetail();
   if (activeIllusModalItemId === itemId) renderIllusDetailModal();
@@ -595,6 +604,7 @@ function stopActiveTimerAndSave() {
       durationSeconds: elapsed,
       note: ""
     });
+    if (typeof recordTrackerAction === "function") recordTrackerAction("creativ");
     saveProjectToCloud(targetProj);
   }
   return elapsed;
@@ -745,6 +755,7 @@ window.setMainIllusVersion = function (itemId, versionId) {
   const ver = (item.versions || []).find((v) => v.id === versionId);
   if (!ver) return;
   item.imageSrc = ver.src;
+  if (typeof recordTrackerAction === "function") recordTrackerAction("creativ");
   saveProjectToCloud(proj);
   renderProjectDetail();
   renderIllusDetailModal();
@@ -761,6 +772,7 @@ window.deleteIllusVersion = function (itemId, versionId) {
   if (deleted && item.imageSrc === deleted.src) {
     item.imageSrc = item.versions.length ? item.versions[item.versions.length - 1].src : "";
   }
+  if (typeof recordTrackerAction === "function") recordTrackerAction("creativ");
   saveProjectToCloud(proj);
   renderProjectDetail();
   renderIllusDetailModal();
@@ -785,6 +797,7 @@ window.addManualIllusSession = function (itemId) {
     durationSeconds: Math.round(mins * 60),
     note
   });
+  if (typeof recordTrackerAction === "function") recordTrackerAction("creativ");
   saveProjectToCloud(proj);
   renderProjectDetail();
   renderIllusDetailModal();
@@ -825,6 +838,7 @@ async function uploadImageToProjectItem(itemId, file) {
       createdAt: new Date().toISOString()
     });
     item.imageSrc = secureUrl;
+    if (typeof recordTrackerAction === "function") recordTrackerAction("creativ");
     await saveProjectToCloud(proj);
     renderProjectDetail();
     if (activeIllusModalItemId === itemId) renderIllusDetailModal();
@@ -908,6 +922,7 @@ async function handlePastedImageFile(file, targetType, itemId = null) {
         name: file.name || "Inspiration collée",
         createdAt: new Date().toISOString()
       });
+      if (typeof recordTrackerAction === "function") recordTrackerAction("creativ");
       await saveProjectToCloud(proj);
       inspoFolderOpen = true;
       renderProjectInspirations(proj);
@@ -951,6 +966,7 @@ window.addProjectIllustration = function () {
   if (!Array.isArray(proj.items)) proj.items = [];
   proj.items.push(createEmptyProjectItem());
   proj.progress = computeProjectProgress(proj);
+  if (typeof recordTrackerAction === "function") recordTrackerAction("creativ");
   saveProjectToCloud(proj);
   renderProjectDetail();
   showToast("Illustration ajoutée");
@@ -976,6 +992,9 @@ window.updateProjectItemField = function (itemId, field, value) {
   if (!item) return;
   item[field] = value;
   proj.progress = computeProjectProgress(proj);
+  if (typeof recordTrackerAction === "function") {
+    recordTrackerAction(field === "textStatus" ? "edit" : "creativ");
+  }
   saveProjectToCloud(proj);
   renderProjectDetail();
 };
@@ -986,6 +1005,7 @@ window.updateProjectItemText = function (itemId, value) {
   const item = (proj.items || []).find((i) => i.id === itemId);
   if (!item) return;
   item.text = value;
+  if (typeof recordTrackerAction === "function") recordTrackerAction("edit");
   clearTimeout(projectTextSaveTimer);
   projectTextSaveTimer = setTimeout(() => {
     saveProjectToCloud(proj);
@@ -1064,11 +1084,13 @@ document.getElementById("btnSaveProject").addEventListener("click", () => {
       technique,
       notes,
       inspirations: [],
+      submissions: [],
       items: [createEmptyProjectItem()]
     };
     state.projects.push(savedProj);
   }
 
+  if (typeof recordTrackerAction === "function") recordTrackerAction("edit");
   if (savedProj) saveProjectToCloud(savedProj);
   closeProjectModal();
   if (activeProjectId) {
