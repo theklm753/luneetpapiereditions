@@ -128,7 +128,7 @@ function getTodayIso() {
   const y = now.getFullYear();
   const m = String(now.getMonth() + 1).padStart(2, "0");
   const d = String(now.getDate()).padStart(2, "0");
-  return `\${y}-${m}-${d}`;
+  return `${y}-${m}-${d}`;
 }
 
 function isPostOverdue(post) {
@@ -153,7 +153,7 @@ function getStatusColorClass(post) {
 
 function getStatusDisplayLabel(post) {
   if (isPostOverdue(post)) {
-    return `En retard (\${post.statut})`;
+    return `En retard (${post.statut})`;
   }
   return post?.statut || "Idée";
 }
@@ -244,4 +244,152 @@ function normalizeFormat(fmt) {
 function normalizeSlides(p) {
   if (Array.isArray(p?.slides) && p.slides.length > 0) {
     return p.slides.map((sl, idx) => ({
-      id: sl.id || `sl_${p.id \vert{}\vert{} "x"}_${
+      id: sl.id || `sl_${p.id || "x"}_${idx}`,
+      mediaId: sl.mediaId || "",
+      text: sl.text || "",
+      stickers: Array.isArray(sl.stickers) ? sl.stickers : []
+    }));
+  }
+  const fallbackText =
+    p?.storyText !== undefined ? p.storyText : p?.format === "Story" ? p?.caption || "" : "";
+  const fallbackStickers = Array.isArray(p?.storyStickers) ? p.storyStickers : [];
+  return [
+    {
+      id: `sl_${p?.id || "x"}_0`,
+      mediaId: p?.mediaId || "",
+      text: fallbackText,
+      stickers: fallbackStickers
+    }
+  ];
+}
+
+function normalizePost(p) {
+  const slides = normalizeSlides(p);
+  return {
+    ...p,
+    id: p.id || "p_" + Date.now() + "_" + Math.floor(Math.random() * 1000),
+    title: p.title || "Publication sans titre",
+    date: p.date || "",
+    time: p.time || "18:00",
+    format: normalizeFormat(p.format),
+    pilier: VALID_PILIERS.includes(p.pilier) ? p.pilier : "Pédagogie",
+    statut: VALID_STATUTS.includes(p.statut) ? p.statut : "Idée",
+    objectif: p.objectif || "",
+    cta: p.cta || "",
+    canvaUrl: p.canvaUrl || "",
+    metaUrl: p.metaUrl || "",
+    caption: p.caption || "",
+    mediaId: slides[0]?.mediaId || p.mediaId || "",
+    slides,
+    storyText: slides[0]?.text || "",
+    storyStickers: slides[0]?.stickers || [],
+    checklist: normalizeChecklist(p.checklist),
+    stats: normalizeStats(p.stats)
+  };
+}
+
+function normalizeProjectItemStatus(st) {
+  return ["a_demarrer", "en_cours", "finalise"].includes(st) ? st : "a_demarrer";
+}
+
+function normalizeProject(pr, idx = 0) {
+  const validKeys = PROJECT_STATUSES.map((s) => s.key);
+  const items = Array.isArray(pr?.items)
+    ? pr.items.map((it, i) => ({
+        id: it.id || `item_${pr.id || idx}_${i}`,
+        imageSrc: it.imageSrc || "",
+        illusStatus: normalizeProjectItemStatus(it.illusStatus),
+        text: it.text || "",
+        textStatus: normalizeProjectItemStatus(it.textStatus)
+      }))
+    : [];
+  const normalized = {
+    ...pr,
+    id: pr?.id || `proj_${Date.now()}_${idx}`,
+    title: pr?.title || "Projet sans titre",
+    status: validKeys.includes(pr?.status) ? pr.status : "a_demarrer",
+    progress: Math.min(100, Math.max(0, Number(pr?.progress) || 0)),
+    notes: pr?.notes || "",
+    items
+  };
+  if (items.length > 0) {
+    normalized.progress = computeProjectProgress(normalized);
+  }
+  return normalized;
+}
+
+function normalizeTask(t, idx = 0) {
+  return {
+    ...t,
+    id: t?.id || `task_${Date.now()}_${idx}`,
+    title: t?.title || "Tâche",
+    date: t?.date || getTodayIso(),
+    recurrence: ["none", "daily", "weekly", "monthly"].includes(t?.recurrence) ? t.recurrence : "none",
+    completedDates: Array.isArray(t?.completedDates) ? t.completedDates : []
+  };
+}
+
+function normalizeMediaItem(m, idx = 0) {
+  return {
+    ...m,
+    id: m?.id || `m_${Date.now()}_${idx}`,
+    name: m?.name || "visuel",
+    tags: Array.isArray(m?.tags) ? m.tags : [],
+    ratioNote: m?.ratioNote || "",
+    src: m?.src || ""
+  };
+}
+
+function loadLocalCache() {
+  try {
+    const raw = localStorage.getItem(STORAGE_KEY);
+    if (!raw) return { posts: [], projects: [], tasks: [], media: [], completedAutoTasks: [] };
+    const parsed = JSON.parse(raw);
+    return {
+      posts: Array.isArray(parsed.posts) ? parsed.posts.map(normalizePost) : [],
+      projects: Array.isArray(parsed.projects) ? parsed.projects.map(normalizeProject) : [],
+      tasks: Array.isArray(parsed.tasks) ? parsed.tasks.map(normalizeTask) : [],
+      media: Array.isArray(parsed.media) ? parsed.media.map(normalizeMediaItem) : [],
+      completedAutoTasks: Array.isArray(parsed.completedAutoTasks) ? parsed.completedAutoTasks : []
+    };
+  } catch {
+    return { posts: [], projects: [], tasks: [], media: [], completedAutoTasks: [] };
+  }
+}
+
+function saveLocalCache() {
+  try {
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+  } catch (e) {
+    console.warn("Cache local plein (les données restent bien dans le Cloud) :", e);
+  }
+}
+
+function cleanForFirestore(obj) {
+  return JSON.parse(JSON.stringify(obj));
+}
+
+function getMediaById(id) {
+  return state.media.find((m) => m.id === id) || null;
+}
+
+// ============================================================
+// ÉTAT GLOBAL DE L'APPLICATION
+// ============================================================
+let state = loadLocalCache();
+let editingPostId = state.posts[0]?.id || null;
+let editingProjectId = null;
+let activeProjectId = null;
+let draggedProjectId = null;
+let pendingUploadItemId = null;
+let editingTaskId = null;
+let currentEditorSlides = [createEmptySlide()];
+let currentSlideIndex = 0;
+let currentEditorChecklist = createEmptyChecklist();
+let editorUndoStack = [];
+let undoDebounceTimer = null;
+let isRestoringUndo = false;
+let calendarViewMode = "month";
+let previewViewMode = "fil";
+let currentCalendarDate = new Date();
+currentCalendarDate = new Date(currentCalendarDate.getFullYear(), currentCalendarDate.getMonth(), 1);
