@@ -212,7 +212,7 @@ function renderSlidesStrip() {
       return `
         <div class="slide-chip ${isActive ? "active" : ""}" onclick="selectSlide(${idx})">
           <div class="slide-chip-thumb">
-            ${media ? `<img src="\${media.src}" alt="Photo ${idx + 1}" />` : `<span>${idx + 1}</span>`}
+            ${media ? `<img src="${media.src}" alt="Photo ${idx + 1}" />` : `<span>${idx + 1}</span>`}
           </div>
           <span>Photo ${idx + 1}</span>
           ${delBtn}
@@ -531,4 +531,312 @@ document.getElementById("previewModeFeed").addEventListener("click", () => {
   applyPreviewViewMode();
 });
 
-function getEditorStatsFrom
+function getEditorStatsFromInputs() {
+  return {
+    reach: Number(document.getElementById("perfReach").value) || 0,
+    likes: Number(document.getElementById("perfLikes").value) || 0,
+    comments: Number(document.getElementById("perfComments").value) || 0,
+    saves: Number(document.getElementById("perfSaves").value) || 0,
+    shares: Number(document.getElementById("perfShares").value) || 0,
+    clicks: Number(document.getElementById("perfClicks").value) || 0
+  };
+}
+
+function updatePerfSummaryPreview() {
+  const st = getEditorStatsFromInputs();
+  const interactions = st.likes + st.comments + st.saves + st.shares;
+  document.getElementById("perfTotalInteractions").textContent = interactions.toLocaleString("fr-FR");
+  document.getElementById("perfEngRate").textContent = computeEngagementRate(st);
+}
+
+["perfReach", "perfLikes", "perfComments", "perfSaves", "perfShares", "perfClicks"].forEach((id) => {
+  document.getElementById(id).addEventListener("input", () => {
+    updatePerfSummaryPreview();
+    scheduleEditorUndoSnapshot();
+  });
+});
+
+// ============================================================
+// CHARGEMENT, APERÇU EN DIRECT & SAUVEGARDE DU POST
+// ============================================================
+function loadPostIntoEditor(postId) {
+  const post = state.posts.find((p) => p.id === postId);
+  editingPostId = post ? post.id : null;
+  currentEditorSlides = post ? structuredClone(normalizeSlides(post)) : [createEmptySlide()];
+  currentSlideIndex = 0;
+  currentEditorChecklist = normalizeChecklist(post?.checklist);
+
+  const fmt = normalizeFormat(post?.format);
+  document.getElementById("editorHeading").textContent = post
+    ? `Préparer la publication : ${getFormatEmoji(fmt)} ${post.title || "Sans titre"}`
+    : "Créer une nouvelle publication";
+
+  document.getElementById("postTitle").value = post?.title || "";
+  document.getElementById("postDate").value = post?.date || getTodayIso();
+  document.getElementById("postTime").value = post?.time || "18:00";
+  document.getElementById("postFormat").value = fmt;
+  document.getElementById("postPilier").value = post?.pilier || "Pédagogie";
+  document.getElementById("postStatut").value = post?.statut || "Idée";
+  document.getElementById("postCanvaUrl").value = post?.canvaUrl || "";
+  document.getElementById("postMetaUrl").value = post?.metaUrl || "";
+  document.getElementById("postObjectif").value = post?.objectif || "";
+  document.getElementById("postCta").value = post?.cta || "";
+  document.getElementById("postCaption").value = post?.caption || "";
+  document.getElementById("btnDeleteCurrentPost").style.display = post ? "inline-block" : "none";
+
+  const st = normalizeStats(post?.stats);
+  document.getElementById("perfReach").value = st.reach;
+  document.getElementById("perfLikes").value = st.likes;
+  document.getElementById("perfComments").value = st.comments;
+  document.getElementById("perfSaves").value = st.saves;
+  document.getElementById("perfShares").value = st.shares;
+  document.getElementById("perfClicks").value = st.clicks;
+  updatePerfSummaryPreview();
+
+  renderPostChecklist();
+  updateEditorForFormat();
+  resetEditorUndoHistory();
+}
+
+function updateLivePreview() {
+  const format = document.getElementById("postFormat").value;
+  const slide = getCurrentSlide();
+  const media = getMediaById(slide.mediaId);
+  const totalSlides = currentEditorSlides.length;
+
+  if (format === "Story") {
+    const segContainer = document.getElementById("storyProgressSegments");
+    segContainer.innerHTML = currentEditorSlides
+      .map((_, idx) => {
+        const cls = idx < currentSlideIndex ? "done" : idx === currentSlideIndex ? "current" : "";
+        return `<div class="story-progress-seg ${cls}" onclick="selectSlide(${idx})" title="Photo ${idx + 1}"><div class="story-progress-seg-fill"></div></div>`;
+      })
+      .join("");
+
+    const hasMultiple = totalSlides > 1;
+    document.getElementById("storyPrevArrow").style.display = hasMultiple ? "flex" : "none";
+    document.getElementById("storyNextArrow").style.display = hasMultiple ? "flex" : "none";
+    document.getElementById("storyPreviewNavBar").style.display = hasMultiple ? "flex" : "none";
+    document.getElementById("storySlideIndicator").textContent = `Photo ${currentSlideIndex + 1} / ${totalSlides}`;
+
+    const bgImg = document.getElementById("storyPreviewBgImg");
+    if (media) {
+      bgImg.src = media.src;
+      bgImg.style.display = "block";
+    } else {
+      bgImg.style.display = "none";
+      bgImg.removeAttribute("src");
+    }
+
+    const storyTextVal = (slide.text || "").trim();
+    const stage = document.getElementById("storyPreviewStage");
+    let html = "";
+
+    if (storyTextVal) {
+      html += `<div class="story-text-overlay">${escapeHtml(storyTextVal)}</div>`;
+    }
+    if (slide.stickers && slide.stickers.length) {
+      html += slide.stickers.map(renderStoryStickerPreview).join("");
+    }
+    if (!html && !media) {
+      html = `<div class="story-empty-hint">Importez une ou plusieurs photos, ajoutez du texte ou un sticker pour prévisualiser votre Story</div>`;
+    }
+
+    stage.innerHTML = html;
+    return;
+  }
+
+  const caption = document.getElementById("postCaption").value;
+  const len = caption.length;
+  document.getElementById("charCounter").textContent = `${len} / 2 200 caractères`;
+  document.getElementById("charCounter").style.color = len > 2200 ? "#b42318" : "";
+
+  const mediaBox = document.getElementById("previewMediaBox");
+  let mediaHtml = media
+    ? `<img src="${media.src}" alt="${escapeHtml(media.name)}" />`
+    : `<span>Aucun visuel sélectionné</span>`;
+
+  if (totalSlides > 1) {
+    mediaHtml += `
+      <span class="preview-slide-counter">${currentSlideIndex + 1} / ${totalSlides}</span>
+      <button type="button" class="preview-nav-arrow prev" onclick="navigateSlide(-1)" title="Photo précédente">‹</button>
+      <button type="button" class="preview-nav-arrow next" onclick="navigateSlide(1)" title="Photo suivante">›</button>
+    `;
+  }
+  mediaBox.innerHTML = mediaHtml;
+
+  document.getElementById("previewCaptionBox").textContent =
+    caption.trim() || "Votre légende apparaîtra ici en temps réel.";
+
+  renderFeedPreviewGrid();
+}
+
+function renderFeedPreviewGrid() {
+  const grid = document.getElementById("feedPreviewGrid");
+  const sorted = [...state.posts]
+    .filter((p) => p.format !== "Story")
+    .sort((a, b) => ((b.date || "") + (b.time || "")).localeCompare((a.date || "") + (a.time || "")))
+    .slice(0, 9);
+
+  if (!sorted.length) {
+    grid.innerHTML = `<div class="feed-cell" style="grid-column: 1 / -1;">Grille vide</div>`;
+    return;
+  }
+
+  grid.innerHTML = sorted
+    .map((p) => {
+      const isCurrent = p.id === editingPostId;
+      const mediaIdToShow = isCurrent
+        ? (currentEditorSlides.find((s) => s.mediaId)?.mediaId || "")
+        : (normalizeSlides(p).find((s) => s.mediaId)?.mediaId || p.mediaId);
+      const m = getMediaById(mediaIdToShow);
+      const fmtEmoji = getFormatEmoji(p.format);
+      return `
+        <div class="feed-cell ${isCurrent ? "draft-ring" : ""}" title="${fmtEmoji} ${escapeHtml(p.title)}">
+          ${m ? `<img src="${m.src}" alt="${escapeHtml(p.title)}" />` : `<span>${fmtEmoji} ${escapeHtml(p.title || p.format)}</span>`}
+        </div>
+      `;
+    })
+    .join("");
+}
+
+function saveCurrentPost(options = {}) {
+  const { silent = false, reloadEditor = true } = options;
+  const title = document.getElementById("postTitle").value.trim() || "Publication sans titre";
+  const date = document.getElementById("postDate").value;
+  const time = document.getElementById("postTime").value;
+  const format = normalizeFormat(document.getElementById("postFormat").value);
+  const pilier = document.getElementById("postPilier").value;
+  const statut = document.getElementById("postStatut").value;
+  const canvaUrl = document.getElementById("postCanvaUrl").value.trim();
+  const metaUrl = document.getElementById("postMetaUrl").value.trim();
+  const objectif = format === "Story" ? "" : document.getElementById("postObjectif").value.trim();
+  const cta = format === "Story" ? "" : document.getElementById("postCta").value.trim();
+  const caption = document.getElementById("postCaption").value;
+
+  const slides = structuredClone(currentEditorSlides);
+  const firstMediaId = slides.find((s) => s.mediaId)?.mediaId || "";
+  const checklist = normalizeChecklist(currentEditorChecklist);
+  const stats = getEditorStatsFromInputs();
+
+  const payload = {
+    title,
+    date,
+    time,
+    format,
+    pilier,
+    statut,
+    mediaId: firstMediaId,
+    canvaUrl,
+    metaUrl,
+    objectif,
+    cta,
+    caption,
+    slides,
+    storyText: slides[0]?.text || "",
+    storyStickers: slides[0]?.stickers || [],
+    checklist,
+    stats
+  };
+
+  let savedPost;
+  if (editingPostId) {
+    const idx = state.posts.findIndex((p) => p.id === editingPostId);
+    if (idx !== -1) {
+      state.posts[idx] = { ...state.posts[idx], ...payload };
+      savedPost = state.posts[idx];
+    } else {
+      savedPost = { id: editingPostId, ...payload };
+      state.posts.push(savedPost);
+    }
+  } else {
+    const newId = "p_" + Date.now();
+    savedPost = { id: newId, ...payload };
+    state.posts.push(savedPost);
+    editingPostId = newId;
+  }
+
+  savePostToCloud(savedPost);
+  if (reloadEditor) {
+    loadPostIntoEditor(editingPostId);
+    renderInstagramAll();
+  }
+  renderDashboard();
+  if (!silent) {
+    showToast("Publication enregistrée !");
+  }
+}
+
+window.editPost = function (id) {
+  loadPostIntoEditor(id);
+  switchToTab("preparation");
+};
+
+window.deletePost = function (id) {
+  const targetPost = state.posts.find((p) => p.id === id);
+  const label = targetPost?.title ? ` « ${targetPost.title} »` : "";
+  if (!confirm(`Êtes-vous sûre de vouloir supprimer définitivement le post${label} ?`)) {
+    return;
+  }
+  state.posts = state.posts.filter((p) => p.id !== id);
+  if (editingPostId === id) {
+    editingPostId = state.posts[0]?.id || null;
+  }
+  deletePostFromCloud(id);
+  switchToTab("calendrier", { skipAutoSave: true });
+  renderDashboard();
+  showToast("Publication supprimée");
+};
+
+// ============================================================
+// ÉVÉNEMENTS DE L'ÉDITEUR
+// ============================================================
+document.getElementById("btnNewPost").addEventListener("click", () => {
+  loadPostIntoEditor(null);
+  switchToTab("preparation");
+});
+
+document.getElementById("btnDeleteCurrentPost").addEventListener("click", () => {
+  if (editingPostId) deletePost(editingPostId);
+});
+
+document.getElementById("btnCopyCaption").addEventListener("click", async () => {
+  const isStory = document.getElementById("postFormat").value === "Story";
+  const text = isStory
+    ? (getCurrentSlide().text || "")
+    : document.getElementById("postCaption").value;
+  try {
+    await navigator.clipboard.writeText(text);
+    showToast(isStory ? "Texte de cette photo copié dans le presse-papiers" : "Légende copiée dans le presse-papiers");
+  } catch {
+    showToast("Sélectionnez et copiez le texte manuellement");
+  }
+});
+
+document.querySelectorAll("[data-insert]").forEach((btn) => {
+  btn.addEventListener("click", () => {
+    const ta = document.getElementById("postCaption");
+    ta.value += btn.dataset.insert;
+    updateLivePreview();
+    pushEditorUndoSnapshot();
+  });
+});
+
+document.getElementById("postCaption").addEventListener("input", () => {
+  updateLivePreview();
+  scheduleEditorUndoSnapshot();
+});
+
+document.getElementById("storyText").addEventListener("input", (e) => {
+  getCurrentSlide().text = e.target.value;
+  updateLivePreview();
+  scheduleEditorUndoSnapshot();
+});
+
+["postTitle", "postCanvaUrl", "postMetaUrl", "postObjectif", "postCta"].forEach((id) => {
+  document.getElementById(id).addEventListener("input", scheduleEditorUndoSnapshot);
+});
+
+["postDate", "postTime", "postPilier", "postStatut"].forEach((id) => {
+  document.getElementById(id).addEventListener("change", pushEditorUndoSnapshot);
+});
