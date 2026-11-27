@@ -1307,3 +1307,249 @@ table.stats-table input[type="number"] {
 .cal-event-wrap.dragging {
   opacity: 0.45;
 }
+/* ============================================================
+   PILIERS PERSONNALISABLES & MODALE PILIERS
+   ============================================================ */
+.pillar-dot {
+  width: 9px;
+  height: 9px;
+  border-radius: 50%;
+  display: inline-block;
+  flex-shrink: 0;
+}
+
+.mini-tag.pillar-tag {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  font-weight: 600;
+}
+
+.pillars-list {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-bottom: 14px;
+  max-height: 280px;
+  overflow-y: auto;
+}
+
+.pillar-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 10px;
+  background: var(--surface-alt);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+}
+
+.pillar-row input[type="color"] {
+  width: 34px;
+  height: 30px;
+  padding: 2px;
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  background: #fff;
+  cursor: pointer;
+  flex-shrink: 0;
+}
+
+.pillar-row input[type="text"] {
+  flex: 1;
+  min-width: 0;
+}
+
+.pillar-add-row {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  padding-top: 12px;
+  border-top: 1px solid var(--border);
+}
+
+.pillar-add-row input[type="color"] {
+  width: 38px;
+  height: 34px;
+  padding: 2px;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  background: #fff;
+  cursor: pointer;
+}
+
+.pillar-add-row input[type="text"] {
+  flex: 1;
+}
+
+/* ============================================================
+   ONGLET STATISTIQUES AVANCÉ (4 BLOCS + CHART.JS)
+   ============================================================ */
+.stats-controls-bar {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 14px 18px;
+  box-shadow: var(--shadow);
+  margin-bottom: 18px;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.stats-controls-group {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 10px;
+}
+
+.stats-controls-label {
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--muted);
+}
+
+.kpi-sub {
+  font-size: 12px;
+  color: var(--muted);
+  margin-top: 6px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  flex-wrap: wrap;
+}
+
+.delta-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 3px;
+  padding: 2px 8px;
+  border-radius: 999px;
+  font-size: 11px;
+  font-weight: 700;
+}
+
+.delta-up {
+  background: #dcfce7;
+  color: #15803d;
+}
+
+.delta-down {
+  background: #fee2e2;
+  color: #dc2626;
+}
+
+.delta-flat {
+  background: #f1f5f9;
+  color: #475467;
+}
+
+.top-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 2px 8px;
+  border-radius: 999px;
+  font-size: 10px;
+  font-weight: 700;
+  margin-left: 6px;
+}
+
+.top-badge.eng {
+  background: #fef3c7;
+  color: #92400e;
+}
+
+.top-badge.reach {
+  background: #dbeafe;
+  color: #1d4ed8;
+}
+
+.followers-layout {
+  display: grid;
+  grid-template-columns: 340px 1fr;
+  gap: 20px;
+  align-items: start;
+}
+
+@media (max-width: 960px) {
+  .followers-layout {
+    grid-template-columns: 1fr;
+  }
+}
+
+.followers-form {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+  margin-bottom: 12px;
+}
+
+.followers-form input[type="month"],
+.followers-form input[type="number"] {
+  flex: 1;
+  min-width: 110px;
+  font-family: inherit;
+  font-size: 13px;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 7px 10px;
+}
+
+.followers-list {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  max-height: 230px;
+  overflow-y: auto;
+}
+
+.followers-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  padding: 7px 10px;
+  background: var(--surface-alt);
+  border-radius: 8px;
+  font-size: 13px;
+}
+
+.charts-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 18px;
+  margin-bottom: 18px;
+}
+
+@media (max-width: 960px) {
+  .charts-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+.chart-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 18px;
+  box-shadow: var(--shadow);
+}
+
+.chart-card h3 {
+  margin: 0 0 12px 0;
+  font-size: 15px;
+}
+
+.chart-box {
+  position: relative;
+  height: 265px;
+  width: 100%;
+}
+
+.chart-box.tall {
+  height: 290px;
+}
