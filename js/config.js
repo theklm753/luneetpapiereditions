@@ -43,6 +43,7 @@ const COL_META = "studio_meta";
 const META_DOC_ID = "config";
 const SCHEMA_VERSION = 3;
 const STORAGE_KEY = "as_studio_cache_v3";
+const ACTIVE_TIMER_KEY = "as_studio_active_timer_v1";
 
 const VALID_FORMATS = ["Carrousel", "Reel", "Story"];
 const VALID_PILIERS = ["Pédagogie", "Coulisses", "Offre / Produit", "Preuve sociale"];
@@ -131,6 +132,22 @@ function getTodayIso() {
   return `${y}-${m}-${d}`;
 }
 
+function formatDuration(totalSeconds, showSeconds = false) {
+  const sec = Math.max(0, Math.floor(Number(totalSeconds) || 0));
+  const h = Math.floor(sec / 3600);
+  const m = Math.floor((sec % 3600) / 60);
+  const s = sec % 60;
+  if (showSeconds) {
+    if (h > 0) return `${h}h ${String(m).padStart(2, "0")}m ${String(s).padStart(2, "0")}s`;
+    if (m > 0) return `${m}m ${String(s).padStart(2, "0")}s`;
+    return `${s}s`;
+  }
+  if (h > 0) return `${h}h ${String(m).padStart(2, "0")}m`;
+  if (m > 0) return `${m} min`;
+  if (sec > 0) return `< 1 min`;
+  return "0 min";
+}
+
 function isPostOverdue(post) {
   if (!post || post.statut === "Publié" || !post.date) return false;
   const timeStr = post.time && /^\d{2}:\d{2}/.test(post.time) ? post.time.slice(0, 5) : "23:59";
@@ -199,8 +216,20 @@ function createEmptyProjectItem(text = "", illusStatus = "a_demarrer", textStatu
     imageSrc: "",
     illusStatus,
     text,
-    textStatus
+    textStatus,
+    versions: [],
+    sessions: []
   };
+}
+
+function computeItemTotalSeconds(item) {
+  const sessions = Array.isArray(item?.sessions) ? item.sessions : [];
+  return sessions.reduce((acc, s) => acc + (Number(s.durationSeconds) || 0), 0);
+}
+
+function computeProjectTotalSeconds(project) {
+  const items = Array.isArray(project?.items) ? project.items : [];
+  return items.reduce((acc, it) => acc + computeItemTotalSeconds(it), 0);
 }
 
 function computeProjectProgress(project) {
@@ -295,21 +324,55 @@ function normalizeProjectItemStatus(st) {
 function normalizeProject(pr, idx = 0) {
   const validKeys = PROJECT_STATUSES.map((s) => s.key);
   const items = Array.isArray(pr?.items)
-    ? pr.items.map((it, i) => ({
-        id: it.id || `item_${pr.id || idx}_${i}`,
-        imageSrc: it.imageSrc || "",
-        illusStatus: normalizeProjectItemStatus(it.illusStatus),
-        text: it.text || "",
-        textStatus: normalizeProjectItemStatus(it.textStatus)
+    ? pr.items.map((it, i) => {
+        const versions = Array.isArray(it.versions)
+          ? it.versions.map((v, vi) => ({
+              id: v.id || `ver_${i}_${vi}`,
+              src: v.src || "",
+              label: v.label || `Version ${vi + 1}`,
+              createdAt: v.createdAt || ""
+            }))
+          : it.imageSrc
+            ? [{ id: `ver_init_${i}`, src: it.imageSrc, label: "Version 1", createdAt: "" }]
+            : [];
+        const sessions = Array.isArray(it.sessions)
+          ? it.sessions.map((s, si) => ({
+              id: s.id || `ses_${i}_${si}`,
+              date: s.date || "",
+              durationSeconds: Number(s.durationSeconds) || 0,
+              note: s.note || ""
+            }))
+          : [];
+        return {
+          id: it.id || `item_${pr.id || idx}_${i}`,
+          imageSrc: it.imageSrc || versions[versions.length - 1]?.src || "",
+          illusStatus: normalizeProjectItemStatus(it.illusStatus),
+          text: it.text || "",
+          textStatus: normalizeProjectItemStatus(it.textStatus),
+          versions,
+          sessions
+        };
+      })
+    : [];
+
+  const inspirations = Array.isArray(pr?.inspirations)
+    ? pr.inspirations.map((ins, ii) => ({
+        id: ins.id || `insp_${pr.id || idx}_${ii}`,
+        src: ins.src || "",
+        name: ins.name || "Inspiration",
+        createdAt: ins.createdAt || ""
       }))
     : [];
+
   const normalized = {
     ...pr,
     id: pr?.id || `proj_${Date.now()}_${idx}`,
     title: pr?.title || "Projet sans titre",
     status: validKeys.includes(pr?.status) ? pr.status : "a_demarrer",
     progress: Math.min(100, Math.max(0, Number(pr?.progress) || 0)),
+    technique: pr?.technique || "",
     notes: pr?.notes || "",
+    inspirations,
     items
   };
   if (items.length > 0) {
