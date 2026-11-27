@@ -1,5 +1,5 @@
 // ============================================================
-// ONGLET INSTAGRAM > STATISTIQUES (4 BLOCS + CHART.JS)
+// ONGLET INSTAGRAM > STATISTIQUES (4 BLOCS + CHART.JS OPTIMISÉ)
 // ============================================================
 const statsCharts = {};
 let statsPeriodInitialized = false;
@@ -110,7 +110,6 @@ function getPostsForSelectedPeriod() {
     };
   }
 
-  // avg_global
   return {
     mode: "avg_global",
     label: "Moyenne mensuelle globale",
@@ -165,7 +164,6 @@ function renderStatsTopSection(periodData) {
   const clicksDisplay = isAvg ? Math.round(clicksSum / activeMonthsCount) : clicksSum;
   const engAvgStr = computeAvgEngagementFromPosts(posts);
 
-  // Calcul abonnés totaux & évolution nette sur la période
   const hist = normalizeFollowersHistory(state.followersHistory);
   const sortedYm = Object.keys(hist).sort();
 
@@ -305,6 +303,7 @@ function renderFollowersSection() {
     options: {
       responsive: true,
       maintainAspectRatio: false,
+      animation: false,
       interaction: { mode: "index", intersect: false },
       scales: {
         y: {
@@ -400,7 +399,6 @@ function renderMonthlyPerformanceCharts(months) {
   const agg = aggregateByMonth(months);
   const labels = agg.map((d) => formatMonthShortFr(d.ym));
 
-  // Graphique 1 : Portée & Vues mensuelles
   renderChart("chartReachViews", {
     type: "bar",
     data: {
@@ -423,11 +421,11 @@ function renderMonthlyPerformanceCharts(months) {
     options: {
       responsive: true,
       maintainAspectRatio: false,
+      animation: false,
       scales: { y: { beginAtZero: true } }
     }
   });
 
-  // Graphique 2 : Interactions mensuelles empilées
   renderChart("chartInteractionsStacked", {
     type: "bar",
     data: {
@@ -442,6 +440,7 @@ function renderMonthlyPerformanceCharts(months) {
     options: {
       responsive: true,
       maintainAspectRatio: false,
+      animation: false,
       scales: {
         x: { stacked: true },
         y: { stacked: true, beginAtZero: true }
@@ -449,7 +448,6 @@ function renderMonthlyPerformanceCharts(months) {
     }
   });
 
-  // Graphique 3 : Enregistrements & Clics mensuels
   renderChart("chartSavesClicks", {
     type: "line",
     data: {
@@ -476,11 +474,11 @@ function renderMonthlyPerformanceCharts(months) {
     options: {
       responsive: true,
       maintainAspectRatio: false,
+      animation: false,
       scales: { y: { beginAtZero: true } }
     }
   });
 
-  // Graphique 4 : Taux d'engagement moyen mensuel (%)
   renderChart("chartEngagementRate", {
     type: "line",
     data: {
@@ -500,6 +498,7 @@ function renderMonthlyPerformanceCharts(months) {
     options: {
       responsive: true,
       maintainAspectRatio: false,
+      animation: false,
       scales: {
         y: {
           beginAtZero: true,
@@ -557,7 +556,6 @@ function renderFormatComparison(periodData, windowedMonths) {
     };
   });
 
-  // Meilleur engagement moyen & meilleure portée (parmi formats avec au moins 1 post)
   const activeRows = rows.filter((r) => r.count > 0);
   let bestEngFmt = null;
   let bestReachFmt = null;
@@ -596,7 +594,6 @@ function renderFormatComparison(periodData, windowedMonths) {
       .join("");
   }
 
-  // Graphique mensuel par format (Taux d'engagement moyen % par mois)
   const labels = windowedMonths.map(formatMonthShortFr);
   const datasets = VALID_FORMATS.map((fmt) => {
     const data = windowedMonths.map((ym) => {
@@ -623,6 +620,7 @@ function renderFormatComparison(periodData, windowedMonths) {
     options: {
       responsive: true,
       maintainAspectRatio: false,
+      animation: false,
       scales: {
         y: {
           beginAtZero: true,
@@ -699,7 +697,6 @@ function renderPillarComparison(periodData, windowedMonths) {
       : `<tr><td colspan="7">Aucun pilier configuré.</td></tr>`;
   }
 
-  // Graphique mensuel par pilier selon la métrique choisie
   const labels = windowedMonths.map(formatMonthShortFr);
   const datasets = pillars.map((pil) => {
     const data = windowedMonths.map((ym) => {
@@ -741,6 +738,7 @@ function renderPillarComparison(periodData, windowedMonths) {
     options: {
       responsive: true,
       maintainAspectRatio: false,
+      animation: false,
       scales: {
         y: {
           beginAtZero: true,
@@ -769,6 +767,8 @@ function renderChart(canvasId, config) {
 // ============================================================
 function renderStatisticsSection() {
   if (!document.getElementById("statsKpis")) return;
+  if (!isStatsTabCurrentlyVisible()) return;
+
   ensureStatsPeriodDefault();
   const periodData = getPostsForSelectedPeriod();
   const windowedMonths = getWindowedMonths();
