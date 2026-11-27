@@ -1,7 +1,8 @@
 // ============================================================
-// FILTRE MULTI-SÉLECTION DE FORMATS (INSTAGRAM)
+// FILTRE MULTI-SÉLECTION DE FORMATS & GESTION DES PILIERS
 // ============================================================
 let draggedPostId = null;
+let draftPillars = [];
 
 function getSelectedFormats() {
   return Array.from(document.querySelectorAll(".fmt-checkbox:checked")).map((cb) => cb.value);
@@ -10,6 +11,7 @@ function getSelectedFormats() {
 function updateFormatFilterLabel() {
   const selected = getSelectedFormats();
   const labelEl = document.getElementById("formatFilterLabel");
+  if (!labelEl) return;
   if (selected.length === VALID_FORMATS.length) {
     labelEl.textContent = "Tous les formats";
   } else if (selected.length === 0) {
@@ -59,6 +61,155 @@ document.getElementById("btnFmtNoStory").addEventListener("click", () => {
   if (calendarViewMode === "month") renderCalendarMonthView();
 });
 
+// Alimentation dynamique des sélecteurs de piliers (Filtre + Éditeur)
+function populatePillarSelects() {
+  const pillars = getPillarList();
+
+  const filterSelect = document.getElementById("filterPilier");
+  if (filterSelect) {
+    const prevFilter = filterSelect.value;
+    filterSelect.innerHTML =
+      `<option value="">Tous les piliers</option>` +
+      pillars.map((p) => `<option value="${escapeHtml(p.name)}">${escapeHtml(p.name)}</option>`).join("");
+    if (pillars.some((p) => p.name === prevFilter)) {
+      filterSelect.value = prevFilter;
+    }
+  }
+
+  const editorSelect = document.getElementById("postPilier");
+  if (editorSelect) {
+    const prevEditor = editorSelect.value;
+    editorSelect.innerHTML = pillars
+      .map((p) => `<option value="${escapeHtml(p.name)}">${escapeHtml(p.name)}</option>`)
+      .join("");
+    if (pillars.some((p) => p.name === prevEditor)) {
+      editorSelect.value = prevEditor;
+    } else if (pillars.length) {
+      editorSelect.value = pillars[0].name;
+    }
+  }
+}
+
+// Modale "Gérer mes piliers"
+window.openPillarsModal = function () {
+  draftPillars = structuredClone(getPillarList());
+  renderPillarsModalList();
+  document.getElementById("newPillarName").value = "";
+  document.getElementById("newPillarColor").value = "#6366f1";
+  document.getElementById("pillarsModal").classList.add("open");
+};
+
+function closePillarsModal() {
+  document.getElementById("pillarsModal").classList.remove("open");
+}
+
+document.getElementById("btnManagePillars")?.addEventListener("click", openPillarsModal);
+document.getElementById("btnClosePillarsModal")?.addEventListener("click", closePillarsModal);
+document.getElementById("btnCancelPillars")?.addEventListener("click", closePillarsModal);
+document.getElementById("pillarsModal")?.addEventListener("click", (e) => {
+  if (e.target.id === "pillarsModal") closePillarsModal();
+});
+
+function renderPillarsModalList() {
+  const listEl = document.getElementById("pillarsModalList");
+  if (!listEl) return;
+  if (!draftPillars.length) {
+    listEl.innerHTML = `<div style="font-size:13px; color:var(--muted);">Aucun pilier. Ajoutez-en un ci-dessous.</div>`;
+    return;
+  }
+  listEl.innerHTML = draftPillars
+    .map(
+      (p, idx) => `
+      <div class="pillar-row">
+        <input type="color" value="${escapeHtml(p.color)}" onchange="updateDraftPillar(${idx}, 'color', this.value)" title="Couleur du pilier" />
+        <input type="text" value="${escapeHtml(p.name)}" oninput="updateDraftPillar(${idx}, 'name', this.value)" placeholder="Nom du pilier" />
+        <button type="button" class="sm danger" onclick="removeDraftPillar(${idx})" title="Supprimer ce pilier">✕</button>
+      </div>
+    `
+    )
+    .join("");
+}
+
+window.updateDraftPillar = function (idx, field, val) {
+  if (!draftPillars[idx]) return;
+  draftPillars[idx][field] = val;
+};
+
+window.removeDraftPillar = function (idx) {
+  if (draftPillars.length <= 1) {
+    showToast("Il faut conserver au moins un pilier éditorial");
+    return;
+  }
+  draftPillars.splice(idx, 1);
+  renderPillarsModalList();
+};
+
+document.getElementById("btnAddDraftPillar")?.addEventListener("click", () => {
+  const nameInput = document.getElementById("newPillarName");
+  const colorInput = document.getElementById("newPillarColor");
+  const name = (nameInput.value || "").trim();
+  if (!name) {
+    showToast("Saisissez un nom de pilier");
+    return;
+  }
+  draftPillars.push({
+    id: "pil_" + Date.now() + "_" + Math.floor(Math.random() * 1000),
+    name,
+    color: colorInput.value || "#5b4ce6"
+  });
+  nameInput.value = "";
+  renderPillarsModalList();
+});
+
+document.getElementById("btnSavePillars")?.addEventListener("click", async () => {
+  const cleaned = draftPillars
+    .map((p, i) => ({
+      id: p.id || `pil_${Date.now()}_${i}`,
+      name: String(p.name || "").trim(),
+      color: /^#[0-9a-fA-F]{6}$/.test(p.color || "") ? p.color : "#5b4ce6"
+    }))
+    .filter((p) => p.name);
+
+  if (!cleaned.length) {
+    showToast("Ajoutez au moins un pilier avec un nom valide");
+    return;
+  }
+
+  const oldPillars = getPillarList();
+  const fallbackName = cleaned[0].name;
+  const postsToUpdate = [];
+
+  state.posts.forEach((post) => {
+    const matchedOld = oldPillars.find((op, idx) => {
+      const d = draftPillars[idx];
+      return d && d.id === op.id && op.name === post.pilier;
+    });
+    if (matchedOld) {
+      const updatedDef = cleaned.find((c) => c.id === matchedOld.id);
+      if (updatedDef && post.pilier !== updatedDef.name) {
+        post.pilier = updatedDef.name;
+        postsToUpdate.push(post);
+      }
+    } else if (!cleaned.some((c) => c.name === post.pilier)) {
+      post.pilier = fallbackName;
+      postsToUpdate.push(post);
+    }
+  });
+
+  state.pillars = cleaned;
+  await saveMetaToCloud();
+  if (postsToUpdate.length) {
+    await Promise.all(postsToUpdate.map((p) => savePostToCloud(p)));
+  }
+
+  populatePillarSelects();
+  renderPostsGrid();
+  if (calendarViewMode === "month") renderCalendarMonthView();
+  if (typeof renderStatisticsSection === "function") renderStatisticsSection();
+  closePillarsModal();
+  showToast("Piliers éditoriaux enregistrés !");
+});
+
 // ============================================================
 // EXPORT MODÈLE EXCEL (.xlsx) & IMPORT EXCEL (.xlsx/.xls/.csv)
 // ============================================================
@@ -80,12 +231,15 @@ function downloadExcelTemplate() {
     "Légende Instagram"
   ];
 
+  const pillarNames = getPillarList().map((p) => p.name).join(" | ");
+  const firstPillar = getPillarList()[0]?.name || "Pédagogie";
+
   const exampleRow = [
     "Exemple : Les coulisses de mon nouvel album",
     "2026-12-01",
     "18:00",
     "Carrousel",
-    "Coulisses",
+    firstPillar,
     "Préparation",
     "Créer de la proximité avant la sortie",
     "Enregistre ce post pour suivre la sortie",
@@ -95,7 +249,7 @@ function downloadExcelTemplate() {
   const wsPosts = XLSX.utils.aoa_to_sheet([headers, exampleRow]);
   wsPosts["!cols"] = [
     { wch: 36 }, { wch: 18 }, { wch: 14 }, { wch: 15 },
-    { wch: 18 }, { wch: 15 }, { wch: 32 }, { wch: 32 }, { wch: 65 }
+    { wch: 22 }, { wch: 15 }, { wch: 32 }, { wch: 32 }, { wch: 65 }
   ];
 
   const instructions = [
@@ -103,11 +257,11 @@ function downloadExcelTemplate() {
     ["Titre", "Oui", "Texte libre (titre interne de la publication)"],
     ["Date (AAAA-MM-JJ)", "Oui", "Format AAAA-MM-JJ (ex : 2026-12-05) ou date Excel standard"],
     ["Heure (HH:MM)", "Non", "Format HH:MM (ex : 18:00). Par défaut : 18:00"],
-    ["Format", "Oui", "Carrousel | Reel | Story"],
-    ["Pilier", "Oui", "Pédagogie | Coulisses | Offre / Produit | Preuve sociale"],
+    ["Format", "Oui", "Post simple | Carrousel | Reel | Story"],
+    ["Pilier", "Oui", pillarNames],
     ["Statut", "Oui", "Idée | Préparation | Validé | Programmé | Publié"],
-    ["Objectif", "Non", "Objectif principal (Carrousel / Reel)"],
-    ["CTA", "Non", "Appel à l'action (Carrousel / Reel)"],
+    ["Objectif", "Non", "Objectif principal (Post simple / Carrousel / Reel)"],
+    ["CTA", "Non", "Appel à l'action (Post simple / Carrousel / Reel)"],
     ["Légende Instagram", "Oui", "Légende complète (ou texte principal si le format est Story)"],
     ["", "", ""],
     ["Consigne pour Gemini :", "", "Remplis l'onglet 'Calendrier_Posts' en remplaçant la ligne d'exemple par les publications du calendrier éditorial, tout en conservant exactement les titres de colonnes en ligne 1."]
@@ -222,6 +376,8 @@ function handleExcelImport(event) {
       let firstImportedDate = "";
       const baseTs = Date.now();
       const createdPosts = [];
+      const pillarNames = getPillarList().map((p) => p.name);
+      const defaultPillar = pillarNames[0] || "Pédagogie";
 
       rows.forEach((row, idx) => {
         const rawTitle = String(getFieldFromRow(row, ["titre", "title", "sujet"]) || "").trim();
@@ -248,7 +404,7 @@ function handleExcelImport(event) {
           date: parsedDate,
           time: parseExcelTime(rawTime),
           format: matchedFormat,
-          pilier: matchAllowedValue(rawPilier, VALID_PILIERS, "Pédagogie"),
+          pilier: matchAllowedValue(rawPilier, pillarNames, defaultPillar),
           statut: matchAllowedValue(rawStatut, VALID_STATUTS, "Préparation"),
           mediaId: "",
           objectif: isStory ? "" : rawObjectif,
@@ -353,6 +509,7 @@ function renderPostsGrid() {
         : (post.caption || "");
       const totalStickers = slides.reduce((acc, s) => acc + (s.stickers?.length || 0), 0);
       const { done, total, pct } = computeChecklistProgress(post.checklist);
+      const pillarColor = getPillarColor(post.pilier);
 
       return `
         <article class="post-card card-${statusClass}">
@@ -368,7 +525,7 @@ function renderPostsGrid() {
             <h3 class="post-title">${fmtEmoji} ${escapeHtml(post.title || "Sans titre")}</h3>
             <div class="post-caption-preview">${escapeHtml(previewText)}</div>
             <div class="tag-row">
-              <span class="mini-tag">${post.pilier}</span>
+              <span class="mini-tag pillar-tag"><span class="pillar-dot" style="background:${escapeHtml(pillarColor)};"></span>${escapeHtml(post.pilier)}</span>
               ${slides.length > 1 ? `<span class="mini-tag">🖼️ ${slides.length} photos</span>` : ""}
               ${post.format === "Story" && totalStickers ? `<span class="mini-tag">✨ ${totalStickers} sticker(s)</span>` : ""}
             </div>
@@ -455,7 +612,7 @@ function renderCalendarMonthView() {
               const statusLabel = getStatusDisplayLabel(p);
               const fmtEmoji = getFormatEmoji(p.format);
               const { done, total, pct } = computeChecklistProgress(p.checklist);
-              const tooltip = `${fmtEmoji} [${p.format} • ${statusLabel} • Avancement ${pct}% (${done}/${total})] ${p.time ? p.time + " — " : ""}${p.title || ""}`;
+              const tooltip = `${fmtEmoji} [${p.format} • ${p.pilier} • ${statusLabel} • Avancement ${pct}% (${done}/${total})] ${p.time ? p.time + " — " : ""}${p.title || ""}`;
               const labelText = `${fmtEmoji} ${p.time ? p.time + " " : ""}${p.title || p.format}`;
               return `
                 <div
@@ -527,7 +684,7 @@ window.handleCalendarDrop = function (event, targetIsoDate) {
   renderCalendarMonthView();
   renderPostsGrid();
   renderDashboard();
-  renderStatisticsSection();
+  if (typeof renderStatisticsSection === "function") renderStatisticsSection();
 
   showToast(`Post déplacé au ${formatShortFrenchDate(targetIsoDate)}`);
 };
@@ -571,81 +728,3 @@ document.getElementById("btnNextMonth").addEventListener("click", () => {
     if (calendarViewMode === "month") renderCalendarMonthView();
   });
 });
-
-// ============================================================
-// SUIVI DES STATISTIQUES
-// ============================================================
-function renderStatisticsSection() {
-  let totalReach = 0;
-  let totalInteractions = 0;
-  let totalSaves = 0;
-  let totalClicks = 0;
-
-  state.posts.forEach((p) => {
-    const st = normalizeStats(p.stats);
-    totalReach += st.reach;
-    totalInteractions += st.likes + st.comments + st.saves + st.shares;
-    totalSaves += st.saves;
-    totalClicks += st.clicks;
-  });
-
-  const avgEng = totalReach > 0 ? ((totalInteractions / totalReach) * 100).toFixed(1) + "%" : "0.0%";
-
-  document.getElementById("statsKpis").innerHTML = `
-    <div class="kpi"><div class="label">Portée cumulée</div><div class="value">${totalReach.toLocaleString("fr-FR")}</div></div>
-    <div class="kpi"><div class="label">Interactions totales</div><div class="value">${totalInteractions.toLocaleString("fr-FR")}</div></div>
-    <div class="kpi"><div class="label">Enregistrements totaux</div><div class="value">${totalSaves.toLocaleString("fr-FR")}</div></div>
-    <div class="kpi"><div class="label">Clics totaux</div><div class="value">${totalClicks.toLocaleString("fr-FR")}</div></div>
-    <div class="kpi"><div class="label">Engagement moyen / portée</div><div class="value">${avgEng}</div></div>
-  `;
-
-  const tbody = document.getElementById("statsTableBody");
-  if (!state.posts.length) {
-    tbody.innerHTML = `<tr><td colspan="13">Aucune publication à afficher.</td></tr>`;
-    return;
-  }
-
-  tbody.innerHTML = state.posts
-    .map((p) => {
-      const st = normalizeStats(p.stats);
-      const statusClass = getStatusColorClass(p);
-      const statusLabel = getStatusDisplayLabel(p);
-      const fmtEmoji = getFormatEmoji(p.format);
-      return `
-        <tr>
-          <td><strong>${fmtEmoji} ${escapeHtml(p.title || "Sans titre")}</strong></td>
-          <td>${escapeHtml(p.date || "—")}</td>
-          <td><span class="format-badge">${fmtEmoji} ${escapeHtml(p.format)}</span></td>
-          <td><span class="status-badge ${statusClass}">${escapeHtml(statusLabel)}</span></td>
-          <td>${escapeHtml(p.pilier)}</td>
-          <td><input type="number" min="0" id="st-reach-${p.id}" value="${st.reach}" /></td>
-          <td><input type="number" min="0" id="st-likes-${p.id}" value="${st.likes}" /></td>
-          <td><input type="number" min="0" id="st-comments-${p.id}" value="${st.comments}" /></td>
-          <td><input type="number" min="0" id="st-saves-${p.id}" value="${st.saves}" /></td>
-          <td><input type="number" min="0" id="st-shares-${p.id}" value="${st.shares}" /></td>
-          <td><input type="number" min="0" id="st-clicks-${p.id}" value="${st.clicks}" /></td>
-          <td><strong>${computeEngagementRate(st)}</strong></td>
-          <td><button class="sm primary" onclick="savePostStats('${p.id}')">Enregistrer</button></td>
-        </tr>
-      `;
-    })
-    .join("");
-}
-
-window.savePostStats = function (postId) {
-  const idx = state.posts.findIndex((p) => p.id === postId);
-  if (idx === -1) return;
-
-  state.posts[idx].stats = {
-    reach: Number(document.getElementById(`st-reach-${postId}`).value) || 0,
-    likes: Number(document.getElementById(`st-likes-${postId}`).value) || 0,
-    comments: Number(document.getElementById(`st-comments-${postId}`).value) || 0,
-    saves: Number(document.getElementById(`st-saves-${postId}`).value) || 0,
-    shares: Number(document.getElementById(`st-shares-${postId}`).value) || 0,
-    clicks: Number(document.getElementById(`st-clicks-${postId}`).value) || 0
-  };
-
-  savePostToCloud(state.posts[idx]);
-  renderStatisticsSection();
-  showToast("Statistiques mises à jour");
-};
