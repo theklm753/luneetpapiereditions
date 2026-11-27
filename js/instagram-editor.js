@@ -766,6 +766,7 @@ function saveCurrentPost(options = {}) {
     editingPostId = newId;
   }
 
+  if (typeof recordTrackerAction === "function") recordTrackerAction("insta");
   savePostToCloud(savedPost);
   if (reloadEditor) {
     loadPostIntoEditor(editingPostId);
