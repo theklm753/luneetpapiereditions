@@ -85,6 +85,23 @@
           <div class="todo-card" id="dashboardTodoList"></div>
         </div>
       </div>
+
+      <!-- PARTIE 1 : LES 4 TRACKERS QUOTIDIENS -->
+      <section class="trackers-section">
+        <div class="trackers-header-bar">
+          <span class="dashboard-section-label">Trackers quotidiens</span>
+          <div class="trackers-controls">
+            <label for="trackerDateInput" style="font-size:12px; font-weight:700; color:var(--muted);">Date :</label>
+            <input type="date" id="trackerDateInput" />
+            <button type="button" class="sm" id="btnTrackerToday">Aujourd'hui</button>
+            <select id="trackerRangeSelect">
+              <option value="week">Semaine en cours</option>
+              <option value="month">Mois en cours</option>
+            </select>
+          </div>
+        </div>
+        <div class="trackers-grid" id="dashboardTrackersGrid"></div>
+      </section>
     </main>
   </div>
 
@@ -114,7 +131,6 @@
     </header>
 
     <main>
-      <!-- ONGLET 1 : CALENDRIER ÉDITORIAL -->
       <section id="tab-calendrier" class="section active">
         <div class="toolbar">
           <div class="filters">
@@ -200,7 +216,6 @@
         </div>
       </section>
 
-      <!-- VUE ÉDITION / CRÉATION DE POST -->
       <section id="tab-preparation" class="section">
         <div class="editor-topbar">
           <button type="button" class="sm" id="btnBackToCalendar">← Retour au calendrier</button>
@@ -468,7 +483,6 @@
               </div>
             </div>
 
-            <!-- ÉTAPES AVANT PUBLICATION -->
             <div class="panel">
               <div class="post-checklist-header">
                 <h3>Étapes avant publication</h3>
@@ -483,9 +497,7 @@
         </div>
       </section>
 
-      <!-- ONGLET 2 : STATISTIQUES (4 BLOCS) -->
       <section id="tab-statistiques" class="section">
-        <!-- Bloc 1 : Contrôle période & 5 KPIs -->
         <div class="stats-controls-bar">
           <div class="stats-controls-group">
             <span class="stats-controls-label">Période :</span>
@@ -504,7 +516,6 @@
 
         <div class="kpis" id="statsKpis"></div>
 
-        <!-- Bloc 2 : Suivi mensuel des Abonnés -->
         <div class="panel">
           <h2>👥 Suivi mensuel des Abonnés</h2>
           <div class="followers-layout">
@@ -522,7 +533,6 @@
           </div>
         </div>
 
-        <!-- Bloc 3 : 4 Graphiques d'évolution mensuelle -->
         <div class="charts-grid">
           <div class="chart-card">
             <h3>1. Portée & Vues mensuelles</h3>
@@ -542,7 +552,6 @@
           </div>
         </div>
 
-        <!-- Bloc 4A : Comparatif par Type de contenu -->
         <div class="panel">
           <h2>📱 Focus par Type de contenu</h2>
           <div class="chart-box tall" style="margin-bottom: 18px;">
@@ -566,7 +575,6 @@
           </div>
         </div>
 
-        <!-- Bloc 4B : Performance par Pilier éditorial -->
         <div class="panel">
           <div class="panel-header-row">
             <h2 style="margin: 0;">🏷️ Performance par Pilier éditorial</h2>
@@ -693,6 +701,9 @@
         <div class="illustrations-grid" id="projectIllustrationsGrid"></div>
         <input type="file" id="projectIllusFileInput" accept="image/*" hidden />
         <input type="file" id="illusVersionFileInput" accept="image/*" hidden />
+
+        <!-- PARTIE 2 : GESTION ÉDITION -->
+        <div id="projectEditionSection"></div>
       </div>
     </main>
   </div>
@@ -747,6 +758,77 @@
           <button type="button" id="btnCancelProject">Annuler</button>
           <button type="button" class="primary" id="btnSaveProject">Enregistrer</button>
         </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- MODALE AJOUT / ÉDITION SOUMISSION MAISON D'ÉDITION -->
+  <div class="modal-backdrop" id="submissionModal">
+    <div class="modal-card modal-lg">
+      <div class="modal-head">
+        <h2 id="submissionModalTitle">Ajouter / Associer une maison d'édition</h2>
+        <button type="button" class="sm" id="btnCloseSubmissionModal">✕</button>
+      </div>
+
+      <div class="field" style="margin-bottom: 12px;">
+        <label for="subCatalogSelect">Référentiel des maisons d'édition</label>
+        <select id="subCatalogSelect"></select>
+      </div>
+
+      <div class="form-grid">
+        <div class="field">
+          <label for="subPublisherName">Nom de la maison d'édition *</label>
+          <input type="text" id="subPublisherName" placeholder="Ex. Auzou Éditions" />
+        </div>
+        <div class="field">
+          <label for="subModality">Modalité d'envoi</label>
+          <select id="subModality"></select>
+        </div>
+        <div class="field">
+          <label for="subContact">Contact / Service jeunesse</label>
+          <input type="text" id="subContact" placeholder="Ex. Service jeunesse / éditeur" />
+        </div>
+      </div>
+
+      <div class="field" style="margin-bottom: 12px;">
+        <label for="subModalityDetails">Précisions sur la modalité d'envoi</label>
+        <input type="text" id="subModalityDetails" placeholder="Ex. Formulaire en ligne, e-mail manuscrit PDF + storyboard..." />
+      </div>
+
+      <div class="form-grid">
+        <div class="field">
+          <label for="subStatus">Statut de la soumission</label>
+          <select id="subStatus"></select>
+        </div>
+        <div class="field">
+          <label style="display:flex; align-items:center; gap:6px; margin-bottom:6px;">
+            <input type="checkbox" id="subSent" /> Envoyé
+          </label>
+          <input type="date" id="subSentDate" title="Date d'envoi" />
+        </div>
+        <div class="field">
+          <label style="display:flex; align-items:center; gap:6px; margin-bottom:6px;">
+            <input type="checkbox" id="subResponse" /> Retour reçu
+          </label>
+          <input type="date" id="subResponseDate" title="Date de retour" />
+        </div>
+      </div>
+
+      <div class="field" style="margin-bottom: 12px;">
+        <label for="subNotes">Notes / Commentaires de suivi</label>
+        <textarea id="subNotes" style="min-height: 75px;" placeholder="Remarques, échanges, relances..."></textarea>
+      </div>
+
+      <div class="field" style="margin-bottom: 14px;">
+        <label style="display:flex; align-items:center; gap:8px; cursor:pointer;">
+          <input type="checkbox" id="subPropagateCheck" />
+          <span>Répercuter cette modalité d'envoi sur les autres projets associés à cette maison d'édition</span>
+        </label>
+      </div>
+
+      <div style="display: flex; justify-content: flex-end; gap: 8px;">
+        <button type="button" id="btnCancelSubmission">Annuler</button>
+        <button type="button" class="primary" id="btnSaveSubmission">Enregistrer</button>
       </div>
     </div>
   </div>
@@ -808,7 +890,9 @@
   <script src="js/config.js"></script>
   <script src="js/cloud.js"></script>
   <script src="js/dashboard.js"></script>
+  <script src="js/dashboard-trackers.js"></script>
   <script src="js/projects.js"></script>
+  <script src="js/project-editions.js"></script>
   <script src="js/instagram-calendar.js"></script>
   <script src="js/instagram-editor.js"></script>
   <script src="js/instagram-stats.js"></script>
