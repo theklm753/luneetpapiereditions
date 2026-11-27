@@ -2028,3 +2028,69 @@ button.sm {
   background: #ede9fe;
   color: #5b21b6;
 }
+/* ============================================================
+   ALLÈGEMENT TRACKERS & TRACKER GLOBAL (0/4 -> 4/4)
+   ============================================================ */
+.global-tracker-card {
+  margin-top: 12px;
+  border-radius: 16px;
+  padding: 14px 16px;
+  border: 2px solid transparent;
+  box-shadow: var(--shadow);
+  transition: background-color 0.2s ease, border-color 0.2s ease, color 0.2s ease;
+}
+
+.global-tracker-card .gt-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  font-size: 12px;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+}
+
+.global-tracker-card .gt-score {
+  font-size: 24px;
+  font-weight: 800;
+  margin-top: 6px;
+  line-height: 1.1;
+}
+
+.global-tracker-card .gt-sub {
+  font-size: 12px;
+  font-weight: 600;
+  margin-top: 4px;
+  opacity: 0.92;
+}
+
+.gt-level-0 {
+  background: #fee2e2;
+  border-color: #f87171;
+  color: #991b1b;
+}
+
+.gt-level-1 {
+  background: #ffedd5;
+  border-color: #fb923c;
+  color: #9a3412;
+}
+
+.gt-level-2 {
+  background: #fef9c3;
+  border-color: #facc15;
+  color: #854d0e;
+}
+
+.gt-level-3 {
+  background: #dcfce7;
+  border-color: #4ade80;
+  color: #166534;
+}
+
+.gt-level-4 {
+  background: #15803d;
+  border-color: #14532d;
+  color: #ffffff;
+}
