@@ -175,6 +175,28 @@ window.quickChangeSubmissionStatus = function (subId, newStatus) {
   showToast(`Statut mis à jour : ${newStatus}`);
 };
 
+function populateSubmissionModalSelects(existing = null) {
+  const modalitySelect = document.getElementById("subModality");
+  if (modalitySelect) {
+    modalitySelect.innerHTML = SUBMISSION_MODALITIES.map(
+      (m) => `<option value="${escapeHtml(m)}">${escapeHtml(m)}</option>`
+    ).join("");
+    modalitySelect.value = SUBMISSION_MODALITIES.includes(existing?.modality)
+      ? existing.modality
+      : SUBMISSION_MODALITIES[0];
+  }
+
+  const statusSelect = document.getElementById("subStatus");
+  if (statusSelect) {
+    statusSelect.innerHTML = SUBMISSION_STATUSES.map(
+      (st) => `<option value="${escapeHtml(st.key)}">${escapeHtml(st.label)}</option>`
+    ).join("");
+    statusSelect.value = SUBMISSION_STATUSES.some((st) => st.key === existing?.status)
+      ? existing.status
+      : SUBMISSION_STATUSES[0].key;
+  }
+}
+
 window.openSubmissionModal = function (subId = null) {
   const proj = getActiveProject();
   if (!proj) return;
@@ -183,16 +205,14 @@ window.openSubmissionModal = function (subId = null) {
   const existing = subId ? (proj.submissions || []).find((s) => s.id === subId) : null;
   editingSubmissionId = existing ? existing.id : null;
 
-  const catalogOptions = `<option value="">-- Nouvelle maison ou choisir dans le référentiel --</option>` +
-    catalog.map((pub) => `<option value="${escapeHtml(pub.id)}" ${existing && existing.publisherId === pub.id ? "selected" : ""}>${escapeHtml(pub.name)} (${escapeHtml(pub.modality)})</option>`).join("");
-
-  const modalityOptions = SUBMISSION_MODALITIES.map(
-    (m) => `<option value="${escapeHtml(m)}" ${(existing?.modality || "E-mail") === m ? "selected" : ""}>${escapeHtml(m)}</option>`
-  ).join("");
-
-  const statusOptions = SUBMISSION_STATUSES.map(
-    (st) => `<option value="${escapeHtml(st.key)}" ${(existing?.status || "En attente de retour") === st.key ? "selected" : ""}>${escapeHtml(st.label)}</option>`
-  ).join("");
+  const catalogOptions =
+    `<option value="">-- Nouvelle maison ou choisir dans le référentiel --</option>` +
+    catalog
+      .map(
+        (pub) =>
+          `<option value="${escapeHtml(pub.id)}" ${existing && existing.publisherId === pub.id ? "selected" : ""}>${escapeHtml(pub.name)} (${escapeHtml(pub.modality)})</option>`
+      )
+      .join("");
 
   document.getElementById("submissionModalTitle").textContent = existing
     ? `Suivi — ${existing.publisherName}`
@@ -200,14 +220,13 @@ window.openSubmissionModal = function (subId = null) {
 
   document.getElementById("subCatalogSelect").innerHTML = catalogOptions;
   document.getElementById("subPublisherName").value = existing?.publisherName || "";
-  document.getElementById("subModality").value = existing?.modality || "E-mail";
+  populateSubmissionModalSelects(existing);
   document.getElementById("subModalityDetails").value = existing?.modalityDetails || "";
   document.getElementById("subContact").value = existing?.contact || "";
   document.getElementById("subSent").checked = Boolean(existing?.sent);
   document.getElementById("subSentDate").value = existing?.sentDate || "";
   document.getElementById("subResponse").checked = Boolean(existing?.responseReceived);
   document.getElementById("subResponseDate").value = existing?.responseDate || "";
-  document.getElementById("subStatus").value = existing?.status || "En attente de retour";
   document.getElementById("subNotes").value = existing?.notes || "";
   document.getElementById("subPropagateCheck").checked = false;
 
@@ -230,12 +249,11 @@ document.getElementById("subCatalogSelect")?.addEventListener("change", (e) => {
   const pub = ensurePublishersCatalog().find((p) => p.id === pubId);
   if (!pub) return;
   document.getElementById("subPublisherName").value = pub.name;
-  document.getElementById("subModality").value = pub.modality;
+  populateSubmissionModalSelects(pub);
   document.getElementById("subModalityDetails").value = pub.modalityDetails || "";
   document.getElementById("subContact").value = pub.contact || "";
 });
 
-// Cohérence automatique Envoyé / Retour lors du changement de statut
 document.getElementById("subStatus")?.addEventListener("change", (e) => {
   const st = e.target.value;
   const sentCb = document.getElementById("subSent");
@@ -264,18 +282,17 @@ document.getElementById("btnSaveSubmission")?.addEventListener("click", async ()
   }
 
   const catalogIdFromSelect = document.getElementById("subCatalogSelect")?.value || "";
-  const modality = document.getElementById("subModality")?.value || "E-mail";
+  const modality = document.getElementById("subModality")?.value || SUBMISSION_MODALITIES[0];
   const modalityDetails = (document.getElementById("subModalityDetails")?.value || "").trim();
   const contact = (document.getElementById("subContact")?.value || "").trim();
   const sent = Boolean(document.getElementById("subSent")?.checked);
   const sentDate = document.getElementById("subSentDate")?.value || (sent ? getTodayIso() : "");
   const responseReceived = Boolean(document.getElementById("subResponse")?.checked);
   const responseDate = document.getElementById("subResponseDate")?.value || (responseReceived ? getTodayIso() : "");
-  const status = document.getElementById("subStatus")?.value || "En attente de retour";
+  const status = document.getElementById("subStatus")?.value || SUBMISSION_STATUSES[0].key;
   const notes = (document.getElementById("subNotes")?.value || "").trim();
   const propagate = Boolean(document.getElementById("subPropagateCheck")?.checked);
 
-  // Mise à jour ou création dans le référentiel partagé
   const catalog = ensurePublishersCatalog();
   let pubEntry = catalog.find(
     (p) => (catalogIdFromSelect && p.id === catalogIdFromSelect) || p.name.toLowerCase() === publisherName.toLowerCase()
@@ -323,7 +340,6 @@ document.getElementById("btnSaveSubmission")?.addEventListener("click", async ()
     proj.submissions.push(subData);
   }
 
-  // Répercussion optionnelle de la modalité sur les autres projets
   const otherProjectsToSave = [];
   if (propagate) {
     (state.projects || []).forEach((otherProj) => {
