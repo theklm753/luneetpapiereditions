@@ -45,9 +45,15 @@ const SCHEMA_VERSION = 3;
 const STORAGE_KEY = "as_studio_cache_v3";
 const ACTIVE_TIMER_KEY = "as_studio_active_timer_v1";
 
-const VALID_FORMATS = ["Carrousel", "Reel", "Story"];
-const VALID_PILIERS = ["Pédagogie", "Coulisses", "Offre / Produit", "Preuve sociale"];
+const VALID_FORMATS = ["Post simple", "Carrousel", "Reel", "Story"];
 const VALID_STATUTS = ["Idée", "Préparation", "Validé", "Programmé", "Publié"];
+
+const DEFAULT_PILLARS = [
+  { id: "pil_pedagogie", name: "Pédagogie", color: "#5b4ce6" },
+  { id: "pil_coulisses", name: "Coulisses", color: "#f59e0b" },
+  { id: "pil_offre", name: "Offre / Produit", color: "#168a54" },
+  { id: "pil_preuve", name: "Preuve sociale", color: "#db2777" }
+];
 
 const POST_CHECKLIST_STEPS = [
   { key: "date_validee", label: "Date de publication validée" },
@@ -61,6 +67,7 @@ const POST_CHECKLIST_STEPS = [
 ];
 
 const FORMAT_EMOJI = {
+  "Post simple": "🖼️",
   "Story": "✏️",
   "Carrousel": "🎠",
   "Reel": "🎥"
@@ -130,6 +137,22 @@ function getTodayIso() {
   const m = String(now.getMonth() + 1).padStart(2, "0");
   const d = String(now.getDate()).padStart(2, "0");
   return `${y}-${m}-${d}`;
+}
+
+function formatMonthFr(ym) {
+  if (!ym || !/^\d{4}-\d{2}$/.test(ym)) return ym || "";
+  const [y, m] = ym.split("-").map(Number);
+  const dt = new Date(y, m - 1, 1);
+  const txt = dt.toLocaleDateString("fr-FR", { month: "long", year: "numeric" });
+  return txt.charAt(0).toUpperCase() + txt.slice(1);
+}
+
+function formatMonthShortFr(ym) {
+  if (!ym || !/^\d{4}-\d{2}$/.test(ym)) return ym || "";
+  const [y, m] = ym.split("-").map(Number);
+  const dt = new Date(y, m - 1, 1);
+  const txt = dt.toLocaleDateString("fr-FR", { month: "short", year: "2-digit" });
+  return txt.charAt(0).toUpperCase() + txt.slice(1);
 }
 
 function formatDuration(totalSeconds, showSeconds = false) {
@@ -244,20 +267,71 @@ function computeProjectProgress(project) {
   return Math.round((totalScore / (items.length * 2)) * 100);
 }
 
+function computeInteractions(st) {
+  return (
+    (Number(st?.likes) || 0) +
+    (Number(st?.comments) || 0) +
+    (Number(st?.saves) || 0) +
+    (Number(st?.shares) || 0)
+  );
+}
+
+function computeEngagementRateValue(st) {
+  const reach = Number(st?.reach) || 0;
+  if (reach <= 0) return null;
+  return (computeInteractions(st) / reach) * 100;
+}
+
 function computeEngagementRate(st) {
-  const reach = Number(st.reach) || 0;
-  if (reach <= 0) return "0.0%";
-  const interactions =
-    (Number(st.likes) || 0) +
-    (Number(st.comments) || 0) +
-    (Number(st.saves) || 0) +
-    (Number(st.shares) || 0);
-  return ((interactions / reach) * 100).toFixed(1) + "%";
+  const val = computeEngagementRateValue(st);
+  if (val === null) return "—";
+  return val.toFixed(2) + "%";
+}
+
+function normalizePillars(raw) {
+  if (!Array.isArray(raw) || raw.length === 0) {
+    return structuredClone(DEFAULT_PILLARS);
+  }
+  return raw
+    .filter((p) => p && String(p.name || "").trim())
+    .map((p, i) => ({
+      id: p.id || `pil_${Date.now()}_${i}`,
+      name: String(p.name).trim(),
+      color: /^#[0-9a-fA-F]{6}$/.test(p.color || "") ? p.color : "#5b4ce6"
+    }));
+}
+
+function normalizeFollowersHistory(raw) {
+  const out = {};
+  if (raw && typeof raw === "object") {
+    Object.entries(raw).forEach(([ym, val]) => {
+      if (/^\d{4}-\d{2}$/.test(ym)) {
+        const num = Number(val);
+        if (!Number.isNaN(num) && num >= 0) {
+          out[ym] = Math.round(num);
+        }
+      }
+    });
+  }
+  return out;
+}
+
+function getPillarList() {
+  if (!Array.isArray(state?.pillars) || !state.pillars.length) {
+    return DEFAULT_PILLARS;
+  }
+  return state.pillars;
+}
+
+function getPillarColor(pillarName) {
+  const found = getPillarList().find((p) => p.name === pillarName);
+  return found ? found.color : "#656b7b";
 }
 
 function normalizeStats(s) {
   return {
     reach: Number(s?.reach) || 0,
+    views: Number(s?.views) || 0,
     likes: Number(s?.likes) || 0,
     comments: Number(s?.comments) || 0,
     saves: Number(s?.saves) || 0,
@@ -301,7 +375,7 @@ function normalizePost(p) {
     date: p.date || "",
     time: p.time || "18:00",
     format: normalizeFormat(p.format),
-    pilier: VALID_PILIERS.includes(p.pilier) ? p.pilier : "Pédagogie",
+    pilier: String(p.pilier || "").trim() || DEFAULT_PILLARS[0].name,
     statut: VALID_STATUTS.includes(p.statut) ? p.statut : "Idée",
     objectif: p.objectif || "",
     cta: p.cta || "",
@@ -406,17 +480,37 @@ function normalizeMediaItem(m, idx = 0) {
 function loadLocalCache() {
   try {
     const raw = localStorage.getItem(STORAGE_KEY);
-    if (!raw) return { posts: [], projects: [], tasks: [], media: [], completedAutoTasks: [] };
+    if (!raw) {
+      return {
+        posts: [],
+        projects: [],
+        tasks: [],
+        media: [],
+        completedAutoTasks: [],
+        pillars: structuredClone(DEFAULT_PILLARS),
+        followersHistory: {}
+      };
+    }
     const parsed = JSON.parse(raw);
     return {
       posts: Array.isArray(parsed.posts) ? parsed.posts.map(normalizePost) : [],
       projects: Array.isArray(parsed.projects) ? parsed.projects.map(normalizeProject) : [],
       tasks: Array.isArray(parsed.tasks) ? parsed.tasks.map(normalizeTask) : [],
       media: Array.isArray(parsed.media) ? parsed.media.map(normalizeMediaItem) : [],
-      completedAutoTasks: Array.isArray(parsed.completedAutoTasks) ? parsed.completedAutoTasks : []
+      completedAutoTasks: Array.isArray(parsed.completedAutoTasks) ? parsed.completedAutoTasks : [],
+      pillars: normalizePillars(parsed.pillars),
+      followersHistory: normalizeFollowersHistory(parsed.followersHistory)
     };
   } catch {
-    return { posts: [], projects: [], tasks: [], media: [], completedAutoTasks: [] };
+    return {
+      posts: [],
+      projects: [],
+      tasks: [],
+      media: [],
+      completedAutoTasks: [],
+      pillars: structuredClone(DEFAULT_PILLARS),
+      followersHistory: {}
+    };
   }
 }
 
