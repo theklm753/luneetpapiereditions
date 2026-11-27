@@ -1,9 +1,8 @@
 // ============================================================
-// LES 4 TRACKERS QUOTIDIENS (INSTA, CREATIV, EDIT, ENGAGEMENT)
+// LES 4 TRACKERS QUOTIDIENS + TRACKER GLOBAL (0/4 -> 4/4)
 // ============================================================
 let selectedTrackerDate = getTodayIso();
 let trackerViewRange = "week"; // "week" | "month"
-let trackerNoteSaveTimer = null;
 
 function ensureTrackersState() {
   state.trackers = normalizeTrackers(state.trackers);
@@ -64,7 +63,6 @@ function getTrackerWindowDates(refIso, rangeMode) {
     return out;
   }
 
-  // Semaine en cours (lundi -> dimanche)
   const day = base.getDay();
   const diffToMon = (day + 6) % 7;
   const monday = new Date(base);
@@ -78,7 +76,37 @@ function getTrackerWindowDates(refIso, rangeMode) {
   return out;
 }
 
+function renderGlobalTrackerSummary(dateIso) {
+  const box = document.getElementById("globalTrackerCard");
+  if (!box) return;
+
+  const completedCount = TRACKER_DEFS.filter((def) =>
+    Boolean(getTrackerDayEntry(def.key, dateIso).active)
+  ).length;
+  const totalCount = TRACKER_DEFS.length;
+
+  const levelLabels = {
+    0: "Aucun tracker complété",
+    1: "1 tracker complété sur 4",
+    2: "2 trackers complétés sur 4",
+    3: "3 trackers complétés sur 4",
+    4: "Tous les trackers complétés !"
+  };
+
+  box.className = `global-tracker-card gt-level-${completedCount}`;
+  box.innerHTML = `
+    <div class="gt-top">
+      <span>Tracker global</span>
+      <span>${formatDateFrSlash(dateIso)}</span>
+    </div>
+    <div class="gt-score">${completedCount} / ${totalCount}</div>
+    <div class="gt-sub">${escapeHtml(levelLabels[completedCount] || "")}</div>
+  `;
+}
+
 function renderDashboardTrackers() {
+  renderGlobalTrackerSummary(selectedTrackerDate);
+
   const grid = document.getElementById("dashboardTrackersGrid");
   if (!grid) return;
 
@@ -91,11 +119,7 @@ function renderDashboardTrackers() {
   const windowDates = getTrackerWindowDates(selectedTrackerDate, trackerViewRange);
 
   grid.innerHTML = TRACKER_DEFS.map((def) => {
-    const entry = getTrackerDayEntry(def.key, selectedTrackerDate);
-    const isOk = Boolean(entry.active);
     const streak = computeTrackerStreak(def.key, selectedTrackerDate);
-    const okCount = windowDates.filter((d) => getTrackerDayEntry(def.key, d).active).length;
-    const ratePct = windowDates.length ? Math.round((okCount / windowDates.length) * 100) : 0;
 
     const calHtml = windowDates
       .map((iso) => {
@@ -116,36 +140,10 @@ function renderDashboardTrackers() {
       <div class="tracker-card">
         <div class="tracker-card-top">
           <h3 class="tracker-card-title">${def.icon} ${escapeHtml(def.label)}</h3>
-          <span class="tracker-status-pill ${isOk ? "is-ok" : "is-ko"}">
-            ${isOk ? "● Fait" : "● À faire"}
-          </span>
-        </div>
-
-        <p class="tracker-desc">${escapeHtml(def.desc)}</p>
-
-        <div class="tracker-streak-row">
-          <span>🔥 Série : ${streak} j</span>
-          <span>${ratePct}% (${okCount}/${windowDates.length})</span>
+          <span class="tracker-streak-row" style="margin:0; padding:4px 9px;">🔥 ${streak} j</span>
         </div>
 
         <div class="tracker-mini-cal">${calHtml}</div>
-
-        <div style="display:flex; gap:6px; align-items:center;">
-          <button
-            type="button"
-            class="sm ${isOk ? "" : "primary"}"
-            style="flex:1;"
-            onclick="setTrackerDayActive('${def.key}', '${selectedTrackerDate}', ${!isOk})"
-          >${isOk ? "Passer en rouge" : "Marquer vert"}</button>
-        </div>
-
-        <input
-          type="text"
-          class="tracker-note-input"
-          value="${escapeHtml(entry.note || "")}"
-          placeholder="Note rapide du jour (${selectedTrackerDate})..."
-          oninput="updateTrackerNote('${def.key}', '${selectedTrackerDate}', this.value)"
-        />
       </div>
     `;
   }).join("");
@@ -155,17 +153,6 @@ window.selectAndToggleTrackerDay = function (trackerKey, isoDate) {
   selectedTrackerDate = isoDate;
   const current = Boolean(getTrackerDayEntry(trackerKey, isoDate).active);
   setTrackerDayActive(trackerKey, isoDate, !current);
-};
-
-window.updateTrackerNote = function (trackerKey, isoDate, noteVal) {
-  const trackers = ensureTrackersState();
-  if (!trackers[trackerKey]) trackers[trackerKey] = {};
-  const prev = trackers[trackerKey][isoDate] || { active: false, note: "" };
-  trackers[trackerKey][isoDate] = { active: prev.active, note: noteVal };
-  clearTimeout(trackerNoteSaveTimer);
-  trackerNoteSaveTimer = setTimeout(() => {
-    saveMetaToCloud();
-  }, 500);
 };
 
 document.getElementById("trackerDateInput")?.addEventListener("change", (e) => {
