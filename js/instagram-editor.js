@@ -77,7 +77,8 @@ function restoreEditorSnapshot(snap) {
     document.getElementById("postDate").value = snap.date || "";
     document.getElementById("postTime").value = snap.time || "18:00";
     document.getElementById("postFormat").value = normalizeFormat(snap.format);
-    document.getElementById("postPilier").value = snap.pilier || "Pédagogie";
+    if (typeof populatePillarSelects === "function") populatePillarSelects();
+    document.getElementById("postPilier").value = snap.pilier || getPillarList()[0]?.name || "Pédagogie";
     document.getElementById("postStatut").value = snap.statut || "Idée";
     document.getElementById("postCanvaUrl").value = snap.canvaUrl || "";
     document.getElementById("postMetaUrl").value = snap.metaUrl || "";
@@ -91,6 +92,7 @@ function restoreEditorSnapshot(snap) {
 
     const st = normalizeStats(snap.stats);
     document.getElementById("perfReach").value = st.reach;
+    document.getElementById("perfViews").value = st.views;
     document.getElementById("perfLikes").value = st.likes;
     document.getElementById("perfComments").value = st.comments;
     document.getElementById("perfSaves").value = st.saves;
@@ -534,6 +536,7 @@ document.getElementById("previewModeFeed").addEventListener("click", () => {
 function getEditorStatsFromInputs() {
   return {
     reach: Number(document.getElementById("perfReach").value) || 0,
+    views: Number(document.getElementById("perfViews").value) || 0,
     likes: Number(document.getElementById("perfLikes").value) || 0,
     comments: Number(document.getElementById("perfComments").value) || 0,
     saves: Number(document.getElementById("perfSaves").value) || 0,
@@ -544,12 +547,12 @@ function getEditorStatsFromInputs() {
 
 function updatePerfSummaryPreview() {
   const st = getEditorStatsFromInputs();
-  const interactions = st.likes + st.comments + st.saves + st.shares;
+  const interactions = computeInteractions(st);
   document.getElementById("perfTotalInteractions").textContent = interactions.toLocaleString("fr-FR");
   document.getElementById("perfEngRate").textContent = computeEngagementRate(st);
 }
 
-["perfReach", "perfLikes", "perfComments", "perfSaves", "perfShares", "perfClicks"].forEach((id) => {
+["perfReach", "perfViews", "perfLikes", "perfComments", "perfSaves", "perfShares", "perfClicks"].forEach((id) => {
   document.getElementById(id).addEventListener("input", () => {
     updatePerfSummaryPreview();
     scheduleEditorUndoSnapshot();
@@ -560,6 +563,8 @@ function updatePerfSummaryPreview() {
 // CHARGEMENT, APERÇU EN DIRECT & SAUVEGARDE DU POST
 // ============================================================
 function loadPostIntoEditor(postId) {
+  if (typeof populatePillarSelects === "function") populatePillarSelects();
+
   const post = state.posts.find((p) => p.id === postId);
   editingPostId = post ? post.id : null;
   currentEditorSlides = post ? structuredClone(normalizeSlides(post)) : [createEmptySlide()];
@@ -575,7 +580,11 @@ function loadPostIntoEditor(postId) {
   document.getElementById("postDate").value = post?.date || getTodayIso();
   document.getElementById("postTime").value = post?.time || "18:00";
   document.getElementById("postFormat").value = fmt;
-  document.getElementById("postPilier").value = post?.pilier || "Pédagogie";
+  const availablePillars = getPillarList();
+  document.getElementById("postPilier").value =
+    availablePillars.some((p) => p.name === post?.pilier)
+      ? post.pilier
+      : availablePillars[0]?.name || "Pédagogie";
   document.getElementById("postStatut").value = post?.statut || "Idée";
   document.getElementById("postCanvaUrl").value = post?.canvaUrl || "";
   document.getElementById("postMetaUrl").value = post?.metaUrl || "";
@@ -586,6 +595,7 @@ function loadPostIntoEditor(postId) {
 
   const st = normalizeStats(post?.stats);
   document.getElementById("perfReach").value = st.reach;
+  document.getElementById("perfViews").value = st.views;
   document.getElementById("perfLikes").value = st.likes;
   document.getElementById("perfComments").value = st.comments;
   document.getElementById("perfSaves").value = st.saves;
@@ -706,7 +716,7 @@ function saveCurrentPost(options = {}) {
   const date = document.getElementById("postDate").value;
   const time = document.getElementById("postTime").value;
   const format = normalizeFormat(document.getElementById("postFormat").value);
-  const pilier = document.getElementById("postPilier").value;
+  const pilier = document.getElementById("postPilier").value || getPillarList()[0]?.name || "Pédagogie";
   const statut = document.getElementById("postStatut").value;
   const canvaUrl = document.getElementById("postCanvaUrl").value.trim();
   const metaUrl = document.getElementById("postMetaUrl").value.trim();
