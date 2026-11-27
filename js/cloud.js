@@ -96,6 +96,8 @@ async function saveMetaToCloud() {
       completedAutoTasks: state.completedAutoTasks || [],
       pillars: normalizePillars(state.pillars),
       followersHistory: normalizeFollowersHistory(state.followersHistory),
+      trackers: normalizeTrackers(state.trackers),
+      publishersCatalog: normalizePublishersCatalog(state.publishersCatalog),
       schemaVersion: SCHEMA_VERSION,
       updatedAt: new Date().toISOString()
     }, { merge: true });
@@ -191,6 +193,8 @@ function startRealtimeSync() {
       state.completedAutoTasks = Array.isArray(data.completedAutoTasks) ? data.completedAutoTasks : [];
       state.pillars = normalizePillars(data.pillars);
       state.followersHistory = normalizeFollowersHistory(data.followersHistory);
+      state.trackers = normalizeTrackers(data.trackers);
+      state.publishersCatalog = normalizePublishersCatalog(data.publishersCatalog);
       saveLocalCache();
 
       if (typeof populatePillarSelects === "function") {
@@ -198,6 +202,10 @@ function startRealtimeSync() {
       }
       if (document.getElementById("main-tableau")?.classList.contains("active")) {
         renderDashboard();
+      }
+      if (document.getElementById("main-projets")?.classList.contains("active")) {
+        if (activeProjectId) renderProjectDetail();
+        else renderProjectsSection();
       }
       if (document.getElementById("main-instagram")?.classList.contains("active")) {
         if (isStatsTabCurrentlyVisible() && typeof renderStatisticsSection === "function") {
@@ -373,6 +381,12 @@ document.getElementById("importJsonInput").addEventListener("change", (e) => {
       }
       if (parsed.followersHistory) {
         state.followersHistory = normalizeFollowersHistory(parsed.followersHistory);
+      }
+      if (parsed.trackers) {
+        state.trackers = normalizeTrackers(parsed.trackers);
+      }
+      if (parsed.publishersCatalog) {
+        state.publishersCatalog = normalizePublishersCatalog(parsed.publishersCatalog);
       }
       await saveMetaToCloud();
 
