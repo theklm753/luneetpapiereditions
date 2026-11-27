@@ -1,6 +1,8 @@
 // ============================================================
 // FILTRE MULTI-SÉLECTION DE FORMATS (INSTAGRAM)
 // ============================================================
+let draggedPostId = null;
+
 function getSelectedFormats() {
   return Array.from(document.querySelectorAll(".fmt-checkbox:checked")).map((cb) => cb.value);
 }
@@ -300,7 +302,7 @@ document.getElementById("btnImportExcel").addEventListener("click", () => {
 document.getElementById("importExcelInput").addEventListener("change", handleExcelImport);
 
 // ============================================================
-// FILTRES, VUE CARTES & VUE CALENDRIER MENSUEL
+// FILTRES, VUE CARTES & VUE CALENDRIER MENSUEL (AVEC DRAG & DROP)
 // ============================================================
 function getFilteredPosts() {
   const statut = document.getElementById("filterStatut").value;
@@ -436,7 +438,13 @@ function renderCalendarMonthView() {
       const dayPosts = filteredPosts.filter((p) => p.date === c.iso);
       const isToday = c.iso === todayIso;
       return `
-        <div class="cal-day ${c.muted ? "muted-day" : ""} ${isToday ? "today" : ""}">
+        <div
+          class="cal-day ${c.muted ? "muted-day" : ""} ${isToday ? "today" : ""}"
+          data-date="${c.iso}"
+          ondragover="handleCalendarDragOver(event)"
+          ondragleave="handleCalendarDragLeave(event)"
+          ondrop="handleCalendarDrop(event, '${c.iso}')"
+        >
           <div class="cal-day-num">
             <span>${c.day}</span>
             ${dayPosts.length ? `<span>${dayPosts.length}</span>` : ""}
@@ -450,7 +458,12 @@ function renderCalendarMonthView() {
               const tooltip = `${fmtEmoji} [${p.format} • ${statusLabel} • Avancement ${pct}% (${done}/${total})] ${p.time ? p.time + " — " : ""}${p.title || ""}`;
               const labelText = `${fmtEmoji} ${p.time ? p.time + " " : ""}${p.title || p.format}`;
               return `
-                <div class="cal-event-wrap">
+                <div
+                  class="cal-event-wrap"
+                  draggable="true"
+                  ondragstart="handleCalendarDragStart(event, '${p.id}')"
+                  ondragend="handleCalendarDragEnd(event)"
+                >
                   <button type="button" class="cal-event ${statusClass}" title="${escapeHtml(tooltip)}" onclick="editPost('${p.id}')">${escapeHtml(labelText)}</button>
                   <div class="cal-event-progress" title="Avancement : ${pct}% (${done}/${total} étapes)">
                     <div class="cal-event-progress-track">
@@ -467,6 +480,57 @@ function renderCalendarMonthView() {
     })
     .join("");
 }
+
+window.handleCalendarDragStart = function (event, postId) {
+  draggedPostId = postId;
+  event.dataTransfer.effectAllowed = "move";
+  event.dataTransfer.setData("text/plain", postId);
+  event.currentTarget.classList.add("dragging");
+};
+
+window.handleCalendarDragEnd = function (event) {
+  draggedPostId = null;
+  event.currentTarget.classList.remove("dragging");
+  document.querySelectorAll(".cal-day.drag-over").forEach((el) => {
+    el.classList.remove("drag-over");
+  });
+};
+
+window.handleCalendarDragOver = function (event) {
+  event.preventDefault();
+  event.dataTransfer.dropEffect = "move";
+  event.currentTarget.classList.add("drag-over");
+};
+
+window.handleCalendarDragLeave = function (event) {
+  const dayEl = event.currentTarget;
+  if (!dayEl.contains(event.relatedTarget)) {
+    dayEl.classList.remove("drag-over");
+  }
+};
+
+window.handleCalendarDrop = function (event, targetIsoDate) {
+  event.preventDefault();
+  document.querySelectorAll(".cal-day.drag-over").forEach((el) => {
+    el.classList.remove("drag-over");
+  });
+
+  const postId = draggedPostId || event.dataTransfer.getData("text/plain");
+  draggedPostId = null;
+  if (!postId) return;
+
+  const post = state.posts.find((p) => p.id === postId);
+  if (!post || post.date === targetIsoDate) return;
+
+  post.date = targetIsoDate;
+  savePostToCloud(post);
+  renderCalendarMonthView();
+  renderPostsGrid();
+  renderDashboard();
+  renderStatisticsSection();
+
+  showToast(`Post déplacé au ${formatShortFrenchDate(targetIsoDate)}`);
+};
 
 function applyCalendarViewMode() {
   const showMonth = calendarViewMode === "month";
