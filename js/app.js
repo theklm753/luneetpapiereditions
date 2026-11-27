@@ -57,20 +57,37 @@ document.getElementById("btnBackToCalendar").addEventListener("click", () => {
 // RENDU GLOBAL & DÉMARRAGE
 // ============================================================
 function renderInstagramAll() {
+  if (typeof populatePillarSelects === "function") {
+    populatePillarSelects();
+  }
   updateFormatFilterLabel();
-  renderPostsGrid();
-  applyCalendarViewMode();
-  updateEditorForFormat();
-  renderStatisticsSection();
+
+  const statsVisible = document.getElementById("tab-statistiques")?.classList.contains("active");
+  const prepVisible = document.getElementById("tab-preparation")?.classList.contains("active");
+
+  if (statsVisible && typeof renderStatisticsSection === "function") {
+    renderStatisticsSection();
+  } else if (!prepVisible) {
+    renderPostsGrid();
+    applyCalendarViewMode();
+  } else {
+    updateEditorForFormat();
+  }
 }
 
 function renderAll() {
-  renderDashboard();
-  renderInstagramAll();
-  if (activeProjectId) {
-    renderProjectDetail();
-  } else {
-    renderProjectsSection();
+  if (document.getElementById("main-tableau")?.classList.contains("active")) {
+    renderDashboard();
+  }
+  if (document.getElementById("main-instagram")?.classList.contains("active")) {
+    renderInstagramAll();
+  }
+  if (document.getElementById("main-projets")?.classList.contains("active")) {
+    if (activeProjectId) {
+      renderProjectDetail();
+    } else {
+      renderProjectsSection();
+    }
   }
 }
 
