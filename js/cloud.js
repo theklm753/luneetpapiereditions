@@ -104,6 +104,12 @@ async function saveMetaToCloud() {
   }
 }
 
+function isStatsTabCurrentlyVisible() {
+  const mainIg = document.getElementById("main-instagram");
+  const statsSec = document.getElementById("tab-statistiques");
+  return Boolean(mainIg?.classList.contains("active") && statsSec?.classList.contains("active"));
+}
+
 // ============================================================
 // SYNCHRONISATION TEMPS RÉEL (PC <-> TÉLÉPHONE)
 // ============================================================
@@ -115,15 +121,21 @@ function startRealtimeSync() {
     saveLocalCache();
     setSyncStatus("ok", "☁️ Synchronisé");
 
-    const isEditingPost = document.getElementById("tab-preparation").classList.contains("active");
-    if (!isEditingPost) {
-      renderPostsGrid();
-      if (calendarViewMode === "month") renderCalendarMonthView();
+    const mainIgActive = document.getElementById("main-instagram")?.classList.contains("active");
+    const isEditingPost = document.getElementById("tab-preparation")?.classList.contains("active");
+
+    if (mainIgActive && !isEditingPost) {
+      if (isStatsTabCurrentlyVisible()) {
+        if (typeof renderStatisticsSection === "function") renderStatisticsSection();
+      } else {
+        renderPostsGrid();
+        if (calendarViewMode === "month") renderCalendarMonthView();
+      }
     }
-    if (typeof renderStatisticsSection === "function") {
-      renderStatisticsSection();
+
+    if (document.getElementById("main-tableau")?.classList.contains("active")) {
+      renderDashboard();
     }
-    renderDashboard();
   }, (err) => {
     console.error("Erreur sync posts :", err);
     setSyncStatus("error", "⚠️ Hors-ligne");
@@ -134,6 +146,7 @@ function startRealtimeSync() {
     saveLocalCache();
     setSyncStatus("ok", "☁️ Synchronisé");
 
+    if (!document.getElementById("main-projets")?.classList.contains("active")) return;
     const activeEl = document.activeElement;
     const isTypingProjectText = activeEl && activeEl.classList && activeEl.classList.contains("illus-text-area");
     if (!isTypingProjectText) {
@@ -150,7 +163,9 @@ function startRealtimeSync() {
   dbFirestore.collection(COL_TASKS).onSnapshot((snap) => {
     state.tasks = snap.docs.map((d, i) => normalizeTask({ id: d.id, ...d.data() }, i));
     saveLocalCache();
-    renderDashboard();
+    if (document.getElementById("main-tableau")?.classList.contains("active")) {
+      renderDashboard();
+    }
   }, (err) => {
     console.error("Erreur sync tâches :", err);
   });
@@ -158,13 +173,13 @@ function startRealtimeSync() {
   dbFirestore.collection(COL_MEDIA).onSnapshot((snap) => {
     state.media = snap.docs.map((d, i) => normalizeMediaItem({ id: d.id, ...d.data() }, i));
     saveLocalCache();
-    const isEditingPost = document.getElementById("tab-preparation").classList.contains("active");
-    if (!isEditingPost) {
-      renderPostsGrid();
-    } else {
+    const isEditingPost = document.getElementById("tab-preparation")?.classList.contains("active");
+    if (isEditingPost) {
       renderSlidesStrip();
       updateVisualIndicator();
       updateLivePreview();
+    } else if (document.getElementById("main-instagram")?.classList.contains("active")) {
+      renderPostsGrid();
     }
   }, (err) => {
     console.error("Erreur sync médias :", err);
@@ -177,14 +192,20 @@ function startRealtimeSync() {
       state.pillars = normalizePillars(data.pillars);
       state.followersHistory = normalizeFollowersHistory(data.followersHistory);
       saveLocalCache();
-      renderDashboard();
+
       if (typeof populatePillarSelects === "function") {
         populatePillarSelects();
       }
-      renderPostsGrid();
-      if (calendarViewMode === "month") renderCalendarMonthView();
-      if (typeof renderStatisticsSection === "function") {
-        renderStatisticsSection();
+      if (document.getElementById("main-tableau")?.classList.contains("active")) {
+        renderDashboard();
+      }
+      if (document.getElementById("main-instagram")?.classList.contains("active")) {
+        if (isStatsTabCurrentlyVisible() && typeof renderStatisticsSection === "function") {
+          renderStatisticsSection();
+        } else if (!document.getElementById("tab-preparation")?.classList.contains("active")) {
+          renderPostsGrid();
+          if (calendarViewMode === "month") renderCalendarMonthView();
+        }
       }
     }
   });
@@ -251,7 +272,7 @@ async function uploadFileToCloudinary(file) {
   formData.append("folder", CLOUDINARY_FOLDER);
 
   const response = await fetch(
-    `https://api.cloudinary.com/v1_1/\${CLOUDINARY_CLOUD_NAME}/image/upload`,
+    `https://api.cloudinary.com/v1_1/${CLOUDINARY_CLOUD_NAME}/image/upload`,
     { method: "POST", body: formData }
   );
   if (!response.ok) {
@@ -269,7 +290,34 @@ async function uploadDataUrlToCloudinary(dataUrl) {
   formData.append("folder", CLOUDINARY_FOLDER);
 
   const response = await fetch(
-    `https://api.cloudinary.com/v1_1/${CLOUDINARY_CLOUD_NAME}/image/upload`, { method: "POST", body: formData } ); if (!response.ok) { throw new Error("Échec transfert image Cloudinary"); } const data = await response.json(); return data.secure_url; }  function isLargeBase64Image(src) { return typeof src === "string" && src.startsWith("data:image/") && !src.startsWith("data:image/svg+xml"); }  // ============================================================ // SAUVEGARDE / RESTAURATION JSON & MIGRATION ANCIEN FIREBASE // ============================================================ document.getElementById("btnExportJson").addEventListener("click", () => { const backup = { exportedAt: new Date().toISOString(), schemaVersion: SCHEMA_VERSION, ...state }; const blob = new Blob([JSON.stringify(backup, null, 2)], { type: "application/json" }); const url = URL.createObjectURL(blob); const a = document.createElement("a"); a.href = url; a.download = `sauvegarde-studio-${getTodayIso()}.json`;
+    `https://api.cloudinary.com/v1_1/${CLOUDINARY_CLOUD_NAME}/image/upload`,
+    { method: "POST", body: formData }
+  );
+  if (!response.ok) {
+    throw new Error("Échec transfert image Cloudinary");
+  }
+  const data = await response.json();
+  return data.secure_url;
+}
+
+function isLargeBase64Image(src) {
+  return typeof src === "string" && src.startsWith("data:image/") && !src.startsWith("data:image/svg+xml");
+}
+
+// ============================================================
+// SAUVEGARDE / RESTAURATION JSON & MIGRATION ANCIEN FIREBASE
+// ============================================================
+document.getElementById("btnExportJson").addEventListener("click", () => {
+  const backup = {
+    exportedAt: new Date().toISOString(),
+    schemaVersion: SCHEMA_VERSION,
+    ...state
+  };
+  const blob = new Blob([JSON.stringify(backup, null, 2)], { type: "application/json" });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement("a");
+  a.href = url;
+  a.download = `sauvegarde-studio-${getTodayIso()}.json`;
   a.click();
   URL.revokeObjectURL(url);
   showToast("Sauvegarde JSON téléchargée !");
@@ -408,7 +456,7 @@ document.getElementById("btnMigrateLegacy").addEventListener("click", async () =
     }
 
     setSyncStatus("ok", "☁️ Synchronisé");
-    showToast(`Import réussi : \${oldPosts.length} post(s), ${oldProjects.length} projet(s),${oldTasks.length} tâche(s) !`);
+    showToast(`Import réussi : ${oldPosts.length} post(s), ${oldProjects.length} projet(s), ${oldTasks.length} tâche(s) !`);
   } catch (err) {
     console.error("Erreur migration ancien compte :", err);
     setSyncStatus("error", "⚠️ Erreur import");
