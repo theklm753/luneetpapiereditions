@@ -83,10 +83,9 @@ const TRACKER_DEFS = [
 ];
 
 const SUBMISSION_MODALITIES = [
-  "Formulaire en ligne",
-  "E-mail",
-  "Courrier postal",
-  "Contact direct / Salon",
+  "Formulaire",
+  "Email",
+  "Courrier",
   "Autre"
 ];
 
