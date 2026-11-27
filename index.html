@@ -75,6 +75,8 @@
             <div class="dashboard-date-day" id="dashDayNumber">25</div>
             <div class="dashboard-date-month" id="dashMonthYear">Novembre 2026</div>
           </div>
+          <!-- TRACKER GLOBAL JUSTE SOUS LA DATE -->
+          <div class="global-tracker-card gt-level-0" id="globalTrackerCard"></div>
         </div>
 
         <div>
@@ -86,7 +88,7 @@
         </div>
       </div>
 
-      <!-- PARTIE 1 : LES 4 TRACKERS QUOTIDIENS -->
+      <!-- LES 4 TRACKERS QUOTIDIENS -->
       <section class="trackers-section">
         <div class="trackers-header-bar">
           <span class="dashboard-section-label">Trackers quotidiens</span>
@@ -702,7 +704,6 @@
         <input type="file" id="projectIllusFileInput" accept="image/*" hidden />
         <input type="file" id="illusVersionFileInput" accept="image/*" hidden />
 
-        <!-- PARTIE 2 : GESTION ÉDITION -->
         <div id="projectEditionSection"></div>
       </div>
     </main>
@@ -782,7 +783,12 @@
         </div>
         <div class="field">
           <label for="subModality">Modalité d'envoi</label>
-          <select id="subModality"></select>
+          <select id="subModality">
+            <option value="Formulaire">Formulaire</option>
+            <option value="Email">Email</option>
+            <option value="Courrier">Courrier</option>
+            <option value="Autre">Autre</option>
+          </select>
         </div>
         <div class="field">
           <label for="subContact">Contact / Service jeunesse</label>
@@ -791,14 +797,20 @@
       </div>
 
       <div class="field" style="margin-bottom: 12px;">
-        <label for="subModalityDetails">Précisions sur la modalité d'envoi</label>
-        <input type="text" id="subModalityDetails" placeholder="Ex. Formulaire en ligne, e-mail manuscrit PDF + storyboard..." />
+        <label for="subModalityDetails">Précisions / lien / modalité d'envoi</label>
+        <input type="text" id="subModalityDetails" placeholder="Ex. Adresse email, URL formulaire, adresse postale, exigences PDF..." />
       </div>
 
       <div class="form-grid">
         <div class="field">
           <label for="subStatus">Statut de la soumission</label>
-          <select id="subStatus"></select>
+          <select id="subStatus">
+            <option value="En attente de retour">En attente de retour</option>
+            <option value="Refus">Refus</option>
+            <option value="Échange en cours">Échange en cours</option>
+            <option value="Édité">Édité</option>
+            <option value="Vision édition">Vision édition</option>
+          </select>
         </div>
         <div class="field">
           <label style="display:flex; align-items:center; gap:6px; margin-bottom:6px;">
