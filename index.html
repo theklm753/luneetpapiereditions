@@ -16,6 +16,8 @@
   <script src="https://www.gstatic.com/firebasejs/10.14.0/firebase-firestore-compat.js"></script>
   <!-- SheetJS (Export / Import Excel .xlsx) -->
   <script src="https://cdn.sheetjs.com/xlsx-0.20.3/package/dist/xlsx.full.min.js"></script>
+  <!-- Chart.js (Graphiques Statistiques Instagram) -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
 <body>
   <!-- BANDEAU SUPÉRIEUR PRINCIPAL -->
@@ -102,6 +104,7 @@
         </nav>
 
         <div class="header-actions">
+          <button type="button" id="btnManagePillars" title="Créer, renommer ou colorer vos piliers éditoriaux">🎨 Gérer mes piliers</button>
           <button class="excel-btn" id="btnDownloadExcelTemplate" title="Télécharger un modèle Excel prêt à faire remplir par Gemini">📥 Modèle Excel</button>
           <button class="excel-btn" id="btnImportExcel" title="Importer un fichier Excel rempli dans le calendrier">📤 Importer Excel</button>
           <input type="file" id="importExcelInput" accept=".xlsx,.xls,.csv" hidden />
@@ -137,6 +140,10 @@
               </button>
               <div class="multiselect-menu" id="formatFilterMenu">
                 <label class="multiselect-option">
+                  <input type="checkbox" class="fmt-checkbox" value="Post simple" checked />
+                  <span>🖼️ Post simple</span>
+                </label>
+                <label class="multiselect-option">
                   <input type="checkbox" class="fmt-checkbox" value="Carrousel" checked />
                   <span>🎠 Carrousel</span>
                 </label>
@@ -157,10 +164,6 @@
 
             <select id="filterPilier">
               <option value="">Tous les piliers</option>
-              <option value="Pédagogie">Pédagogie</option>
-              <option value="Coulisses">Coulisses</option>
-              <option value="Offre / Produit">Offre / Produit</option>
-              <option value="Preuve sociale">Preuve sociale</option>
             </select>
 
             <input type="text" id="filterSearch" placeholder="Rechercher un titre ou légende..." />
@@ -241,6 +244,7 @@
                 <div class="field">
                   <label for="postFormat">Format</label>
                   <select id="postFormat">
+                    <option value="Post simple">🖼️ Post simple</option>
                     <option value="Carrousel">🎠 Carrousel</option>
                     <option value="Reel">🎥 Reel</option>
                     <option value="Story">✏️ Story</option>
@@ -249,12 +253,7 @@
 
                 <div class="field">
                   <label for="postPilier">Pilier éditorial</label>
-                  <select id="postPilier">
-                    <option value="Pédagogie">Pédagogie</option>
-                    <option value="Coulisses">Coulisses</option>
-                    <option value="Offre / Produit">Offre / Produit</option>
-                    <option value="Preuve sociale">Preuve sociale</option>
-                  </select>
+                  <select id="postPilier"></select>
                 </div>
 
                 <div class="field">
@@ -356,15 +355,19 @@
             </div>
 
             <div class="panel">
-              <h2>📊 Performance du post (KPIs)</h2>
+              <h2>📊 Performances & Statistiques du post</h2>
               <p style="font-size: 12px; color: var(--muted); margin-top: -6px; margin-bottom: 14px;">
-                Reportez les statistiques Instagram de cette publication : elles s'enregistrent automatiquement lors du retour au calendrier éditorial et se synchronisent avec l'onglet Statistiques.
+                Reportez les métriques Instagram de cette publication : elles s'enregistrent automatiquement lors du retour au calendrier éditorial et alimentent l'onglet Statistiques.
               </p>
 
               <div class="perf-kpi-grid">
                 <div class="field">
-                  <label for="perfReach">Portée</label>
+                  <label for="perfReach">Portée (comptes touchés)</label>
                   <input type="number" min="0" id="perfReach" value="0" />
+                </div>
+                <div class="field">
+                  <label for="perfViews">Vues (optionnel)</label>
+                  <input type="number" min="0" id="perfViews" value="0" />
                 </div>
                 <div class="field">
                   <label for="perfLikes">Likes</label>
@@ -390,8 +393,8 @@
 
               <div class="perf-summary">
                 <div class="perf-summary-metrics">
-                  <span>Interactions totales : <strong id="perfTotalInteractions">0</strong></span>
-                  <span>Engagement / Portée : <strong id="perfEngRate">0.0%</strong></span>
+                  <span>Total des interactions : <strong id="perfTotalInteractions">0</strong></span>
+                  <span>Taux d'engagement / portée : <strong id="perfEngRate">—</strong></span>
                 </div>
               </div>
             </div>
@@ -480,41 +483,146 @@
         </div>
       </section>
 
-      <!-- ONGLET 2 : SUIVI DES STATISTIQUES -->
+      <!-- ONGLET 2 : STATISTIQUES (4 BLOCS) -->
       <section id="tab-statistiques" class="section">
+        <!-- Bloc 1 : Contrôle période & 5 KPIs -->
+        <div class="stats-controls-bar">
+          <div class="stats-controls-group">
+            <span class="stats-controls-label">Période :</span>
+            <select id="statsPeriodSelect"></select>
+          </div>
+          <div class="stats-controls-group">
+            <span class="stats-controls-label">Historique graphiques :</span>
+            <select id="statsMonthsWindow">
+              <option value="6">6 derniers mois</option>
+              <option value="12" selected>12 derniers mois</option>
+              <option value="24">24 derniers mois</option>
+              <option value="999">Tous les mois</option>
+            </select>
+          </div>
+        </div>
+
         <div class="kpis" id="statsKpis"></div>
 
+        <!-- Bloc 2 : Suivi mensuel des Abonnés -->
         <div class="panel">
-          <h2>Suivi des performances par publication</h2>
-          <p style="font-size: 13px; color: var(--muted); margin-top: -6px; margin-bottom: 16px;">
-            Renseignez vos métriques Instagram (portée, likes, commentaires, enregistrements, partages, clics) pour suivre vos meilleurs formats et piliers.
-          </p>
+          <h2>👥 Suivi mensuel des Abonnés</h2>
+          <div class="followers-layout">
+            <div>
+              <div class="followers-form">
+                <input type="month" id="followerMonthInput" title="Mois du bilan (AAAA-MM)" />
+                <input type="number" min="0" id="followerCountInput" placeholder="Nb abonnés" />
+                <button type="button" class="sm primary" id="btnSaveFollowerMonth">Enregistrer</button>
+              </div>
+              <div class="followers-list" id="followersHistoryList"></div>
+            </div>
+            <div class="chart-box tall">
+              <canvas id="followersComboChart"></canvas>
+            </div>
+          </div>
+        </div>
 
+        <!-- Bloc 3 : 4 Graphiques d'évolution mensuelle -->
+        <div class="charts-grid">
+          <div class="chart-card">
+            <h3>1. Portée & Vues mensuelles</h3>
+            <div class="chart-box"><canvas id="chartReachViews"></canvas></div>
+          </div>
+          <div class="chart-card">
+            <h3>2. Interactions mensuelles détaillées</h3>
+            <div class="chart-box"><canvas id="chartInteractionsStacked"></canvas></div>
+          </div>
+          <div class="chart-card">
+            <h3>3. Enregistrements & Clics mensuels</h3>
+            <div class="chart-box"><canvas id="chartSavesClicks"></canvas></div>
+          </div>
+          <div class="chart-card">
+            <h3>4. Taux d'engagement moyen mensuel (%)</h3>
+            <div class="chart-box"><canvas id="chartEngagementRate"></canvas></div>
+          </div>
+        </div>
+
+        <!-- Bloc 4A : Comparatif par Type de contenu -->
+        <div class="panel">
+          <h2>📱 Focus par Type de contenu</h2>
+          <div class="chart-box tall" style="margin-bottom: 18px;">
+            <canvas id="chartFormatMonthly"></canvas>
+          </div>
           <div class="table-wrap">
             <table class="stats-table">
               <thead>
                 <tr>
-                  <th>Publication</th>
-                  <th>Date</th>
-                  <th>Format</th>
-                  <th>Statut</th>
-                  <th>Pilier</th>
-                  <th>Portée</th>
-                  <th>Likes</th>
-                  <th>Commentaires</th>
-                  <th>Enreg.</th>
-                  <th>Partages</th>
+                  <th>Type de contenu</th>
+                  <th>Nb publiés</th>
+                  <th>Portée totale & moy.</th>
+                  <th>Interactions totales</th>
+                  <th>Enregistrements</th>
                   <th>Clics</th>
-                  <th>Eng. / Portée</th>
-                  <th>Action</th>
+                  <th>Engagement moy.</th>
                 </tr>
               </thead>
-              <tbody id="statsTableBody"></tbody>
+              <tbody id="formatComparisonBody"></tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- Bloc 4B : Performance par Pilier éditorial -->
+        <div class="panel">
+          <div class="panel-header-row">
+            <h2 style="margin: 0;">🏷️ Performance par Pilier éditorial</h2>
+            <div class="stats-controls-group">
+              <span class="stats-controls-label">Métrique du graphique :</span>
+              <select id="statsPillarMetricSelect">
+                <option value="engagement">Taux d'engagement (%)</option>
+                <option value="reach">Portée</option>
+                <option value="interactions">Interactions</option>
+                <option value="saves">Enregistrements</option>
+                <option value="clicks">Clics</option>
+              </select>
+            </div>
+          </div>
+          <div class="chart-box tall" style="margin-bottom: 18px;">
+            <canvas id="chartPillarMonthly"></canvas>
+          </div>
+          <div class="table-wrap">
+            <table class="stats-table">
+              <thead>
+                <tr>
+                  <th>Pilier éditorial</th>
+                  <th>Nb de posts</th>
+                  <th>Portée totale</th>
+                  <th>Interactions totales</th>
+                  <th>Enregistrements</th>
+                  <th>Clics</th>
+                  <th>Engagement moy.</th>
+                </tr>
+              </thead>
+              <tbody id="pillarComparisonBody"></tbody>
             </table>
           </div>
         </div>
       </section>
     </main>
+  </div>
+
+  <!-- MODALE GESTION DES PILIERS -->
+  <div class="modal-backdrop" id="pillarsModal">
+    <div class="modal-card">
+      <div class="modal-head">
+        <h2>🎨 Gérer mes piliers éditoriaux</h2>
+        <button type="button" class="sm" id="btnClosePillarsModal">✕</button>
+      </div>
+      <div class="pillars-list" id="pillarsModalList"></div>
+      <div class="pillar-add-row">
+        <input type="color" id="newPillarColor" value="#6366f1" title="Couleur du nouveau pilier" />
+        <input type="text" id="newPillarName" placeholder="Nouveau pilier (ex. Coulisses & Création)" />
+        <button type="button" class="sm primary" id="btnAddDraftPillar">+ Ajouter</button>
+      </div>
+      <div style="display: flex; justify-content: flex-end; gap: 8px; margin-top: 16px;">
+        <button type="button" id="btnCancelPillars">Annuler</button>
+        <button type="button" class="primary" id="btnSavePillars">Enregistrer les piliers</button>
+      </div>
+    </div>
   </div>
 
   <!-- ============================================================
@@ -533,13 +641,11 @@
     </header>
 
     <main>
-      <!-- Vue Liste des projets -->
       <div id="projectsListView">
         <div class="projects-kpi-grid" id="projectsKpiGrid"></div>
         <div id="projectsGroupsContainer"></div>
       </div>
 
-      <!-- Vue Détail d'un projet (Illustrations & Textes) -->
       <div id="projectDetailView" style="display: none;">
         <div class="project-detail-topbar">
           <button type="button" class="sm" onclick="closeProjectDetail()">← Retour aux projets</button>
@@ -561,11 +667,9 @@
           </div>
         </div>
 
-        <!-- Dossier Inspiration graphique -->
         <div class="inspo-panel" id="projectInspoPanel"></div>
         <input type="file" id="projectInspoFileInput" accept="image/*" multiple hidden />
 
-        <!-- Tableau récapitulatif Illustrations / Textes -->
         <div class="proj-stats-matrix">
           <div></div>
           <div class="matrix-head txt-purple">TOTAL</div>
@@ -586,7 +690,6 @@
           <div class="matrix-cell txt-green" id="statTextDone">0</div>
         </div>
 
-        <!-- Grille des illustrations & textes -->
         <div class="illustrations-grid" id="projectIllustrationsGrid"></div>
         <input type="file" id="projectIllusFileInput" accept="image/*" hidden />
         <input type="file" id="illusVersionFileInput" accept="image/*" hidden />
@@ -708,6 +811,7 @@
   <script src="js/projects.js"></script>
   <script src="js/instagram-calendar.js"></script>
   <script src="js/instagram-editor.js"></script>
+  <script src="js/instagram-stats.js"></script>
   <script src="js/app.js"></script>
 </body>
 </html>
