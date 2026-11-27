@@ -94,6 +94,8 @@ async function saveMetaToCloud() {
   try {
     await dbFirestore.collection(COL_META).doc(META_DOC_ID).set({
       completedAutoTasks: state.completedAutoTasks || [],
+      pillars: normalizePillars(state.pillars),
+      followersHistory: normalizeFollowersHistory(state.followersHistory),
       schemaVersion: SCHEMA_VERSION,
       updatedAt: new Date().toISOString()
     }, { merge: true });
@@ -117,6 +119,8 @@ function startRealtimeSync() {
     if (!isEditingPost) {
       renderPostsGrid();
       if (calendarViewMode === "month") renderCalendarMonthView();
+    }
+    if (typeof renderStatisticsSection === "function") {
       renderStatisticsSection();
     }
     renderDashboard();
@@ -170,8 +174,18 @@ function startRealtimeSync() {
     if (doc.exists) {
       const data = doc.data();
       state.completedAutoTasks = Array.isArray(data.completedAutoTasks) ? data.completedAutoTasks : [];
+      state.pillars = normalizePillars(data.pillars);
+      state.followersHistory = normalizeFollowersHistory(data.followersHistory);
       saveLocalCache();
       renderDashboard();
+      if (typeof populatePillarSelects === "function") {
+        populatePillarSelects();
+      }
+      renderPostsGrid();
+      if (calendarViewMode === "month") renderCalendarMonthView();
+      if (typeof renderStatisticsSection === "function") {
+        renderStatisticsSection();
+      }
     }
   });
 }
@@ -237,7 +251,7 @@ async function uploadFileToCloudinary(file) {
   formData.append("folder", CLOUDINARY_FOLDER);
 
   const response = await fetch(
-    `https://api.cloudinary.com/v1_1/${CLOUDINARY_CLOUD_NAME}/image/upload`,
+    `https://api.cloudinary.com/v1_1/\${CLOUDINARY_CLOUD_NAME}/image/upload`,
     { method: "POST", body: formData }
   );
   if (!response.ok) {
@@ -255,34 +269,7 @@ async function uploadDataUrlToCloudinary(dataUrl) {
   formData.append("folder", CLOUDINARY_FOLDER);
 
   const response = await fetch(
-    `https://api.cloudinary.com/v1_1/${CLOUDINARY_CLOUD_NAME}/image/upload`,
-    { method: "POST", body: formData }
-  );
-  if (!response.ok) {
-    throw new Error("Échec transfert image Cloudinary");
-  }
-  const data = await response.json();
-  return data.secure_url;
-}
-
-function isLargeBase64Image(src) {
-  return typeof src === "string" && src.startsWith("data:image/") && !src.startsWith("data:image/svg+xml");
-}
-
-// ============================================================
-// SAUVEGARDE / RESTAURATION JSON & MIGRATION ANCIEN FIREBASE
-// ============================================================
-document.getElementById("btnExportJson").addEventListener("click", () => {
-  const backup = {
-    exportedAt: new Date().toISOString(),
-    schemaVersion: SCHEMA_VERSION,
-    ...state
-  };
-  const blob = new Blob([JSON.stringify(backup, null, 2)], { type: "application/json" });
-  const url = URL.createObjectURL(blob);
-  const a = document.createElement("a");
-  a.href = url;
-  a.download = `sauvegarde-studio-${getTodayIso()}.json`;
+    `https://api.cloudinary.com/v1_1/${CLOUDINARY_CLOUD_NAME}/image/upload`, { method: "POST", body: formData } ); if (!response.ok) { throw new Error("Échec transfert image Cloudinary"); } const data = await response.json(); return data.secure_url; }  function isLargeBase64Image(src) { return typeof src === "string" && src.startsWith("data:image/") && !src.startsWith("data:image/svg+xml"); }  // ============================================================ // SAUVEGARDE / RESTAURATION JSON & MIGRATION ANCIEN FIREBASE // ============================================================ document.getElementById("btnExportJson").addEventListener("click", () => { const backup = { exportedAt: new Date().toISOString(), schemaVersion: SCHEMA_VERSION, ...state }; const blob = new Blob([JSON.stringify(backup, null, 2)], { type: "application/json" }); const url = URL.createObjectURL(blob); const a = document.createElement("a"); a.href = url; a.download = `sauvegarde-studio-${getTodayIso()}.json`;
   a.click();
   URL.revokeObjectURL(url);
   showToast("Sauvegarde JSON téléchargée !");
@@ -332,8 +319,14 @@ document.getElementById("importJsonInput").addEventListener("change", (e) => {
       }
       if (Array.isArray(parsed.completedAutoTasks)) {
         state.completedAutoTasks = parsed.completedAutoTasks;
-        await saveMetaToCloud();
       }
+      if (Array.isArray(parsed.pillars)) {
+        state.pillars = normalizePillars(parsed.pillars);
+      }
+      if (parsed.followersHistory) {
+        state.followersHistory = normalizeFollowersHistory(parsed.followersHistory);
+      }
+      await saveMetaToCloud();
 
       setSyncStatus("ok", "☁️ Synchronisé");
       showToast("Restauration terminée avec succès !");
@@ -415,7 +408,7 @@ document.getElementById("btnMigrateLegacy").addEventListener("click", async () =
     }
 
     setSyncStatus("ok", "☁️ Synchronisé");
-    showToast(`Import réussi : ${oldPosts.length} post(s), ${oldProjects.length} projet(s), ${oldTasks.length} tâche(s) !`);
+    showToast(`Import réussi : \${oldPosts.length} post(s), ${oldProjects.length} projet(s),${oldTasks.length} tâche(s) !`);
   } catch (err) {
     console.error("Erreur migration ancien compte :", err);
     setSyncStatus("error", "⚠️ Erreur import");
