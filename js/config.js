@@ -41,8 +41,8 @@ const COL_TASKS = "studio_tasks";
 const COL_MEDIA = "studio_media";
 const COL_META = "studio_meta";
 const META_DOC_ID = "config";
-const SCHEMA_VERSION = 3;
-const STORAGE_KEY = "as_studio_cache_v3";
+const SCHEMA_VERSION = 4;
+const STORAGE_KEY = "as_studio_cache_v4";
 const ACTIVE_TIMER_KEY = "as_studio_active_timer_v1";
 
 const VALID_FORMATS = ["Post simple", "Carrousel", "Reel", "Story"];
@@ -53,6 +53,49 @@ const DEFAULT_PILLARS = [
   { id: "pil_coulisses", name: "Coulisses", color: "#f59e0b" },
   { id: "pil_offre", name: "Offre / Produit", color: "#168a54" },
   { id: "pil_preuve", name: "Preuve sociale", color: "#db2777" }
+];
+
+const TRACKER_DEFS = [
+  {
+    key: "insta",
+    label: "Insta Tracker",
+    icon: "📱",
+    desc: "Actions Instagram du jour (post, story, visuel, calendrier). Vert si action faite aujourd'hui, rouge sinon."
+  },
+  {
+    key: "creativ",
+    label: "Creativ Tracker",
+    icon: "🎨",
+    desc: "Pratique illustrative du jour (chrono lancé/arrêté, visuel ou version ajoutée). Vert si action faite, rouge sinon."
+  },
+  {
+    key: "edit",
+    label: "Edit Tracker",
+    icon: "📚",
+    desc: "Écriture/textes projet ou suivi maisons d'édition du jour. Vert si action faite, rouge sinon."
+  },
+  {
+    key: "engagement",
+    label: "Engagement Tracker",
+    icon: "💬",
+    desc: "Routine d'engagement du jour (cochée dans « À faire aujourd'hui »). Vert si faite, rouge sinon."
+  }
+];
+
+const SUBMISSION_MODALITIES = [
+  "Formulaire en ligne",
+  "E-mail",
+  "Courrier postal",
+  "Contact direct / Salon",
+  "Autre"
+];
+
+const SUBMISSION_STATUSES = [
+  { key: "En attente de retour", label: "En attente de retour", badgeClass: "ed-st-attente" },
+  { key: "Refus", label: "Refus", badgeClass: "ed-st-refus" },
+  { key: "Échange en cours", label: "Échange en cours", badgeClass: "ed-st-echange" },
+  { key: "Édité", label: "Édité", badgeClass: "ed-st-edite" },
+  { key: "Vision édition", label: "Vision édition", badgeClass: "ed-st-vision" }
 ];
 
 const POST_CHECKLIST_STEPS = [
@@ -153,6 +196,12 @@ function formatMonthShortFr(ym) {
   const dt = new Date(y, m - 1, 1);
   const txt = dt.toLocaleDateString("fr-FR", { month: "short", year: "2-digit" });
   return txt.charAt(0).toUpperCase() + txt.slice(1);
+}
+
+function formatDateFrSlash(isoDate) {
+  if (!isoDate || !/^\d{4}-\d{2}-\d{2}$/.test(isoDate)) return "—";
+  const [y, m, d] = isoDate.split("-");
+  return `${d}/${m}/${y}`;
 }
 
 function formatDuration(totalSeconds, showSeconds = false) {
@@ -316,6 +365,69 @@ function normalizeFollowersHistory(raw) {
   return out;
 }
 
+function normalizeTrackers(raw) {
+  const base = {
+    insta: {},
+    creativ: {},
+    edit: {},
+    engagement: {}
+  };
+  if (raw && typeof raw === "object") {
+    ["insta", "creativ", "edit", "engagement"].forEach((k) => {
+      if (raw[k] && typeof raw[k] === "object") {
+        Object.entries(raw[k]).forEach(([iso, entry]) => {
+          if (/^\d{4}-\d{2}-\d{2}$/.test(iso)) {
+            if (typeof entry === "boolean") {
+              base[k][iso] = { active: entry, note: "" };
+            } else if (entry && typeof entry === "object") {
+              base[k][iso] = {
+                active: Boolean(entry.active),
+                note: String(entry.note || "")
+              };
+            }
+          }
+        });
+      }
+    });
+  }
+  return base;
+}
+
+function normalizePublisherCatalogEntry(pub, idx = 0) {
+  return {
+    id: pub?.id || `pub_${Date.now()}_${idx}`,
+    name: String(pub?.name || "").trim(),
+    modality: SUBMISSION_MODALITIES.includes(pub?.modality) ? pub.modality : "E-mail",
+    modalityDetails: String(pub?.modalityDetails || ""),
+    contact: String(pub?.contact || "")
+  };
+}
+
+function normalizePublishersCatalog(raw) {
+  if (!Array.isArray(raw)) return [];
+  return raw
+    .map((p, i) => normalizePublisherCatalogEntry(p, i))
+    .filter((p) => p.name);
+}
+
+function normalizeSubmissionEntry(sub, idx = 0) {
+  const validSt = SUBMISSION_STATUSES.map((s) => s.key);
+  return {
+    id: sub?.id || `sub_${Date.now()}_${idx}`,
+    publisherId: sub?.publisherId || "",
+    publisherName: String(sub?.publisherName || "Maison d'édition").trim(),
+    modality: SUBMISSION_MODALITIES.includes(sub?.modality) ? sub.modality : "E-mail",
+    modalityDetails: String(sub?.modalityDetails || ""),
+    contact: String(sub?.contact || ""),
+    sent: Boolean(sub?.sent),
+    sentDate: sub?.sentDate || "",
+    responseReceived: Boolean(sub?.responseReceived),
+    responseDate: sub?.responseDate || "",
+    status: validSt.includes(sub?.status) ? sub.status : "En attente de retour",
+    notes: String(sub?.notes || "")
+  };
+}
+
 function getPillarList() {
   if (!Array.isArray(state?.pillars) || !state.pillars.length) {
     return DEFAULT_PILLARS;
@@ -438,6 +550,10 @@ function normalizeProject(pr, idx = 0) {
       }))
     : [];
 
+  const submissions = Array.isArray(pr?.submissions)
+    ? pr.submissions.map((sub, si) => normalizeSubmissionEntry(sub, si))
+    : [];
+
   const normalized = {
     ...pr,
     id: pr?.id || `proj_${Date.now()}_${idx}`,
@@ -447,6 +563,7 @@ function normalizeProject(pr, idx = 0) {
     technique: pr?.technique || "",
     notes: pr?.notes || "",
     inspirations,
+    submissions,
     items
   };
   if (items.length > 0) {
@@ -477,20 +594,24 @@ function normalizeMediaItem(m, idx = 0) {
   };
 }
 
+function createEmptyState() {
+  return {
+    posts: [],
+    projects: [],
+    tasks: [],
+    media: [],
+    completedAutoTasks: [],
+    pillars: structuredClone(DEFAULT_PILLARS),
+    followersHistory: {},
+    trackers: normalizeTrackers({}),
+    publishersCatalog: []
+  };
+}
+
 function loadLocalCache() {
   try {
     const raw = localStorage.getItem(STORAGE_KEY);
-    if (!raw) {
-      return {
-        posts: [],
-        projects: [],
-        tasks: [],
-        media: [],
-        completedAutoTasks: [],
-        pillars: structuredClone(DEFAULT_PILLARS),
-        followersHistory: {}
-      };
-    }
+    if (!raw) return createEmptyState();
     const parsed = JSON.parse(raw);
     return {
       posts: Array.isArray(parsed.posts) ? parsed.posts.map(normalizePost) : [],
@@ -499,18 +620,12 @@ function loadLocalCache() {
       media: Array.isArray(parsed.media) ? parsed.media.map(normalizeMediaItem) : [],
       completedAutoTasks: Array.isArray(parsed.completedAutoTasks) ? parsed.completedAutoTasks : [],
       pillars: normalizePillars(parsed.pillars),
-      followersHistory: normalizeFollowersHistory(parsed.followersHistory)
+      followersHistory: normalizeFollowersHistory(parsed.followersHistory),
+      trackers: normalizeTrackers(parsed.trackers),
+      publishersCatalog: normalizePublishersCatalog(parsed.publishersCatalog)
     };
   } catch {
-    return {
-      posts: [],
-      projects: [],
-      tasks: [],
-      media: [],
-      completedAutoTasks: [],
-      pillars: structuredClone(DEFAULT_PILLARS),
-      followersHistory: {}
-    };
+    return createEmptyState();
   }
 }
 
