@@ -1290,3 +1290,20 @@ table.stats-table input[type="number"] {
   padding: 5px 7px;
   font-size: 12px;
 }
+/* Glisser-déposer sur le calendrier éditorial */
+.cal-day.drag-over {
+  background: var(--primary-soft);
+  border: 2px dashed var(--primary);
+}
+
+.cal-event-wrap[draggable="true"] {
+  cursor: grab;
+}
+
+.cal-event-wrap[draggable="true"]:active {
+  cursor: grabbing;
+}
+
+.cal-event-wrap.dragging {
+  opacity: 0.45;
+}
