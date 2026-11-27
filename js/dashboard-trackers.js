@@ -1,8 +1,8 @@
 // ============================================================
-// LES 4 TRACKERS QUOTIDIENS + TRACKER GLOBAL (0/4 -> 4/4)
+// LES 4 TRACKERS QUOTIDIENS + TRACKER GLOBAL (CALENDRIER 0/4 -> 4/4)
 // ============================================================
 let selectedTrackerDate = getTodayIso();
-let trackerViewRange = "week"; // "week" | "month"
+let trackerViewRange = "month"; // "week" | "month"
 
 function ensureTrackersState() {
   state.trackers = normalizeTrackers(state.trackers);
@@ -33,6 +33,10 @@ function getTrackerDayEntry(trackerKey, isoDate) {
   return trackers[trackerKey]?.[isoDate] || { active: false, note: "" };
 }
 
+function getCompletedCountForDate(isoDate) {
+  return TRACKER_DEFS.filter((def) => Boolean(getTrackerDayEntry(def.key, isoDate).active)).length;
+}
+
 function computeTrackerStreak(trackerKey, refIso) {
   let streak = 0;
   const base = new Date(refIso + "T00:00:00");
@@ -41,6 +45,22 @@ function computeTrackerStreak(trackerKey, refIso) {
     dt.setDate(dt.getDate() - i);
     const iso = `${dt.getFullYear()}-${String(dt.getMonth() + 1).padStart(2, "0")}-${String(dt.getDate()).padStart(2, "0")}`;
     if (getTrackerDayEntry(trackerKey, iso).active) {
+      streak++;
+    } else {
+      break;
+    }
+  }
+  return streak;
+}
+
+function computeGlobalStreak(refIso) {
+  let streak = 0;
+  const base = new Date(refIso + "T00:00:00");
+  for (let i = 0; i < 365; i++) {
+    const dt = new Date(base);
+    dt.setDate(dt.getDate() - i);
+    const iso = `${dt.getFullYear()}-${String(dt.getMonth() + 1).padStart(2, "0")}-${String(dt.getDate()).padStart(2, "0")}`;
+    if (getCompletedCountForDate(iso) === TRACKER_DEFS.length) {
       streak++;
     } else {
       break;
@@ -76,40 +96,42 @@ function getTrackerWindowDates(refIso, rangeMode) {
   return out;
 }
 
-function renderGlobalTrackerSummary(dateIso) {
+function renderGlobalTrackerSummary(dateIso, windowDates) {
   const box = document.getElementById("globalTrackerCard");
   if (!box) return;
 
-  const completedCount = TRACKER_DEFS.filter((def) =>
-    Boolean(getTrackerDayEntry(def.key, dateIso).active)
-  ).length;
+  const completedCount = getCompletedCountForDate(dateIso);
   const totalCount = TRACKER_DEFS.length;
+  const globalStreak = computeGlobalStreak(dateIso);
 
-  const levelLabels = {
-    0: "Aucun tracker complété",
-    1: "1 tracker complété sur 4",
-    2: "2 trackers complétés sur 4",
-    3: "3 trackers complétés sur 4",
-    4: "Tous les trackers complétés !"
-  };
+  const calHtml = windowDates
+    .map((iso) => {
+      const cnt = getCompletedCountForDate(iso);
+      const dayNum = Number(iso.split("-")[2]);
+      const isSel = iso === dateIso;
+      return `
+        <div
+          class="gt-day-cell gt-c${cnt} ${isSel ? "selected" : ""}"
+          title="${iso} : ${cnt}/${totalCount} trackers complétés"
+          onclick="selectTrackerDate('${iso}')"
+        >${dayNum}</div>
+      `;
+    })
+    .join("");
 
   box.className = `global-tracker-card gt-level-${completedCount}`;
   box.innerHTML = `
     <div class="gt-top">
       <span>Tracker global</span>
-      <span>${formatDateFrSlash(dateIso)}</span>
+      <span class="gt-streak">🔥 ${globalStreak} j</span>
     </div>
     <div class="gt-score">${completedCount} / ${totalCount}</div>
-    <div class="gt-sub">${escapeHtml(levelLabels[completedCount] || "")}</div>
+    <div class="gt-sub">${formatDateFrSlash(dateIso)}</div>
+    <div class="global-tracker-cal">${calHtml}</div>
   `;
 }
 
 function renderDashboardTrackers() {
-  renderGlobalTrackerSummary(selectedTrackerDate);
-
-  const grid = document.getElementById("dashboardTrackersGrid");
-  if (!grid) return;
-
   const dateInput = document.getElementById("trackerDateInput");
   if (dateInput) dateInput.value = selectedTrackerDate;
 
@@ -117,6 +139,10 @@ function renderDashboardTrackers() {
   if (rangeSelect) rangeSelect.value = trackerViewRange;
 
   const windowDates = getTrackerWindowDates(selectedTrackerDate, trackerViewRange);
+  renderGlobalTrackerSummary(selectedTrackerDate, windowDates);
+
+  const grid = document.getElementById("dashboardTrackersGrid");
+  if (!grid) return;
 
   grid.innerHTML = TRACKER_DEFS.map((def) => {
     const streak = computeTrackerStreak(def.key, selectedTrackerDate);
@@ -148,6 +174,11 @@ function renderDashboardTrackers() {
     `;
   }).join("");
 }
+
+window.selectTrackerDate = function (isoDate) {
+  selectedTrackerDate = isoDate;
+  renderDashboardTrackers();
+};
 
 window.selectAndToggleTrackerDay = function (trackerKey, isoDate) {
   selectedTrackerDate = isoDate;
