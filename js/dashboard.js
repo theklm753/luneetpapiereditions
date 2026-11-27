@@ -41,6 +41,7 @@ function getAutoInstagramTasks(todayIso) {
   };
 
   const articleByFormat = {
+    "Post simple": "le post",
     "Story": "la story",
     "Carrousel": "le carrousel",
     "Reel": "le reel"
@@ -80,60 +81,63 @@ function renderDashboard() {
 
   if (!manualTasks.length && !autoTasks.length) {
     container.innerHTML = `<div style="color: var(--muted); font-size: 14px; padding: 12px 4px;">Aucune tâche prévue aujourd'hui. Cliquez sur <strong>+ ajouter une tâche</strong> pour en programmer une.</div>`;
-    return;
-  }
-
-  const manualHtml = manualTasks
-    .map((t) => {
-      const isDone = (t.completedDates || []).includes(todayIso);
-      const recBadge = t.recurrence !== "none"
-        ? `<span class="todo-badge">🔁 ${RECURRENCE_LABELS[t.recurrence]}</span>`
-        : (t.date < todayIso && !isDone ? `<span class="todo-badge overdue">En retard</span>` : "");
-      return `
-        <div class="todo-item ${isDone ? "done" : ""}">
-          <div class="todo-item-left">
-            <button type="button" class="todo-circle ${isDone ? "checked" : ""}" onclick="toggleManualTask('${t.id}')" title="Marquer comme fait">
-              ${isDone ? "✓" : ""}
-            </button>
-            <div class="todo-text-wrap">
-              <span class="todo-title">${escapeHtml(t.title)}</span>
-              ${recBadge ? `<div class="todo-meta">${recBadge}</div>` : ""}
-            </div>
-          </div>
-          <div class="todo-actions">
-            <button type="button" class="sm" onclick="openTaskModal('${t.id}')" title="Modifier">✏️</button>
-          </div>
-        </div>
-      `;
-    })
-    .join("");
-
-  const autoHtml = autoTasks
-    .map((at) => {
-      return `
-        <div class="todo-item ${at.done ? "done" : ""}">
-          <div class="todo-item-left">
-            <button type="button" class="todo-circle ${at.done ? "checked" : ""}" onclick="toggleAutoTask('${at.autoKey}')" title="Marquer comme fait">
-              ${at.done ? "✓" : ""}
-            </button>
-            <div class="todo-text-wrap">
-              <span class="todo-title">${escapeHtml(at.title)}</span>
-              <div class="todo-meta">
-                <span class="todo-badge auto-ig">Calendrier édito</span>
-                ${at.overdue ? `<span class="todo-badge overdue">Date dépassée</span>` : ""}
-                <span>${escapeHtml(at.subtitle)}</span>
+  } else {
+    const manualHtml = manualTasks
+      .map((t) => {
+        const isDone = (t.completedDates || []).includes(todayIso);
+        const recBadge = t.recurrence !== "none"
+          ? `<span class="todo-badge">🔁 ${RECURRENCE_LABELS[t.recurrence]}</span>`
+          : (t.date < todayIso && !isDone ? `<span class="todo-badge overdue">En retard</span>` : "");
+        return `
+          <div class="todo-item ${isDone ? "done" : ""}">
+            <div class="todo-item-left">
+              <button type="button" class="todo-circle ${isDone ? "checked" : ""}" onclick="toggleManualTask('${t.id}')" title="Marquer comme fait">
+                ${isDone ? "✓" : ""}
+              </button>
+              <div class="todo-text-wrap">
+                <span class="todo-title">${escapeHtml(t.title)}</span>
+                ${recBadge ? `<div class="todo-meta">${recBadge}</div>` : ""}
               </div>
             </div>
+            <div class="todo-actions">
+              <button type="button" class="sm" onclick="openTaskModal('${t.id}')" title="Modifier">✏️</button>
+            </div>
           </div>
-          <div class="todo-actions">
-            <button type="button" class="sm" onclick="openPostFromDashboard('${at.postId}')" title="Ouvrir le post">Ouvrir ↗</button>
-          </div>
-        </div>
-      `;
-    })
-    .join("");
+        `;
+      })
+      .join("");
 
-  container.innerHTML = manualHtml + autoHtml;
+    const autoHtml = autoTasks
+      .map((at) => {
+        return `
+          <div class="todo-item ${at.done ? "done" : ""}">
+            <div class="todo-item-left">
+              <button type="button" class="todo-circle ${at.done ? "checked" : ""}" onclick="toggleAutoTask('${at.autoKey}')" title="Marquer comme fait">
+                ${at.done ? "✓" : ""}
+              </button>
+              <div class="todo-text-wrap">
+                <span class="todo-title">${escapeHtml(at.title)}</span>
+                <div class="todo-meta">
+                  <span class="todo-badge auto-ig">Calendrier édito</span>
+                  ${at.overdue ? `<span class="todo-badge overdue">Date dépassée</span>` : ""}
+                  <span>${escapeHtml(at.subtitle)}</span>
+                </div>
+              </div>
+            </div>
+            <div class="todo-actions">
+              <button type="button" class="sm" onclick="openPostFromDashboard('${at.postId}')" title="Ouvrir le post">Ouvrir ↗</button>
+            </div>
+          </div>
+        `;
+      })
+      .join("");
+
+    container.innerHTML = manualHtml + autoHtml;
+  }
+
+  if (typeof renderDashboardTrackers === "function") {
+    renderDashboardTrackers();
+  }
 }
 
 window.toggleManualTask = function (taskId) {
@@ -141,10 +145,14 @@ window.toggleManualTask = function (taskId) {
   const task = (state.tasks || []).find((t) => t.id === taskId);
   if (!task) return;
   if (!Array.isArray(task.completedDates)) task.completedDates = [];
-  if (task.completedDates.includes(todayIso)) {
-    task.completedDates = task.completedDates.filter((d) => d !== todayIso);
-  } else {
+  const nowDone = !task.completedDates.includes(todayIso);
+  if (nowDone) {
     task.completedDates.push(todayIso);
+    if (/engagement/i.test(task.title || "") && typeof recordTrackerAction === "function") {
+      recordTrackerAction("engagement", todayIso);
+    }
+  } else {
+    task.completedDates = task.completedDates.filter((d) => d !== todayIso);
   }
   saveTaskToCloud(task);
   renderDashboard();
