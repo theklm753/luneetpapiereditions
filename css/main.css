@@ -1454,3 +1454,325 @@ button.sm {
   border-radius: 8px;
   font-size: 12px;
 }
+/* ============================================================
+   PROJETS : FIL D'ARIANE, TECHNIQUE, INSPIRATIONS, CHRONO & D&D
+   ============================================================ */
+.breadcrumb-title {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin: 0;
+  font-size: 17px;
+  font-weight: 700;
+}
+
+.breadcrumb-link {
+  cursor: pointer;
+  color: var(--text);
+  transition: color 0.15s ease;
+}
+
+.breadcrumb-link:hover {
+  color: var(--primary);
+  text-decoration: underline;
+}
+
+.breadcrumb-sep {
+  color: var(--muted);
+  font-weight: 400;
+}
+
+.breadcrumb-current {
+  color: var(--primary);
+}
+
+.project-badges-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  align-items: center;
+  margin-top: 4px;
+}
+
+.project-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 11px;
+  font-weight: 700;
+  padding: 3px 9px;
+  border-radius: 999px;
+  background: var(--primary-soft);
+  color: var(--primary);
+}
+
+.project-badge.time-badge {
+  background: #fef3c7;
+  color: #92400e;
+}
+
+/* Dossier Inspiration graphique */
+.inspo-panel {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  padding: 16px 20px;
+  box-shadow: var(--shadow);
+  margin-bottom: 24px;
+}
+
+.inspo-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  flex-wrap: wrap;
+  cursor: pointer;
+  user-select: none;
+}
+
+.inspo-header-left {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 15px;
+  font-weight: 700;
+  color: var(--text);
+}
+
+.inspo-actions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.inspo-body {
+  margin-top: 14px;
+  padding-top: 14px;
+  border-top: 1px solid var(--border);
+}
+
+.inspo-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(135px, 1fr));
+  gap: 12px;
+}
+
+.inspo-item {
+  position: relative;
+  aspect-ratio: 1 / 1;
+  border-radius: 12px;
+  overflow: hidden;
+  border: 1px solid var(--border);
+  background: var(--surface-alt);
+}
+
+.inspo-item img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  cursor: pointer;
+}
+
+.inspo-item-del {
+  position: absolute;
+  top: 6px;
+  right: 6px;
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  border: none;
+  background: rgba(24, 26, 32, 0.72);
+  color: #fff;
+  font-size: 12px;
+  padding: 0;
+  display: grid;
+  place-items: center;
+  cursor: pointer;
+}
+
+.inspo-item-del:hover {
+  background: #dc2626;
+}
+
+/* Cartes Illustration + Texte (Drag & Drop + Chrono) */
+.illus-card {
+  transition: transform 0.15s ease, box-shadow 0.15s ease, opacity 0.15s ease;
+}
+
+.illus-card.dragging {
+  opacity: 0.45;
+  transform: scale(0.98);
+}
+
+.illus-card.drag-over {
+  outline: 3px dashed var(--primary);
+  outline-offset: 3px;
+}
+
+.illus-card-topbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+}
+
+.illus-drag-handle {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--primary);
+  cursor: grab;
+  padding: 2px 6px;
+  border-radius: 8px;
+  background: rgba(255, 255, 255, 0.65);
+  user-select: none;
+}
+
+.illus-drag-handle:active {
+  cursor: grabbing;
+}
+
+.illus-timer-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  background: rgba(255, 255, 255, 0.75);
+  border: 1px solid rgba(91, 76, 230, 0.18);
+  border-radius: 12px;
+  padding: 7px 10px;
+}
+
+.illus-timer-display {
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--text);
+  font-variant-numeric: tabular-nums;
+}
+
+.illus-timer-display.running {
+  color: #dc2626;
+}
+
+.illus-timer-btns {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.btn-timer-start {
+  background: #dcfce7;
+  color: #15803d;
+  border-color: #86efac;
+  padding: 4px 9px;
+  font-size: 11px;
+}
+
+.btn-timer-stop {
+  background: #fee2e2;
+  color: #dc2626;
+  border-color: #fca5a5;
+  padding: 4px 9px;
+  font-size: 11px;
+}
+
+.illus-card-footer-actions {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 6px;
+  flex-wrap: wrap;
+}
+
+/* Modale Détail Illustration (Versions & Chronos) */
+.modal-card.modal-lg {
+  max-width: 780px;
+  max-height: 90vh;
+  overflow-y: auto;
+}
+
+.illus-modal-section {
+  margin-bottom: 18px;
+  padding-bottom: 16px;
+  border-bottom: 1px solid var(--border);
+}
+
+.illus-modal-section:last-child {
+  margin-bottom: 0;
+  padding-bottom: 0;
+  border-bottom: none;
+}
+
+.illus-modal-section h3 {
+  margin: 0 0 10px 0;
+  font-size: 14px;
+  color: var(--primary);
+}
+
+.versions-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+  gap: 12px;
+  margin-top: 10px;
+}
+
+.version-card {
+  border: 2px solid var(--border);
+  border-radius: 12px;
+  overflow: hidden;
+  background: var(--surface-alt);
+  display: flex;
+  flex-direction: column;
+}
+
+.version-card.is-current {
+  border-color: var(--primary);
+  box-shadow: 0 0 0 2px var(--primary-soft);
+}
+
+.version-card img {
+  width: 100%;
+  aspect-ratio: 4 / 3;
+  object-fit: cover;
+  cursor: pointer;
+}
+
+.version-card-meta {
+  padding: 7px 8px;
+  font-size: 11px;
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  background: #fff;
+}
+
+.version-card-actions {
+  display: flex;
+  justify-content: space-between;
+  gap: 4px;
+}
+
+.sessions-list {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  margin-top: 10px;
+  max-height: 200px;
+  overflow-y: auto;
+}
+
+.session-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  padding: 7px 10px;
+  background: var(--surface-alt);
+  border-radius: 8px;
+  font-size: 12px;
+}
