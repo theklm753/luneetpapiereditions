@@ -61,7 +61,6 @@ document.getElementById("btnFmtNoStory").addEventListener("click", () => {
   if (calendarViewMode === "month") renderCalendarMonthView();
 });
 
-// Alimentation dynamique des sélecteurs de piliers (Filtre + Éditeur)
 function populatePillarSelects() {
   const pillars = getPillarList();
 
@@ -90,7 +89,6 @@ function populatePillarSelects() {
   }
 }
 
-// Modale "Gérer mes piliers"
 window.openPillarsModal = function () {
   draftPillars = structuredClone(getPillarList());
   renderPillarsModalList();
@@ -197,6 +195,7 @@ document.getElementById("btnSavePillars")?.addEventListener("click", async () =>
   });
 
   state.pillars = cleaned;
+  if (typeof recordTrackerAction === "function") recordTrackerAction("insta");
   await saveMetaToCloud();
   if (postsToUpdate.length) {
     await Promise.all(postsToUpdate.map((p) => savePostToCloud(p)));
@@ -436,6 +435,7 @@ function handleExcelImport(event) {
         }
       }
 
+      if (typeof recordTrackerAction === "function") recordTrackerAction("insta");
       await Promise.all(createdPosts.map((p) => savePostToCloud(p)));
       switchToTab("calendrier", { skipAutoSave: true });
       renderDashboard();
@@ -680,6 +680,7 @@ window.handleCalendarDrop = function (event, targetIsoDate) {
   if (!post || post.date === targetIsoDate) return;
 
   post.date = targetIsoDate;
+  if (typeof recordTrackerAction === "function") recordTrackerAction("insta");
   savePostToCloud(post);
   renderCalendarMonthView();
   renderPostsGrid();
